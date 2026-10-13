@@ -248,7 +248,8 @@ The browser calls `search.parallel.ai` directly (it sends
 plugin-http, so a local board searches the web with no call to a Dim0 backend.
 `/ai/search` stays as a fallback for a client that cannot reach the provider;
 on a hosted deploy that relay requires a signed-in user, a self-hosted one
-leaves it open behind a per-IP limit. Offline the engine resolves to `off` and
+leaves it open. Either way it is rate-limited per user when signed in, and per
+IP otherwise. Offline the engine resolves to `off` and
 the `web_search` tool is hidden, like every other unreachable provider.
 
 Perplexity remains the default, and saved provider keys and selections are

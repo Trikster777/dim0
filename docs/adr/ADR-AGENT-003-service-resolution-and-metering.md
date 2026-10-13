@@ -78,13 +78,18 @@ search selections keep their existing precedence.
 - **Direct, not relayed (MUST):** `search.parallel.ai/mcp` sends
   `Access-Control-Allow-Origin: *`, so a keyless engine is the one non-LLM
   service the client calls **directly** — browser `fetch`, desktop plugin-http.
-  A local board therefore searches with zero calls to our backend.
+  A local board therefore searches with zero calls to our backend. On desktop
+  the host must be in the plugin-http allow list
+  (`webui/src-tauri/capabilities/default.json`); a missing entry silently turns
+  every desktop search into a relay call.
 - **`/ai/search` is a fallback only:** used when the direct call cannot get
   through. It charges no quota (there is no key of ours to spend), so on a
-  hosted deploy (`is_billing_active()`) it **requires a signed-in user** — a
-  per-IP window alone is forgeable through `X-Forwarded-For`, and relaying every
-  user's search from one IP would burn one shared anonymous allowance. A
-  self-hosted deploy keeps it open behind that per-IP window.
+  hosted deploy (`is_billing_active()`) it **requires a signed-in user**, and
+  relaying every user's search from one IP spends one shared anonymous
+  allowance. Its 30/min window (`KEYLESS_CALLER_PER_MINUTE`) is keyed on
+  `user:<uid>` when signed in and on `ip:<client ip>` only for a signed-out
+  self-host. A signed-in caller MUST NOT be windowed by IP: `X-Forwarded-For` is
+  caller-supplied, so rotating it would reset the window.
 - **Wire shape:** Streamable HTTP is JSON-RPC over POST, so one `tools/call` is
   the whole exchange — no MCP SDK, no `initialize`, no session to delete, and
   the same handful of lines on both sides. The request id is a throwaway: an
