@@ -1,3 +1,9 @@
+## v0.3.101 (2026-10-13)
+
+### Feat
+
+- **agent**: add opt-in keyless parallel search mcp (#354)
+
 ## v0.3.100 (2026-09-24)
 
 ### Fix
