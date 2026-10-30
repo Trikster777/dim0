@@ -1,5 +1,6 @@
 import { NodeViewWrapper } from "@tiptap/react"
 import type { NodeViewProps } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 import { useDocHeadings } from "./use-doc-headings"
 
@@ -10,6 +11,7 @@ import { useDocHeadings } from "./use-doc-headings"
  * doc's headings change. Read-only — the block is an atom node.
  */
 export function TocBlockView({ editor }: NodeViewProps) {
+  const { t } = useTranslation()
   const headings = useDocHeadings(editor)
 
   function jump(pos: number) {
@@ -27,10 +29,10 @@ export function TocBlockView({ editor }: NodeViewProps) {
       className="toc-block"
       contentEditable={false}
     >
-      <p className="toc-block-title">On this page</p>
+      <p className="toc-block-title">{t("editor.toc.on_this_page")}</p>
       {headings.length === 0 ? (
         <p className="toc-block-empty">
-          No headings yet — add an H1, H2, or H3 to populate.
+          {t("editor.toc.empty")}
         </p>
       ) : (
         <ul className="toc-block-list">
@@ -48,7 +50,7 @@ export function TocBlockView({ editor }: NodeViewProps) {
                 onClick={() => jump(h.pos)}
                 className="toc-block-link"
               >
-                {h.text || "(empty heading)"}
+                {h.text || t("editor.toc.empty_heading")}
               </button>
             </li>
           ))}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 import { CancelStatusIcon, CheckCircleStatusIcon, LoaderRefreshIcon } from "@/components/icons"
 import { useConvertToMindMap } from "@/features/board/api/convert-to-mindmap"
@@ -17,6 +18,7 @@ import type { Link } from "@/features/board/types/link"
 
 export type AiSparkAction = {
   key: string
+  /** Locale key; translated by `useAiSparkActions`. */
   label: string
   request: string
 }
@@ -31,23 +33,27 @@ export type AiSparkRunParams = {
 }
 
 const defaultActions: AiSparkAction[] = [
-  { key: "summarize", label: "Write a summary", request: "Write a concise summary." },
-  { key: "mapify", label: "Mapify (generate mindmap)", request: "Generate a mindmap capturing the main ideas and relationships." },
-  { key: "schemify", label: "Schemify (generate schema)", request: "Generate a structured schema of entities and relationships." },
-  { key: "quizify", label: "Quizify (MCQ exercises)", request: "Generate multiple-choice exercises grouped by theme." },
-  { key: "drawify", label: "Draw (beta)", request: "Draw a clean diagram with clear layout and spacing." },
-  { key: "translate", label: "Translate", request: "Translate the input to the target language." },
-  { key: "explain", label: "Explain (more detail)", request: "Explain the content in more detail with clear, step-by-step reasoning." },
+  { key: "summarize", label: "board.spark.summarize", request: "Write a concise summary." },
+  { key: "mapify", label: "board.spark.mapify", request: "Generate a mindmap capturing the main ideas and relationships." },
+  { key: "schemify", label: "board.spark.schemify", request: "Generate a structured schema of entities and relationships." },
+  { key: "quizify", label: "board.spark.quizify", request: "Generate multiple-choice exercises grouped by theme." },
+  { key: "drawify", label: "board.spark.drawify", request: "Draw a clean diagram with clear layout and spacing." },
+  { key: "translate", label: "board.spark.translate", request: "Translate the input to the target language." },
+  { key: "explain", label: "board.spark.explain", request: "Explain the content in more detail with clear, step-by-step reasoning." },
 ]
 
 export const useAiSparkActions = () => {
+  const { t } = useTranslation()
   const { convertToMindMapAsync } = useConvertToMindMap()
   const { drawifyAsync } = useDrawify()
   const { translateTextAsync } = useTranslateText()
   const setMindMap = useMindMapStore(state => state.setMindMap)
   const [processingKey, setProcessingKey] = useState<string | null>(null)
 
-  const actions = useMemo(() => defaultActions, [])
+  const actions = useMemo(
+    () => defaultActions.map((action) => ({ ...action, label: t(action.label) })),
+    [t]
+  )
 
   const storeMindMap = async ({
     boardId,
@@ -114,11 +120,11 @@ export const useAiSparkActions = () => {
     targetLanguage = "English",
   }: AiSparkRunParams) => {
     if (!boardId) {
-      toast.error("Select a board first.")
+      toast.error(t("board.spark.select_board"))
       return false
     }
     if (!contextText.trim()) {
-      toast.error("Add some context text first.")
+      toast.error(t("board.spark.add_context"))
       return false
     }
     if (processingKey) return false
@@ -127,19 +133,19 @@ export const useAiSparkActions = () => {
     const request = (customRequest ?? action?.request ?? "").trim()
 
     if (!request && actionKey !== "translate") {
-      toast.error("Add a request first.")
+      toast.error(t("board.spark.add_request"))
       return false
     }
 
     setProcessingKey(actionKey ?? "custom")
     const startedAt = Date.now()
     const formatElapsed = () => `${Math.max(0, Math.floor((Date.now() - startedAt) / 1000))}s`
-    const toastId = toast(`Working on it… ${formatElapsed()}`, {
+    const toastId = toast(t("board.spark.working", { elapsed: formatElapsed() }), {
       duration: Infinity,
       icon: <LoaderRefreshIcon className="size-4 animate-spin [animation-duration:750ms]" />,
     })
     const timer = window.setInterval(() => {
-      toast(`Working on it… ${formatElapsed()}`, {
+      toast(t("board.spark.working", { elapsed: formatElapsed() }), {
         id: toastId,
         icon: <LoaderRefreshIcon className="size-4 animate-spin [animation-duration:750ms]" />,
       })
@@ -169,7 +175,7 @@ export const useAiSparkActions = () => {
       window.clearInterval(timer)
       toast.dismiss(toastId)
       const finalElapsed = formatElapsed()
-      toast.success(`Added to board. (${finalElapsed})`, {
+      toast.success(t("board.spark.added", { elapsed: finalElapsed }), {
         icon: <CheckCircleStatusIcon className="size-4" />,
         duration: 3000,
       })
@@ -179,7 +185,7 @@ export const useAiSparkActions = () => {
       window.clearInterval(timer)
       toast.dismiss(toastId)
       const finalElapsed = formatElapsed()
-      toast.error(`Could not complete the action. (${finalElapsed})`, {
+      toast.error(t("board.spark.failed", { elapsed: finalElapsed }), {
         icon: <CancelStatusIcon className="size-4" />,
         duration: 4000,
       })

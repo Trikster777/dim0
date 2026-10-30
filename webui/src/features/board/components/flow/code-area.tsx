@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { useTheme } from "@/components/theme-provider"
 import { highlightCodeSync, ensureLanguage, type LangValue } from "@/lib/shiki"
 import { cn } from "@/lib/utils"
@@ -43,9 +44,10 @@ export function CodeArea({
   value,
   onChange,
   language = "python",
-  placeholder = "Write code here",
+  placeholder,
   readOnly = false,
 }: CodeAreaProps) {
+  const { t } = useTranslation()
   const { shikiThemes } = useTheme()
   const highlightedLayerRef = useRef<HTMLDivElement | null>(null)
 
@@ -149,7 +151,7 @@ export function CodeArea({
           "absolute inset-0 w-full h-full resize-none border-0 bg-transparent p-4 outline-none scrollbar-thin font-mono text-sm leading-6 text-transparent caret-foreground selection:bg-primary/20",
           readOnly && "cursor-default",
         )}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("board.flow.code_placeholder")}
       />
     </div>
   )

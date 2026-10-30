@@ -2,7 +2,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/u
 import { useListBoards } from "@/features/board/api/list-boards"
 import { useUpdateChat } from "@/features/agent/api/update-chat"
 import { useParams } from "@tanstack/react-router"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { AddIcon, BoardContextIcon } from "@/components/icons"
 import { useAppStore } from "@/store"
 import { useTranslation } from "react-i18next"
@@ -32,7 +32,7 @@ export const ContextBoard = ({ contextBoardId, boardAsContext }: ContextBoardPro
   const attachedId = contextBoardId
   const value = attachedId ?? "-1"
   const label = attachedId
-    ? boards.find((b) => b.uid === attachedId)?.label || UNTITLED_LABEL
+    ? boards.find((b) => b.uid === attachedId)?.label || untitledLabel()
     : t("agent.context_board.attach")
 
   const handleSelectBoard = (boardId: string) => {
@@ -64,7 +64,7 @@ export const ContextBoard = ({ contextBoardId, boardAsContext }: ContextBoardPro
       <SelectContent>
         {boards.map((b) => (
           <SelectItem key={b.uid} value={b.uid}>
-            {b.label || UNTITLED_LABEL}
+            {b.label || untitledLabel()}
           </SelectItem>
         ))}
       </SelectContent>

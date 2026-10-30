@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import { LocalBoardUrl } from "@/routes"
 import {
@@ -24,6 +25,7 @@ import { centerNoteSearch } from "@/features/board/utils/center-note"
  * the existing URL-driven navigation.
  */
 export function NotesSearchDialog({ boardId }: { boardId: string }) {
+  const { t } = useTranslation()
   const open = useBoardAppStore((s) => s.chromeDialog === "notes-search")
   const setChromeDialog = useBoardAppStore((s) => s.setChromeDialog)
   const navigate = useNavigate()
@@ -61,12 +63,12 @@ export function NotesSearchDialog({ boardId }: { boardId: string }) {
       onOpenChange={(next) => {
         if (!next) close()
       }}
-      title="Search notes"
-      description="Find a note by title or content and jump to it."
+      title={t("board.search.title")}
+      description={t("board.search.description")}
     >
-      <CommandInput placeholder="Search notes…" />
+      <CommandInput placeholder={t("board.search.placeholder")} />
       <CommandList>
-        <CommandEmpty>No notes found.</CommandEmpty>
+        <CommandEmpty>{t("board.search.empty")}</CommandEmpty>
         {rows.map((row) => (
           <CommandItem key={row.id} value={row.value} onSelect={() => jump(row)}>
             <div className="flex min-w-0 flex-col">

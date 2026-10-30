@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { NodeViewWrapper } from "@tiptap/react"
 import type { NodeViewProps } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import { NotepadIcon } from "@phosphor-icons/react"
 import { IconPropertyView } from "@/components/icons/icon-property-view"
+import { untitledLabel } from "@/features/board/const"
 import type { Page, PageProvider } from "./types"
 import { readCachedPage, resolvePage, subscribePage } from "./page-cache"
 import { PageHoverCard } from "./page-hover-card"
@@ -22,8 +24,9 @@ function getProvider(editor: NodeViewProps["editor"]): PageProvider | null {
  * is only used as a fallback for offline / deleted pages.
  */
 export function SubpageView({ node, editor }: NodeViewProps) {
+  const { t } = useTranslation()
   const pageId = (node.attrs.pageId as string) || ""
-  const fallbackTitle = (node.attrs.title as string) || "Untitled"
+  const fallbackTitle = (node.attrs.title as string) || untitledLabel()
 
   const [cached, setCached] = useState<Page | null | undefined>(() =>
     readCachedPage(pageId),
@@ -79,7 +82,7 @@ export function SubpageView({ node, editor }: NodeViewProps) {
             <NotepadIcon size={16} weight="duotone" className="subpage-card-icon" />
           )}
           <span className="subpage-card-title">{displayTitle}</span>
-          {isDeleted && <span className="subpage-card-suffix">(deleted)</span>}
+          {isDeleted && <span className="subpage-card-suffix">{t("editor.page.deleted_suffix")}</span>}
         </button>
       </PageHoverCard>
     </NodeViewWrapper>

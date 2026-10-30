@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Outlet, useParams, useSearch } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ArrowExpandIcon, SparklesIcon } from "@/components/icons"
@@ -21,6 +22,7 @@ import { requestPersistentStorage } from "@/features/board/persist/local/persist
  * chat sheet (reused `<Chat>`: history, transcript, docked input).
  */
 export function LocalBoardScreen() {
+  const { t } = useTranslation()
   const params = useParams({ strict: false })
   const boardId = params.boardId ?? ""
   const rootId = useSearch({
@@ -82,7 +84,7 @@ export function LocalBoardScreen() {
           >
             {/* Radix Dialog primitive requires an accessible title for content. */}
             <SheetHeader className="sr-only">
-              <SheetTitle>Board Assistant</SheetTitle>
+              <SheetTitle>{t("board.flow.assistant_title")}</SheetTitle>
             </SheetHeader>
             {/* Visible header — without it the top is flush to the sheet edge and
                 there's no way to close the chat (parity with CopilotSheet). */}
@@ -91,14 +93,14 @@ export function LocalBoardScreen() {
                 <div className="flex size-6 items-center justify-center rounded-md bg-gradient-to-br from-wiki-link to-secondary-foreground shadow-sm">
                   <SparklesIcon className="size-3.5 text-primary-foreground" weight="fill" />
                 </div>
-                Board Assistant
+                {t("board.flow.assistant_title")}
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSheetOpen(false)}
-                title="Close"
-                aria-label="Close"
+                title={t("common.close")}
+                aria-label={t("common.close")}
               >
                 <ArrowExpandIcon className="size-4" strokeWidth={2} />
               </Button>

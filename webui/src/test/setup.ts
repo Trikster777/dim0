@@ -12,3 +12,8 @@ import "fake-indexeddb/auto"
 // storage write is guarded because some specs opt into the node environment.
 process.env.I18N_FORCE_LANG = "en"
 globalThis.localStorage?.setItem("dim0.lang", "en")
+
+// Initialize the shared i18next instance AFTER pinning the language above (a
+// static import would evaluate before this file's body). Components under test
+// then render English copy, which is what every assertion is written against.
+await import("@/i18n").then((m) => m.initI18n())

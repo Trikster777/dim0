@@ -1,7 +1,7 @@
 import type { BoardContentItem, BoardContentKind } from "@/features/board/api/list-board-contents"
 import type { IconProperty } from "@/features/newsfeed/types/properties"
 import { parentChain } from "@/features/board/model/parent-chain"
-import { UNTITLED_LABEL } from "../../const"
+import { untitledLabel } from "../../const"
 
 
 /** One resolved crumb: id, surface kind, display label, and optional custom icon. */
@@ -27,7 +27,7 @@ export function buildNodePath(
     (item) => ({
       id: item.id,
       kind: item.kind,
-      label: (item.label ?? "").trim() || UNTITLED_LABEL,
+      label: (item.label ?? "").trim() || untitledLabel(),
       icon: item.iconData ?? null,
     }),
   )

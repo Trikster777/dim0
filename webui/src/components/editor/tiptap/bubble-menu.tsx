@@ -1,4 +1,5 @@
 import { useEditorState } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import type { Editor } from "@tiptap/react"
 import { BubbleMenu } from "@tiptap/react/menus"
 import {
@@ -52,12 +53,13 @@ function BDivider() {
 
 
 function HighlightPicker({ editor, active }: { editor: Editor; active: boolean }) {
+  const { t } = useTranslation()
   return (
     <Popover modal={false}>
       <PopoverTrigger asChild>
         <button
           type="button"
-          title="Highlight"
+          title={t("editor.bubble.highlight")}
           data-active={active}
           onMouseDown={(e) => e.preventDefault()}
           className={cn(
@@ -79,7 +81,7 @@ function HighlightPicker({ editor, active }: { editor: Editor; active: boolean }
           <button
             key={color}
             type="button"
-            title={color}
+            title={t(`editor.highlight_colors.${color}`)}
             onMouseDown={(e) => e.preventDefault()}
             onClick={() =>
               editor.chain().focus().setMark("highlight", { color }).run()
@@ -91,7 +93,7 @@ function HighlightPicker({ editor, active }: { editor: Editor; active: boolean }
         <div className="mx-0.5 h-4 w-px shrink-0 bg-border" />
         <button
           type="button"
-          title="Remove highlight"
+          title={t("editor.bubble.remove_highlight")}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() =>
             editor.chain().focus().unsetMark("highlight").run()
@@ -109,6 +111,7 @@ function HighlightPicker({ editor, active }: { editor: Editor; active: boolean }
 }
 
 export function EditorBubbleMenu({ editor }: Props) {
+  const { t } = useTranslation()
   const s = useEditorState({
     editor,
     selector: (ctx) => ({
@@ -141,28 +144,28 @@ export function EditorBubbleMenu({ editor }: Props) {
     >
       {/* ── marks ────────────────────────────────────────────── */}
       <BBtn
-        tooltip="Bold"
+        tooltip={t("editor.bubble.bold")}
         active={s.isBold}
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
         <TextB size={14} weight="bold" />
       </BBtn>
       <BBtn
-        tooltip="Italic"
+        tooltip={t("editor.bubble.italic")}
         active={s.isItalic}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
         <TextItalic size={14} />
       </BBtn>
       <BBtn
-        tooltip="Underline"
+        tooltip={t("editor.bubble.underline")}
         active={s.isUnderline}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
       >
         <TextUnderline size={14} />
       </BBtn>
       <BBtn
-        tooltip="Strikethrough"
+        tooltip={t("editor.bubble.strike")}
         active={s.isStrike}
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
@@ -173,21 +176,21 @@ export function EditorBubbleMenu({ editor }: Props) {
 
       {/* ── headings ─────────────────────────────────────────── */}
       <BBtn
-        tooltip="Heading 1"
+        tooltip={t("editor.bubble.heading_1")}
         active={s.isH1}
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
       >
         <span className="font-sans text-[11px] font-bold leading-none">H1</span>
       </BBtn>
       <BBtn
-        tooltip="Heading 2"
+        tooltip={t("editor.bubble.heading_2")}
         active={s.isH2}
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
       >
         <span className="font-sans text-[11px] font-bold leading-none">H2</span>
       </BBtn>
       <BBtn
-        tooltip="Heading 3"
+        tooltip={t("editor.bubble.heading_3")}
         active={s.isH3}
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
       >
@@ -199,27 +202,27 @@ export function EditorBubbleMenu({ editor }: Props) {
       {/* ── inline specials ───────────────────────────────────── */}
       <HighlightPicker editor={editor} active={s.isHighlight} />
       <BBtn
-        tooltip="Inline code"
+        tooltip={t("editor.bubble.code")}
         active={s.isCode}
         onClick={() => editor.chain().focus().toggleCode().run()}
       >
         <Code size={14} />
       </BBtn>
       <BBtn
-        tooltip="Blockquote"
+        tooltip={t("editor.bubble.blockquote")}
         active={s.isBlockquote}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
       >
         <Quotes size={14} />
       </BBtn>
       <BBtn
-        tooltip="Link"
+        tooltip={t("editor.bubble.link")}
         active={s.isLink}
         onClick={() => {
           if (editor.isActive("link")) {
             editor.chain().focus().unsetLink().run()
           } else {
-            const url = window.prompt("URL")
+            const url = window.prompt(t("editor.bubble.url"))
             if (url) editor.chain().focus().setLink({ href: url }).run()
           }
         }}

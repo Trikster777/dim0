@@ -30,6 +30,7 @@ import { Subpage } from "./page/subpage-extension"
 import type { PageProvider } from "./page/types"
 import { TagDecoration } from "./tag/tag-decoration"
 import { slashSuggestion } from "./slash-command/suggestion"
+import { i18n } from "@/i18n"
 import "katex/dist/katex.min.css"
 
 const slashSuggestionKey = new PluginKey("slashSuggestion")
@@ -207,7 +208,7 @@ export interface GetExtensionsOptions {
 
 export function getExtensions(options: GetExtensionsOptions = {}) {
   const {
-    placeholder = "Start writing…",
+    placeholder = i18n.t("editor.placeholder"),
     pageProvider = null,
     parentNoteId = null,
   } = options

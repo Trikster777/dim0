@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Chat } from '@/features/agent/components/chat-view'
@@ -28,6 +29,7 @@ export function CopilotSheet({
   local = false,
   syncTranscript = false,
 }: CopilotSheetProps) {
+  const { t } = useTranslation()
   return (
     <Sheet open={open} onOpenChange={onOpenChange} modal={false} disablePointerDismissal>
       <SheetContent
@@ -38,22 +40,22 @@ export function CopilotSheet({
       >
         {/* Radix Dialog primitive requires an accessible title for content. */}
         <SheetHeader className="sr-only">
-          <SheetTitle>Board Assistant</SheetTitle>
+          <SheetTitle>{t("board.flow.assistant_title")}</SheetTitle>
         </SheetHeader>
         <div className="px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm font-medium">
             <div className="flex items-center justify-center rounded-md bg-gradient-to-br from-wiki-link to-secondary-foreground size-6 shadow-sm">
               <SparklesIcon className="size-3.5 text-primary-foreground" weight="fill" />
             </div>
-            Board Assistant
+            {t("board.flow.assistant_title")}
           </div>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => onOpenFullChat(currentChatId)}
-              title="Open full chat view"
-              aria-label="Open full chat view"
+              title={t("board.flow.open_chat_view")}
+              aria-label={t("board.flow.open_chat_view")}
             >
               <ExternalLinkIcon className="size-4" strokeWidth={2} />
             </Button>
@@ -61,8 +63,8 @@ export function CopilotSheet({
               variant="ghost"
               size="icon"
               onClick={() => onOpenChange(false)}
-              title="Close"
-              aria-label="Close"
+              title={t("common.close")}
+              aria-label={t("common.close")}
             >
               <ArrowExpandIcon className="size-4" strokeWidth={2} />
             </Button>
@@ -84,7 +86,7 @@ export function CopilotSheet({
             />
           ) : open ? (
             <div className="w-full h-full flex items-center justify-center text-sm text-muted-foreground">
-              Select a board to start a conversation.
+              {t("board.flow.select_board")}
             </div>
           ) : null}
         </div>

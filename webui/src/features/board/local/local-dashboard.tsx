@@ -1,6 +1,7 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { AddIcon, CancelPlainIcon, CloudArrowUpIcon } from "@/components/icons"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import type { BoardMeta } from "@/features/board/model"
 import { formatDateForUI } from "@/features/board/utils/datetime"
 import { BoardKindBadge } from "@/features/board/components/board-kind-badge"
@@ -28,6 +29,7 @@ export function LocalBoardCard({
   onEnableSync?: () => void
   syncing?: boolean
 }) {
+  const { t } = useTranslation()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(board.title)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
@@ -49,8 +51,8 @@ export function LocalBoardCard({
     >
       <button
         type="button"
-        aria-label="Delete board"
-        title="Delete board"
+        aria-label={t("board.local.delete")}
+        title={t("board.local.delete")}
         className="absolute right-2 top-2 z-10 hidden rounded-md bg-background/80 p-1 text-muted-foreground shadow-sm hover:text-destructive group-hover:block"
         onClick={(e) => {
           e.stopPropagation()
@@ -63,8 +65,8 @@ export function LocalBoardCard({
       {onEnableSync && (
         <button
           type="button"
-          aria-label="Enable sync"
-          title="Enable sync — back up + share this board"
+          aria-label={t("board.local.enable_sync")}
+          title={t("board.local.enable_sync_title")}
           disabled={syncing}
           className="absolute left-2 top-2 z-10 hidden items-center gap-1 rounded-md bg-background/80 px-1.5 py-1 text-xs text-muted-foreground shadow-sm hover:text-secondary-foreground disabled:opacity-60 group-hover:flex"
           onClick={(e) => {
@@ -73,14 +75,14 @@ export function LocalBoardCard({
           }}
         >
           <CloudArrowUpIcon className="size-3.5" strokeWidth={2} />
-          {syncing ? "Syncing…" : "Enable sync"}
+          {syncing ? t("board.local.syncing") : t("board.local.enable_sync")}
         </button>
       )}
 
       {board.thumbnail ? (
         <img
           src={board.thumbnail}
-          alt={board.title || UNTITLED_LABEL}
+          alt={board.title || untitledLabel()}
           className="w-full h-40 object-cover rounded-md"
         />
       ) : (
@@ -111,9 +113,9 @@ export function LocalBoardCard({
               e.stopPropagation()
               setEditing(true)
             }}
-            title="Double-click to rename"
+            title={t("board.local.rename_hint")}
           >
-            {board.title || UNTITLED_LABEL}
+            {board.title || untitledLabel()}
           </h4>
         )}
         <div className="mt-1 flex w-full items-center justify-between gap-2">
@@ -145,13 +147,14 @@ export function LocalBoardCard({
 
 /** The "new local board" tile. */
 export function NewLocalBoardCard({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation()
   return (
     <div
       className="w-64 h-60 flex flex-col items-center justify-center gap-1 p-1 overflow-hidden rounded-xl bg-transparent hover:bg-accent text-card-foreground border-2 border-dashed border-border hover:border-secondary-foreground hover:ring-2 hover:ring-secondary-foreground/10 shadow-none hover:shadow-sm transition-all cursor-pointer"
       onClick={onClick}
     >
       <AddIcon className="shrink-0 size-6 text-secondary-foreground" strokeWidth={2} />
-      <span className="font-medium text-sm text-secondary-foreground">New Board</span>
+      <span className="font-medium text-sm text-secondary-foreground">{t("board.card.new")}</span>
     </div>
   )
 }

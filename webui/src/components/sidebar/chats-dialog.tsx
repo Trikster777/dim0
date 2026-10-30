@@ -5,7 +5,7 @@ import { useAppStore } from "@/store"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useCheckEleInView } from "@/hooks/use-check-ele-in-view"
 import { trimText } from "@/lib/common"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { ChatHistoryIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
@@ -115,7 +115,7 @@ export function ChatsDialog({ open, onOpenChange, boardId, title }: ChatsDialogP
           {chats.length ? (
             <ul className="flex flex-col gap-1 py-2">
               {chats.map((chat) => {
-                const fullLabel = chat.label || UNTITLED_LABEL
+                const fullLabel = chat.label || untitledLabel()
                 const subtitle = formatChatDate(chat.updatedAt || chat.createdAt)
                 return (
                   <li key={chat.uid}>

@@ -9,7 +9,7 @@ import { LabelEditor } from "./label-editor"
 import { useListSubscriptions } from "@/features/newsfeed/api/list-subscriptions"
 import { NewChatUrl, SheetUrl } from "@/routes"
 import { ContextBoard } from "@/features/agent/components/context-board"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { useBoardAppStore } from "@/features/board/harness/store/board-app-store"
 import { BoardBreadcrumb } from "@/features/board/components/breadcrumb/board-breadcrumb"
 import { isTauri } from "@/platform"
@@ -265,7 +265,7 @@ export const SidebarLabel = ({ mobileContextOnly = false }: { mobileContextOnly?
 
   // SHEET (full view)
   if (active.view === "sheet" && active.id && active.boardId) {
-    const boardLabel = boardList?.find(b => b.uid === active.boardId)?.label ?? UNTITLED_LABEL
+    const boardLabel = boardList?.find(b => b.uid === active.boardId)?.label ?? untitledLabel()
     return (
       <div className={`${wrapClass} flex-1 min-w-0`}>
         <button
@@ -298,9 +298,9 @@ export const SidebarLabel = ({ mobileContextOnly = false }: { mobileContextOnly?
               type="button"
               onClick={() => goBoard(selectedBoardId)}
               className={crumbBtn}
-              title={selectedBoard?.label ?? UNTITLED_LABEL}
+              title={selectedBoard?.label ?? untitledLabel()}
             >
-              <span className="truncate" title={selectedBoard?.label ?? UNTITLED_LABEL}>{selectedBoard?.label ?? UNTITLED_LABEL}</span>
+              <span className="truncate" title={selectedBoard?.label ?? untitledLabel()}>{selectedBoard?.label ?? untitledLabel()}</span>
             </button>
             {sep}
           </>

@@ -1,6 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { FileText, Plus } from "@phosphor-icons/react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
+import { untitledLabel } from "@/features/board/const"
 import type { Page } from "./types"
 
 
@@ -28,6 +30,7 @@ export interface PageSearchMenuHandle {
  */
 export const PageSearchMenu = forwardRef<PageSearchMenuHandle, Props>(
   ({ items, query, onSelect }, ref) => {
+    const { t } = useTranslation()
     const totalItems = items.length + (query.trim() ? 1 : 0)
     const [selectedIndex, setSelectedIndex] = useState(0)
     const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
@@ -64,7 +67,7 @@ export const PageSearchMenu = forwardRef<PageSearchMenuHandle, Props>(
     if (totalItems === 0) {
       return (
         <div className="page-search-menu" onMouseDown={(e) => e.preventDefault()}>
-          <p className="page-search-empty">No pages — start typing to create one</p>
+          <p className="page-search-empty">{t("editor.page.search_empty")}</p>
         </div>
       )
     }
@@ -72,7 +75,7 @@ export const PageSearchMenu = forwardRef<PageSearchMenuHandle, Props>(
     return (
       <div className="page-search-menu" onMouseDown={(e) => e.preventDefault()}>
         {items.length > 0 && (
-          <p className="page-search-section">Pages</p>
+          <p className="page-search-section">{t("editor.page.pages")}</p>
         )}
         {items.map((page, index) => {
           const active = index === selectedIndex
@@ -91,7 +94,7 @@ export const PageSearchMenu = forwardRef<PageSearchMenuHandle, Props>(
               )}
             >
               <FileText size={14} className="page-search-item-icon" />
-              <span className="truncate">{page.title || "Untitled"}</span>
+              <span className="truncate">{page.title || untitledLabel()}</span>
             </button>
           )
         })}
@@ -99,7 +102,7 @@ export const PageSearchMenu = forwardRef<PageSearchMenuHandle, Props>(
         {query.trim() && (
           <>
             {items.length > 0 && <div className="page-search-divider" />}
-            <p className="page-search-section">Create</p>
+            <p className="page-search-section">{t("editor.page.create")}</p>
             <button
               ref={(el) => { itemRefs.current[items.length] = el }}
               type="button"
@@ -113,7 +116,7 @@ export const PageSearchMenu = forwardRef<PageSearchMenuHandle, Props>(
               )}
             >
               <Plus size={14} className="page-search-item-icon" />
-              <span className="truncate">{`New page "${query.trim()}"`}</span>
+              <span className="truncate">{t("editor.page.new_page", { title: query.trim() })}</span>
             </button>
           </>
         )}

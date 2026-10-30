@@ -9,7 +9,7 @@ import {
 import { useConvertToMindMap } from "@/features/board/api/convert-to-mindmap"
 import { useCreateBoard } from "@/features/board/api/create-board"
 import { useListBoards } from "@/features/board/api/list-boards"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { useBoardAppStore } from "@/features/board/harness/store/board-app-store"
 import {
   CancelStatusIcon,
@@ -327,7 +327,7 @@ export const SaveAsNote = ({
             </DropdownMenuItem>
             {boardList?.map((board) => (
               <DropdownMenuItem key={board.uid} onClick={() => launchGeneration(board.uid)}>
-                {board.label || UNTITLED_LABEL}
+                {board.label || untitledLabel()}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -343,7 +343,7 @@ export const SaveAsNote = ({
             </ContextMenuItem>
             {boardList?.map((board) => (
               <ContextMenuItem key={board.uid} onClick={() => launchGeneration(board.uid)}>
-                {board.label || UNTITLED_LABEL}
+                {board.label || untitledLabel()}
               </ContextMenuItem>
             ))}
           </ContextMenuContent>

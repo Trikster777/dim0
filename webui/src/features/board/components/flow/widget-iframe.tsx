@@ -1,4 +1,5 @@
 import { memo, useEffect, useId, useMemo, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useTheme } from "@/components/theme-provider"
 import { buildWidgetDocument } from "./widget-document"
 
@@ -18,11 +19,13 @@ type WidgetIframeProps = {
 export const WidgetIframe = memo(function WidgetIframe({
   html,
   className,
-  title = "Widget preview",
+  title,
   autoHeight = false,
   maxHeight = 800,
   minHeight = 260,
 }: WidgetIframeProps) {
+  const { t } = useTranslation()
+  const frameTitle = title ?? t("board.flow.widget_preview")
   const { resolvedTheme } = useTheme()
   const frameId = useId()
   const [height, setHeight] = useState(minHeight)
@@ -66,10 +69,10 @@ export const WidgetIframe = memo(function WidgetIframe({
   const srcDoc = useMemo(
     () => buildWidgetDocument(
       html,
-      title,
+      frameTitle,
       autoHeight ? { autoHeightFrameId: frameId } : undefined
     ),
-    [autoHeight, frameId, html, title]
+    [autoHeight, frameId, html, frameTitle]
   )
 
   // Serve the HTML through a Blob URL rather than srcDoc. Chromium's
@@ -99,7 +102,7 @@ export const WidgetIframe = memo(function WidgetIframe({
     <iframe
       key={resolvedTheme}
       ref={iframeRef}
-      title={title}
+      title={frameTitle}
       src={srcUrl ?? "about:blank"}
       sandbox="allow-scripts"
       referrerPolicy="no-referrer"

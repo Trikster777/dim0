@@ -511,6 +511,109 @@
     "title": "Billing Plans",
     "upgrade_to_plus": "Upgrade to Plus"
   },
+  "board": {
+    "breadcrumb": {
+      "aria": "Breadcrumb",
+      "board": "Board",
+      "name_placeholder": "Board name",
+      "rename_hint": "{{label}} — click to rename",
+      "show_levels": "Show intermediate levels"
+    },
+    "card": {
+      "available_offline": "Available offline",
+      "download": "Download for offline use",
+      "downloading": "Downloading for offline…",
+      "downloading_aria": "Downloading for offline",
+      "kind_local": "On device",
+      "kind_local_title": "On this device only",
+      "kind_synced": "Synced",
+      "kind_synced_title": "Synced — backed up and shareable",
+      "new": "New Board"
+    },
+    "dashboard": {
+      "aria": "Boards",
+      "empty": "No boards yet. Create your first one above!",
+      "error": "Failed to load boards"
+    },
+    "default_title": "Untitled board",
+    "flow": {
+      "answer": "Answer",
+      "assistant_title": "Board Assistant",
+      "code_placeholder": "Write code here",
+      "dismiss": "Dismiss",
+      "hide_steps": "Hide steps",
+      "open_chat": "Open full chat",
+      "open_chat_view": "Open full chat view",
+      "placeholder": "Ask about this board, or give a task…",
+      "placeholder_no_model": "Set a model key to start",
+      "select_board": "Select a board to start a conversation.",
+      "selected": "selected",
+      "selected_title": "Selected nodes included as context",
+      "show_steps": "Show steps",
+      "steps": "steps",
+      "steps_count_few": "{{count}} steps",
+      "steps_count_many": "{{count}} steps",
+      "steps_count_one": "{{count}} step",
+      "steps_count_other": "{{count}} steps",
+      "steps_in_turn": "Steps in this turn",
+      "thinking": "Thinking",
+      "widget_preview": "Widget preview"
+    },
+    "home": {
+      "cta_body": "Sign in to back them up and open them on any device.",
+      "cta_sign_in": "Sign in",
+      "cta_title": "Sync & share your boards",
+      "cta_tooltip": "Signing up is completely free — no credit card required",
+      "on_device": "On this device",
+      "on_device_empty": "No local boards yet — create one above.",
+      "on_device_hint": "Private to this browser — no account needed",
+      "synced": "Synced",
+      "synced_empty": "No synced boards yet. Enable sync on a local board to back it up and share it.",
+      "synced_hint": "Backed up, multi-device, shareable",
+      "title": "Note Boards"
+    },
+    "limit": {
+      "body": "Your plan includes {{limit}} synced boards, backed up and shareable across your devices. Upgrade for unlimited synced boards, or create a local-only board that stays on this device.",
+      "create_local": "Create a local-only board",
+      "title": "You've reached your plan's board limit",
+      "upgrade": "Upgrade"
+    },
+    "local": {
+      "delete": "Delete board",
+      "enable_sync": "Enable sync",
+      "enable_sync_title": "Enable sync — back up + share this board",
+      "rename_hint": "Double-click to rename",
+      "syncing": "Syncing…"
+    },
+    "search": {
+      "description": "Find a note by title or content and jump to it.",
+      "empty": "No notes found.",
+      "placeholder": "Search notes…",
+      "title": "Search notes"
+    },
+    "spark": {
+      "add_context": "Add some context text first.",
+      "add_request": "Add a request first.",
+      "added": "Added to board. ({{elapsed}})",
+      "drawify": "Draw (beta)",
+      "explain": "Explain (more detail)",
+      "failed": "Could not complete the action. ({{elapsed}})",
+      "mapify": "Mapify (generate mindmap)",
+      "quizify": "Quizify (MCQ exercises)",
+      "schemify": "Schemify (generate schema)",
+      "select_board": "Select a board first.",
+      "summarize": "Write a summary",
+      "translate": "Translate",
+      "working": "Working on it… {{elapsed}}"
+    },
+    "sync": {
+      "create_limit": "You've reached your plan's board limit ({{limit}}). Upgrade for more.",
+      "enabled": "Sync enabled — this board is now backed up and shareable.",
+      "failed": "Couldn't enable sync. Please try again.",
+      "limit": "You're at your plan's synced-board limit ({{limit}}). Upgrade, or delete a synced board — local boards stay unlimited."
+    },
+    "untitled": "Untitled"
+  },
   "charts": {
     "chart": {
       "loading": "Loading chart"
@@ -544,6 +647,128 @@
       "maximize": "Maximize",
       "minimize": "Minimize",
       "restore": "Restore"
+    }
+  },
+  "editor": {
+    "block_handle": {
+      "add_below": "Add block below",
+      "delete": "Delete",
+      "drag_or_click": "Drag or click for options",
+      "duplicate": "Duplicate"
+    },
+    "bubble": {
+      "blockquote": "Blockquote",
+      "bold": "Bold",
+      "code": "Inline code",
+      "heading_1": "Heading 1",
+      "heading_2": "Heading 2",
+      "heading_3": "Heading 3",
+      "highlight": "Highlight",
+      "italic": "Italic",
+      "link": "Link",
+      "remove_highlight": "Remove highlight",
+      "strike": "Strikethrough",
+      "underline": "Underline",
+      "url": "URL"
+    },
+    "code_block": {
+      "copied": "Copied!",
+      "copy": "Copy code"
+    },
+    "highlight_colors": {
+      "blue": "Blue",
+      "gray": "Gray",
+      "green": "Green",
+      "orange": "Orange",
+      "pink": "Pink",
+      "purple": "Purple",
+      "red": "Red",
+      "yellow": "Yellow"
+    },
+    "image": {
+      "failed": "Failed to load image",
+      "loading": "Loading image…"
+    },
+    "math": {
+      "block_placeholder": "LaTeX, e.g. \\frac{a}{b}",
+      "inline_placeholder": "Inline LaTeX, e.g. x^2"
+    },
+    "page": {
+      "create": "Create",
+      "deleted_suffix": "(deleted)",
+      "empty_page": "Empty page",
+      "new_page": "New page \"{{title}}\"",
+      "no_longer_accessible": "No longer accessible.",
+      "pages": "Pages",
+      "search_empty": "No pages — start typing to create one"
+    },
+    "placeholder": "Start writing…",
+    "slash": {
+      "basic_blocks": "Basic blocks",
+      "bullet_list": "Bullet list",
+      "code_block": "Code block",
+      "divider": "Divider",
+      "heading_1": "Heading 1",
+      "heading_2": "Heading 2",
+      "heading_3": "Heading 3",
+      "image": "Image",
+      "math_block": "Math block",
+      "no_results": "No results",
+      "numbered_list": "Numbered list",
+      "quote": "Quote",
+      "subpage": "Sub-page",
+      "table": "Table",
+      "text": "Text",
+      "toc": "Table of contents",
+      "todo_list": "Todo list",
+      "toggle": "Toggle"
+    },
+    "status": {
+      "chars_few": "{{count}} chars",
+      "chars_many": "{{count}} chars",
+      "chars_one": "{{count}} char",
+      "chars_other": "{{count}} chars",
+      "words_few": "{{count}} words",
+      "words_many": "{{count}} words",
+      "words_one": "{{count}} word",
+      "words_other": "{{count}} words"
+    },
+    "style": {
+      "code": "Code block",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "paragraph": "Paragraph",
+      "quote": "Quote"
+    },
+    "table_menu": {
+      "delete_col": "Delete column",
+      "delete_row": "Delete row",
+      "delete_table": "Delete table",
+      "insert_col_left": "Insert column left",
+      "insert_col_right": "Insert column right",
+      "insert_row_above": "Insert row above",
+      "insert_row_below": "Insert row below"
+    },
+    "toc": {
+      "empty": "No headings yet — add an H1, H2, or H3 to populate.",
+      "empty_heading": "(empty heading)",
+      "on_this_page": "On this page"
+    },
+    "toolbar": {
+      "blockquote": "Blockquote",
+      "bold": "Bold (Ctrl+B)",
+      "bullet_list": "Bullet list",
+      "code": "Code (Ctrl+E)",
+      "highlight": "Highlight",
+      "italic": "Italic (Ctrl+I)",
+      "link": "Link",
+      "numbered_list": "Numbered list",
+      "redo": "Redo (Ctrl+Y)",
+      "strike": "Strikethrough",
+      "underline": "Underline (Ctrl+U)",
+      "undo": "Undo (Ctrl+Z)",
+      "url": "URL"
     }
   },
   "errors": {

@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { apiFetch } from "@/api"
 import { useAppStore } from "@/store"
 import { useBoardAppStore } from "../harness/store/board-app-store"
@@ -43,6 +44,7 @@ export async function createBoard(): Promise<string> {
  * @returns An object containing the createBoard function and its mutation state.
  */
 export const useCreateBoard = () => {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const userId = useAppStore(s => s.userId)
   const userPlan = useAppStore(s => s.userPlan)
@@ -61,7 +63,7 @@ export const useCreateBoard = () => {
       // composer pre-gate and show their own dialog, so they reach this branch only
       // in a rare stale-count race (toast + dialog both fire then, an accepted edge).
       if (isBoardCreationLimited(userPlan, countOwnedBoards(boards))) {
-        toast.error(`You've reached your plan's board limit (${boardLimitForPlan(userPlan)}). Upgrade for more.`)
+        toast.error(t("board.sync.create_limit", { limit: boardLimitForPlan(userPlan) }))
         throw new Error(BOARD_LIMIT_REACHED)
       }
 

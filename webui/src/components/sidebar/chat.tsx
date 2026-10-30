@@ -3,7 +3,7 @@ import { SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarMenuSu
 import { ChatNewIcon, DeleteIcon } from "@/components/icons"
 import { useDeleteChat } from "@/features/agent/api/delete-chat"
 import { trimText } from "@/lib/common"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu"
 import { useNavigate, useParams, useRouterState, useSearch } from "@tanstack/react-router"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
@@ -99,7 +99,7 @@ export function ChatMenuItem({ chatId, label }: { chatId: string, label?: string
     }
   }
 
-  const fullChatLabel = label || UNTITLED_LABEL
+  const fullChatLabel = label || untitledLabel()
   const chatLabel = trimText(fullChatLabel, 100)
 
   return (

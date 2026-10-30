@@ -2,7 +2,7 @@ import { SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from "../ui/sid
 import { useDeleteBoard } from "@/features/board/api/delete-board"
 import { trimText } from "@/lib/common"
 import { cn } from "@/lib/utils"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { useNavigate, useParams, useRouterState } from "@tanstack/react-router"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu"
 import { Collapsible, CollapsibleContent } from "../ui/collapsible"
@@ -139,7 +139,7 @@ export function LocalBoardItem({
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
-  const boardLabel = label || UNTITLED_LABEL
+  const boardLabel = label || untitledLabel()
   const boardDisplayLabel = trimText(boardLabel, 20)
 
   // Whole-board surface list, loaded once on expand; each level filters in memory.
@@ -345,7 +345,7 @@ export function BoardItem({
     }, 0)
   }
 
-  const boardLabel = label || UNTITLED_LABEL
+  const boardLabel = label || untitledLabel()
   const boardDisplayLabel = trimText(boardLabel, 20)
 
   return (

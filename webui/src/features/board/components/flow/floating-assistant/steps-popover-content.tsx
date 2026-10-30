@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { PopoverContent } from "@/components/ui/popover"
 import { SparklesIcon } from "@/components/icons"
 import type { ToolCallStep } from "@/features/agent/types/stream"
@@ -10,6 +11,7 @@ import { StepsPopoverRow } from "./steps-popover-row"
  * island's progress strip via the parent Popover.
  */
 export const StepsPopoverContent = ({ toolSteps }: { toolSteps: ToolCallStep[] }) => {
+  const { t } = useTranslation()
   return (
     <PopoverContent
       side='top'
@@ -26,7 +28,7 @@ export const StepsPopoverContent = ({ toolSteps }: { toolSteps: ToolCallStep[] }
       <div className='flex items-center justify-between mb-2 px-0.5'>
         <div className='flex items-center gap-1.5 text-xs font-mono font-medium text-muted-foreground'>
           <SparklesIcon className='size-3.5 text-secondary-foreground' weight='fill' />
-          <span>Steps in this turn</span>
+          <span>{t("board.flow.steps_in_turn")}</span>
         </div>
         <span className='text-xs font-mono text-secondary-foreground tabular-nums'>
           {toolSteps.length}

@@ -1,5 +1,7 @@
 import type { Editor, Range } from "@tiptap/core"
 import type { Icon } from "@phosphor-icons/react"
+import { i18n } from "@/i18n"
+import { untitledLabel } from "@/features/board/const"
 import { openMathEditor } from "../math/math-edit-trigger"
 import {
   TextT,
@@ -24,6 +26,7 @@ import { primePageCache } from "../page/page-cache"
 import type { PageProvider } from "../page/types"
 
 export interface SlashCommand {
+  /** Locale key; the menu renders the translated title. */
   title: string
   keywords: string[]
   icon: Icon
@@ -34,7 +37,7 @@ export interface SlashCommand {
 export const SLASH_COMMANDS: SlashCommand[] = [
   // ── basic blocks ─────────────────────────────────────────────────────────
   {
-    title: "Text",
+    title: "editor.slash.text",
     keywords: ["paragraph", "plain", "text", "p"],
     icon: TextT,
     group: "basic",
@@ -42,7 +45,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).setParagraph().run(),
   },
   {
-    title: "Heading 1",
+    title: "editor.slash.heading_1",
     keywords: ["h1", "heading", "title", "big"],
     icon: TextHOne,
     group: "basic",
@@ -50,7 +53,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).setHeading({ level: 1 }).run(),
   },
   {
-    title: "Heading 2",
+    title: "editor.slash.heading_2",
     keywords: ["h2", "heading", "subtitle"],
     icon: TextHTwo,
     group: "basic",
@@ -58,7 +61,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).setHeading({ level: 2 }).run(),
   },
   {
-    title: "Heading 3",
+    title: "editor.slash.heading_3",
     keywords: ["h3", "heading"],
     icon: TextHThree,
     group: "basic",
@@ -66,7 +69,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).setHeading({ level: 3 }).run(),
   },
   {
-    title: "Bullet list",
+    title: "editor.slash.bullet_list",
     keywords: ["ul", "list", "bullets", "unordered"],
     icon: ListBullets,
     group: "basic",
@@ -74,7 +77,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).toggleBulletList().run(),
   },
   {
-    title: "Numbered list",
+    title: "editor.slash.numbered_list",
     keywords: ["ol", "numbered", "ordered", "list"],
     icon: ListNumbers,
     group: "basic",
@@ -82,7 +85,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).toggleOrderedList().run(),
   },
   {
-    title: "Todo list",
+    title: "editor.slash.todo_list",
     keywords: ["todo", "task", "check", "checkbox"],
     icon: ListChecks,
     group: "basic",
@@ -90,7 +93,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).toggleTaskList().run(),
   },
   {
-    title: "Quote",
+    title: "editor.slash.quote",
     keywords: ["quote", "blockquote", "callout"],
     icon: Quotes,
     group: "basic",
@@ -98,7 +101,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).toggleBlockquote().run(),
   },
   {
-    title: "Toggle",
+    title: "editor.slash.toggle",
     keywords: ["toggle", "details", "collapse", "expand", "disclosure"],
     icon: CaretRightIcon,
     group: "basic",
@@ -106,7 +109,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).setDetails().run(),
   },
   {
-    title: "Code block",
+    title: "editor.slash.code_block",
     keywords: ["code", "codeblock", "pre", "snippet"],
     icon: Code,
     group: "basic",
@@ -114,7 +117,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).setCodeBlock({ language: "plaintext" }).run(),
   },
   {
-    title: "Math block",
+    title: "editor.slash.math_block",
     keywords: ["math", "latex", "equation", "formula", "katex"],
     icon: MathOperationsIcon,
     group: "basic",
@@ -129,7 +132,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
     },
   },
   {
-    title: "Table",
+    title: "editor.slash.table",
     keywords: ["table", "grid", "rows", "columns"],
     icon: TableIcon,
     group: "basic",
@@ -137,7 +140,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
   },
   {
-    title: "Divider",
+    title: "editor.slash.divider",
     keywords: ["hr", "divider", "separator", "rule", "line"],
     icon: Minus,
     group: "basic",
@@ -145,7 +148,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).setHorizontalRule().run(),
   },
   {
-    title: "Image",
+    title: "editor.slash.image",
     keywords: ["image", "img", "picture", "photo", "upload"],
     icon: ImageIcon,
     group: "basic",
@@ -155,7 +158,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
     },
   },
   {
-    title: "Table of contents",
+    title: "editor.slash.toc",
     keywords: ["toc", "outline", "headings", "contents", "summary"],
     icon: ListDashes,
     group: "basic",
@@ -163,7 +166,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       editor.chain().focus().deleteRange(range).insertContent({ type: "tableOfContents" }).run(),
   },
   {
-    title: "Sub-page",
+    title: "editor.slash.subpage",
     keywords: ["subpage", "sub-page", "page", "child", "embed"],
     icon: Notepad,
     group: "basic",
@@ -181,7 +184,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       void (async () => {
         try {
           const page = await provider.create({
-            title: "Untitled",
+            title: untitledLabel(),
             parentId: parentNoteId,
           })
           primePageCache(page)
@@ -190,7 +193,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
             .focus()
             .insertContent({
               type: "subpage",
-              attrs: { pageId: page.id, title: page.title || "Untitled" },
+              attrs: { pageId: page.id, title: page.title || untitledLabel() },
             })
             .run()
           provider.onNavigate?.(page.id)
@@ -202,10 +205,16 @@ export const SLASH_COMMANDS: SlashCommand[] = [
   },
 ]
 
+const localizeCommand = (command: SlashCommand): SlashCommand => ({
+  ...command,
+  title: i18n.t(command.title),
+})
+
 export function filterCommands(query: string): SlashCommand[] {
-  if (!query) return SLASH_COMMANDS
+  const commands = SLASH_COMMANDS.map(localizeCommand)
+  if (!query) return commands
   const q = query.toLowerCase()
-  return SLASH_COMMANDS.filter(
+  return commands.filter(
     (cmd) =>
       cmd.title.toLowerCase().includes(q) ||
       cmd.keywords.some((k) => k.includes(q)),

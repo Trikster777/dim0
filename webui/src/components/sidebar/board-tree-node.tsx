@@ -8,7 +8,7 @@ import { type BoardContentItem } from "@/features/board/api/list-board-contents"
 import { BOARD_CONTENT_KIND_ICONS } from "@/features/board/utils/board-content-kind-icons"
 import { nodeSurfacePath } from "@/features/board/utils/node-surface-url"
 import { trimText } from "@/lib/common"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { useTranslation } from "react-i18next"
 
 
@@ -81,7 +81,7 @@ export function BoardTreeNode({
   const visualDepth = Math.min(depth, MAX_VISUAL_DEPTH)
   const paddingLeft = BASE_PADDING_PX + visualDepth * INDENT_PX_PER_LEVEL
 
-  const fullLabel = item.label?.trim() || UNTITLED_LABEL
+  const fullLabel = item.label?.trim() || untitledLabel()
   const displayLabel = trimText(fullLabel, 40)
 
   // The whole board's surface list is already in memory (threaded via

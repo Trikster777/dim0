@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react"
 import { NodeViewWrapper, NodeViewContent } from "@tiptap/react"
 import type { NodeViewProps } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import { CopySimple, Check, CaretDown } from "@phosphor-icons/react"
 import { highlightCodeSync, ensureLanguage, LANGUAGE_OPTIONS } from "@/lib/shiki"
 import { useTheme } from "@/components/theme-provider"
 
 
 export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
   const { shikiThemes } = useTheme()
 
@@ -78,7 +80,7 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
           onMouseDown={(e) => e.preventDefault()}
           onClick={copyCode}
           className="code-block-copy-btn"
-          title={copied ? "Copied!" : "Copy code"}
+          title={copied ? t("editor.code_block.copied") : t("editor.code_block.copy")}
         >
           {copied
             ? <Check size={13} weight="bold" className="text-green-500" />
