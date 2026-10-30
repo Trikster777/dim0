@@ -11,6 +11,7 @@
 import { StrictMode } from "react"
 import type { ReactNode } from "react"
 import { createRoot } from "react-dom/client"
+import type { Root } from "react-dom/client"
 
 import { compileMiniApp } from "./compile"
 import { ErrorBoundary } from "./error-boundary"
@@ -18,6 +19,7 @@ import { CompileErrorCard, RuntimeErrorCard } from "./error-display"
 import { handleHostMessage, setHostInitialState } from "./rpc"
 import { MINI_APP_SCOPE_NAMES, MINI_APP_SCOPE_VALUES } from "./scope"
 import { isSingleFrontend } from "./single-frontend"
+import { initI18n } from "../src/i18n"
 import "./runtime.css"
 // Self-hosted fonts (same as the main app). runtime.css re-uses src/index.css,
 // which only defines the `--font-*` vars — the actual @font-face declarations
@@ -91,9 +93,22 @@ if (import.meta.env.DEV) {
 }
 
 
-const rootEl = document.getElementById("root")
-if (!rootEl) throw new Error("missing #root element")
-const root = createRoot(rootEl)
+/**
+ * Create the render root for the iframe document, after i18n is initialized.
+ *
+ * The runtime is a separate entry point from the host app, so it owns its own
+ * i18n setup: `createRoot` must not happen before translations are ready,
+ * otherwise the first render flashes the fallback language.
+ */
+async function createRuntimeRoot(): Promise<Root> {
+  await initI18n()
+  const rootEl = document.getElementById("root")
+  if (!rootEl) throw new Error("missing #root element")
+  return createRoot(rootEl)
+}
+
+
+const rootPromise: Promise<Root> = createRuntimeRoot()
 
 
 /**
@@ -110,7 +125,8 @@ function buildScope(): Record<string, unknown> {
 }
 
 
-function renderWidget(source: string, savedState: unknown) {
+/** Compile the agent's JSX source and render it into the (already initialized) root. */
+async function renderWidget(source: string, savedState: unknown) {
   if (globalThis.__MINI_APP_DEBUG__) {
     globalThis.__MINI_APP_DEBUG__.renderCount += 1
   }
@@ -121,10 +137,12 @@ function renderWidget(source: string, savedState: unknown) {
 
   const result = compileMiniApp(source, buildScope())
   if (!result.ok) {
-    root.render(<CompileErrorCard error={result.error} />)
+    const errorRoot = await rootPromise
+    errorRoot.render(<CompileErrorCard error={result.error} />)
     return
   }
   const Widget = result.Component as () => ReactNode
+  const root = await rootPromise
   root.render(
     <StrictMode>
       <ErrorBoundary fallback={(err) => <RuntimeErrorCard error={err} />}>
@@ -176,7 +194,7 @@ window.addEventListener("message", (event) => {
   if (!msg || typeof msg !== "object") return
   if (msg.type === "mini-app:render" && typeof msg.source === "string") {
     applyTheme(msg.theme)
-    renderWidget(msg.source, msg.savedState)
+    void renderWidget(msg.source, msg.savedState)
     return
   }
   if (msg.type === "mini-app:theme") {

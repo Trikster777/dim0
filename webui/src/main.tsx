@@ -8,6 +8,7 @@ import { router } from './routes'
 import { RouterProvider } from '@tanstack/react-router'
 import { registerSW } from 'virtual:pwa-register'
 import { isTauri, isWebKitWebview } from './platform'
+import { initI18n } from './i18n'
 
 /**
  * Registers the PWA service worker and keeps it up to date automatically.
@@ -34,10 +35,15 @@ if (!isTauri()) {
 // with the `cursive` fallback (WebKit won't load a canvas-only font on its own).
 preloadCanvasFonts()
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  </StrictMode>,
-)
+// i18n must be ready before the first paint, otherwise the UI flashes the
+// fallback language. `initI18n()` is idempotent, so a StrictMode remount and the
+// mini-app host don't re-initialize it.
+void initI18n().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </StrictMode>,
+  )
+})

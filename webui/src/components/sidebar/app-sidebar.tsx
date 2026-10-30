@@ -39,6 +39,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ModeToggle } from '@/components/mode-toggle'
+import { LanguageToggle } from '@/components/language-toggle'
 import { HomeMenuItem } from './home'
 import { useNavigate } from '@tanstack/react-router'
 import { TierBadge } from '@/features/user-settings/components/tier-badge'
@@ -437,7 +438,8 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                     <SignInCta />
                   )}
 
-                  <div className="ml-auto shrink-0 pt-1">
+                  <div className="ml-auto shrink-0 pt-1 flex items-center gap-1">
+                    <LanguageToggle />
                     <ModeToggle aria-label="Toggle theme" />
                   </div>
                 </div>

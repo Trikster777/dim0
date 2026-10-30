@@ -1,0 +1,24 @@
+{
+  "common": {
+    "language_toggle": {
+      "aria_label": "Change language",
+      "english": "English",
+      "label": "Language",
+      "russian": "Русский"
+    }
+  },
+  "errors": {
+    "bad_credentials": "Wrong email or password.",
+    "bad_request": "The request was rejected. Check the input and try again.",
+    "conflict": "This already exists.",
+    "forbidden": "You don't have access to this.",
+    "network": "Network error. Check your connection and try again.",
+    "not_found": "We couldn't find what you asked for.",
+    "payload_too_large": "This file is too large.",
+    "rate_limited": "Too many requests. Wait a moment and try again.",
+    "server": "The server ran into a problem. Try again.",
+    "timeout": "The request timed out. Try again.",
+    "unauthorized": "Your session has expired. Sign in again.",
+    "unavailable": "The service is unavailable right now. Try again."
+  }
+}
