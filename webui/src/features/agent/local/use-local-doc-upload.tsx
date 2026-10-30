@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- this is a hook module (it returns a dialog element + drives toasts), not a component file. */
 import { useCallback, useRef, useState, type ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { CircleNotchIcon } from "@/components/icons"
 import {
@@ -53,6 +54,7 @@ export type LocalDocUpload = {
  * when parsing is unavailable (no managed access and no BYOK Mistral key).
  */
 export const useLocalDocUpload = (boardId: string): LocalDocUpload => {
+  const { t } = useTranslation()
   const signedIn = useIsSignedIn()
   // Raw so the button re-enables the moment a signed-out user saves a key.
   const byokKey = useByokStore((s) => s.parseKey).trim() || null
@@ -68,39 +70,39 @@ export const useLocalDocUpload = (boardId: string): LocalDocUpload => {
     async (file: File): Promise<void> => {
       const client = resolveParseClient({ signedIn, runId: generateUuid(), byokKey })
       if (!client) {
-        toast.error("Sign in or add a Mistral key to upload documents.")
+        toast.error(t("agent.documents.attach_unavailable"))
         return
       }
       setBusy(true)
-      const id = toast(`Reading ${file.name}…`, { icon: <Spinner />, duration: Infinity })
+      const id = toast(t("agent.documents.reading", { name: file.name }), { icon: <Spinner />, duration: Infinity })
       try {
         const { markdown, pages } = await client.parse(file)
         const { docId, chunks, replaced } = await ingestDocument({ boardId, title: file.name, markdown, pages })
         toast.dismiss(id)
         if (chunks === 0 || !docId) {
-          toast.error("No readable text found in that PDF.")
+          toast.error(t("agent.documents.no_text"))
           return
         }
         // Surface the document as a node on the canvas (id = docId). No-op on a
         // same-name override (the node already exists).
         const store = getCanvasStoreRef()
         if (store) addDocumentNode(store, { docId, title: file.name, boardId, rootId: useBoardAppStore.getState().rootId })
-        toast.success(`${replaced ? "Replaced" : "Added"} ${file.name} — ${chunks} passages ready to ask about.`)
+        toast.success(t(replaced ? "agent.documents.replaced" : "agent.documents.added", { name: file.name, count: chunks }))
       } catch (err) {
         toast.dismiss(id)
-        toast.error(err instanceof Error ? `Couldn't read the PDF: ${err.message}` : "Couldn't read the PDF.")
+        toast.error(err instanceof Error ? t("agent.documents.read_failed_detail", { message: err.message }) : t("agent.documents.read_failed"))
       } finally {
         setBusy(false)
       }
     },
-    [boardId, signedIn, byokKey],
+    [boardId, signedIn, byokKey, t],
   )
 
   const onPickFile = useCallback(
     async (file: File): Promise<void> => {
       if (busy || inFlight.current) return
       if (file.size > MAX_FILE_BYTES) {
-        toast.error(`PDF must be under ${MAX_FILE_BYTES / (1024 * 1024)} MB.`)
+        toast.error(t("agent.documents.too_large", { size: MAX_FILE_BYTES / (1024 * 1024) }))
         return
       }
       inFlight.current = true
@@ -115,7 +117,7 @@ export const useLocalDocUpload = (boardId: string): LocalDocUpload => {
         inFlight.current = false
       }
     },
-    [boardId, busy, ingest],
+    [boardId, busy, ingest, t],
   )
 
   const pick = useCallback((): void => {
@@ -139,13 +141,13 @@ export const useLocalDocUpload = (boardId: string): LocalDocUpload => {
       <AlertDialog open={override !== null} onOpenChange={(o) => !o && setOverride(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Replace “{override?.name}”?</AlertDialogTitle>
+            <AlertDialogTitle>{t("agent.documents.replace_title", { name: override?.name ?? "" })}</AlertDialogTitle>
             <AlertDialogDescription>
-              A document with this name is already on this board. Uploading will replace its contents.
+              {t("agent.documents.replace_body")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setOverride(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setOverride(null)}>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 const file = override
@@ -153,7 +155,7 @@ export const useLocalDocUpload = (boardId: string): LocalDocUpload => {
                 if (file) void ingest(file)
               }}
             >
-              Replace
+              {t("agent.documents.replace_action")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

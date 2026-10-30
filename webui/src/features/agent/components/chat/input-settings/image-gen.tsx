@@ -2,10 +2,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ImageGenerationIcon } from "@/components/icons"
 import { useChatStore } from "@/features/agent/store/chat-store"
 import { clsx } from "clsx"
+import { useTranslation } from "react-i18next"
 import { useShallow } from "zustand/shallow"
 
 // Component that allows users to enable or disable the image generation tool
 export const ImageGenMenu = () => {
+  const { t } = useTranslation()
   const imageService = useChatStore(
     useShallow((state) => state.services.imageGeneration.find((s) => s.name === "openrouter")),
   )
@@ -25,8 +27,8 @@ export const ImageGenMenu = () => {
   }
 
   const tooltipText = isAvailable
-    ? (isEnabled ? "Disable Image Generation" : "Enable Image Generation")
-    : "Image Generation Unavailable"
+    ? (isEnabled ? t("agent.settings.disable_image_gen") : t("agent.settings.enable_image_gen"))
+    : t("agent.settings.image_gen_unavailable")
 
   const buttonClass = clsx(
     "transition-all w-full my-icon px-2 py-1.5 rounded-md hover:bg-accent dark:hover:bg-accent/50 border border-transparent hover:border-border transition-colors flex flex-row items-center gap-2 text-left text-muted-foreground",
@@ -47,7 +49,7 @@ export const ImageGenMenu = () => {
             disabled={!isAvailable}
           >
             <ImageGenerationIcon className={iconClass} strokeWidth={2} />
-            <span className="text-xs">Image generation</span>
+            <span className="text-xs">{t("agent.settings.image_gen_label")}</span>
           </button>
         </TooltipTrigger>
       </div>

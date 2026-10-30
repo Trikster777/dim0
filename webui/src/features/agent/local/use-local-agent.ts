@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { getCanvasStoreRef } from "@/features/board/harness/canvas-store-ref"
 import { runAgent } from "@/features/agent/engine/agent-loop"
 import { resolveAgentLlm } from "@/features/agent/engine/services/local-llm"
@@ -14,6 +15,7 @@ const BUILD_TOOLS = [createNote, updateNote, linkNotes]
 
 /** Run the frontend agent against the live local board via BYOK. */
 export function useLocalAgent() {
+  const { t } = useTranslation()
   const [events, setEvents] = useState<AgentEvent[]>([])
   const [running, setRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,12 +25,12 @@ export function useLocalAgent() {
     async (prompt: string): Promise<void> => {
       const store = getCanvasStoreRef()
       if (!store) {
-        setError("No active board.")
+        setError(t("agent.local.no_active_board"))
         return
       }
       const config = asConfig()
       if (!config) {
-        setError("Set your API key first.")
+        setError(t("agent.local.set_key_first"))
         return
       }
       setError(null)
@@ -37,7 +39,7 @@ export function useLocalAgent() {
       try {
         const llm = resolveAgentLlm(config, { signedIn: false })
         if (!llm) {
-          setError("Set your API key first.")
+          setError(t("agent.local.set_key_first"))
           return
         }
         for await (const ev of runAgent({ userMessage: prompt, tools: BUILD_TOOLS, llm, ctx: { store } })) {
@@ -49,7 +51,7 @@ export function useLocalAgent() {
         setRunning(false)
       }
     },
-    [asConfig],
+    [asConfig, t],
   )
 
   return { events, running, error, send }

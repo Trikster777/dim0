@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { LoaderIcon, SendIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 import type React from "react"
 
 
@@ -13,9 +14,10 @@ export function SendButton({  className,
   loadingStatus = "loaded",
   ...props
 }: SendButtonProps) {
+  const { t } = useTranslation()
   return (
     <Button
-      aria-label={loadingStatus === "loaded" ? "Send" : "Sending"}
+      aria-label={loadingStatus === "loaded" ? t("agent.send.label") : t("agent.send.sending")}
       className={cn("rounded-lg flex items-center justify-center shadow-none", className)}
       {...props}
       variant={loadingStatus === "loaded" ? 'default' : "ghost"}

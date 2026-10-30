@@ -1,5 +1,6 @@
 import type { AgentResponse, ReasoningStep, ToolCallStep, ToolExecutionState, ToolName } from "../../types/stream"
 import { RAW_MESSAGE, ToolNameDescription, isReasoningTextToolName } from "../../types/stream"
+import { i18n } from "@/i18n"
 import { simpleTransform } from "./transform"
 import { createFlushGate } from "./throttle"
 import type {
@@ -149,6 +150,7 @@ const flushStep = (s: StepAccum) => {
 
 /**
  * Builds a readable fallback title when a tool name is not in the display map.
+ * Returns an `agent.tool.*` key — callers render it through `t()`.
  */
 export const getToolTitle = (toolName: ToolName) =>
   ToolNameDescription[toolName] || toolName.replaceAll("_", " ")
@@ -355,7 +357,7 @@ export function extractStepDescription(step: ReasoningStep): { reasoning: string
     return {
       reasoning: step.reasoning || "",
       message: step.message || "",
-      title: step.message ? "Response" : getToolTitle(RAW_MESSAGE),
+      title: step.message ? "agent.tool_step.response" : getToolTitle(RAW_MESSAGE),
     }
   }
 
@@ -380,7 +382,7 @@ export function extractStepDescription(step: ReasoningStep): { reasoning: string
 
   if (step.name === "write_note" && typeof step.output !== "string") {
     if (step.state === "started") {
-      return { reasoning: step.thought || "", message: "Writing note…", title: getToolTitle(step.name), input }
+      return { reasoning: step.thought || "", message: i18n.t("agent.tool_step.writing_note"), title: getToolTitle(step.name), input }
     }
     const output = step.output as WriteNoteOutput
     const typeLabel = output.noteType.replace(/-/g, " ")
@@ -388,11 +390,11 @@ export function extractStepDescription(step: ReasoningStep): { reasoning: string
       reasoning: step.thought || "",
       message: output.action === "created"
         ? output.label
-          ? `Created ${typeLabel} note "${output.label}".`
-          : `Created ${typeLabel} note.`
+          ? i18n.t("agent.tool_step.created_note_with_label", { type: typeLabel, label: output.label })
+          : i18n.t("agent.tool_step.created_note", { type: typeLabel })
         : output.label
-        ? `Rewrote ${typeLabel} note "${output.label}".`
-        : `Rewrote ${typeLabel} note.`,
+        ? i18n.t("agent.tool_step.rewrote_note_with_label", { type: typeLabel, label: output.label })
+        : i18n.t("agent.tool_step.rewrote_note", { type: typeLabel }),
       title: getToolTitle(step.name),
       input
     }
@@ -400,15 +402,15 @@ export function extractStepDescription(step: ReasoningStep): { reasoning: string
 
   if (step.name === "create_note" && typeof step.output !== "string") {
     if (step.state === "started") {
-      return { reasoning: step.thought || "", message: "Creating note…", title: getToolTitle(step.name), input }
+      return { reasoning: step.thought || "", message: i18n.t("agent.tool_step.creating_note"), title: getToolTitle(step.name), input }
     }
     const output = step.output as CreateNoteOutput
     const typeLabel = output.noteType.replace(/-/g, " ")
     return {
       reasoning: step.thought || "",
       message: output.label
-        ? `Created ${typeLabel} note "${output.label}".`
-        : `Created ${typeLabel} note.`,
+        ? i18n.t("agent.tool_step.created_note_with_label", { type: typeLabel, label: output.label })
+        : i18n.t("agent.tool_step.created_note", { type: typeLabel }),
       title: getToolTitle(step.name),
       input
     }
@@ -416,15 +418,15 @@ export function extractStepDescription(step: ReasoningStep): { reasoning: string
 
   if (step.name === "edit_note" && typeof step.output !== "string") {
     if (step.state === "started") {
-      return { reasoning: step.thought || "", message: "Editing note…", title: getToolTitle(step.name), input }
+      return { reasoning: step.thought || "", message: i18n.t("agent.tool_step.editing_note"), title: getToolTitle(step.name), input }
     }
     const output = step.output as EditNoteOutput
     const typeLabel = output.noteType.replace(/-/g, " ")
     return {
       reasoning: step.thought || "",
       message: output.label
-        ? `Updated note "${output.label}" as ${typeLabel}.`
-        : `Updated note as ${typeLabel}.`,
+        ? i18n.t("agent.tool_step.updated_note_as", { label: output.label, type: typeLabel })
+        : i18n.t("agent.tool_step.updated_note_type_only", { type: typeLabel }),
       title: getToolTitle(step.name),
       input
     }

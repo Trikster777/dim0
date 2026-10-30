@@ -2,6 +2,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { CodeInterpreterIcon } from "@/components/icons"
 import { useChatStore } from "@/features/agent/store/chat-store"
 import clsx from "clsx"
+import { useTranslation } from "react-i18next"
 import { useShallow } from "zustand/shallow"
 
 
@@ -9,6 +10,7 @@ import { useShallow } from "zustand/shallow"
  * Button component to toggle the Code Interpreter tool in the chat interface.
  */
 export const CodeInterpreterChoiceMenu = () => {
+  const { t } = useTranslation()
   const codeService = useChatStore(useShallow((state) => state.services.code.find((s) => s.name === "openai")))
   const enabledTools = useChatStore(useShallow((state) => state.enabledTools))
   const setEnabledTools = useChatStore((state) => state.setEnabledTools)
@@ -16,7 +18,9 @@ export const CodeInterpreterChoiceMenu = () => {
   const isEnabled = enabledTools.includes("code_interpreter")
   const isAvailable = codeService?.available || false
 
-  const message = isAvailable ? (isEnabled ? "Disable Code Interpreter" : "Enable Code Interpreter") : "Code Interpreter Unavailable"
+  const message = isAvailable
+    ? (isEnabled ? t("agent.settings.disable_code") : t("agent.settings.enable_code"))
+    : t("agent.settings.code_unavailable")
 
   const toggleCodeInterpreter = () => {
     if (isEnabled) {
@@ -41,11 +45,11 @@ export const CodeInterpreterChoiceMenu = () => {
           <button
             className={buttonClass}
             onClick={toggleCodeInterpreter}
-            aria-label="Toggle Code Interpreter"
-            title="Toggle Code Interpreter"
+            aria-label={t("agent.settings.toggle_code")}
+            title={t("agent.settings.toggle_code")}
           >
             <CodeInterpreterIcon className={iconClass} strokeWidth={2} />
-            <span className="text-xs">Code interpreter</span>
+            <span className="text-xs">{t("agent.settings.code_label")}</span>
           </button>
         </TooltipTrigger>
       </div>

@@ -8,6 +8,7 @@ import {
 import type { LlmOption } from "@/features/agent/types/services"
 import { LockIcon } from "@/components/icons"
 import { clsx } from "clsx"
+import { useTranslation } from "react-i18next"
 import { useShallow } from "zustand/shallow"
 
 type ModelChoiceMenuProps = {
@@ -19,6 +20,7 @@ type ModelChoiceMenuProps = {
  * when the model is unavailable.
  */
 const ModelCard: React.FC<{ model: LlmOption }> = ({ model }) => {
+  const { t } = useTranslation()
   const clss = clsx(
     "flex-1 flex flex-row items-center gap-2 justify-between truncate",
     model.available === false ? "text-muted-foreground cursor-not-allowed pointer-events-none" : "",
@@ -26,7 +28,7 @@ const ModelCard: React.FC<{ model: LlmOption }> = ({ model }) => {
 
   return (
     <div className={clss}>
-      <span className="truncate">{model.label}</span>
+      <span className="truncate">{model.name === "auto" ? t(model.label) : model.label}</span>
       {model.tier && (
         <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
           {model.tier}
@@ -42,6 +44,7 @@ const ModelCard: React.FC<{ model: LlmOption }> = ({ model }) => {
  * to create a styled dropdown with model options.
  */
 export const ModelChoiceMenu = ({ display = "icon" }: ModelChoiceMenuProps) => {
+  const { t } = useTranslation()
   const { llmModel, setLlmModel } = useChatStore()
 
   const availableModels = useChatStore(
@@ -65,7 +68,9 @@ export const ModelChoiceMenu = ({ display = "icon" }: ModelChoiceMenuProps) => {
   const currentModel = availableModels.find((model) => model.name === llmModel)
   const currentFamily = currentModel?.family ?? "dim0"
   const CurrentFamilyIcon = familyIcon(currentFamily)
-  const currentLabel = currentModel?.label ?? llmModel
+  const currentLabel = currentModel?.name === "auto"
+    ? t(currentModel.label)
+    : currentModel?.label ?? llmModel
   const isRow = display === "row"
   const triggerClassName = isRow
     ? "w-full rounded-md text-xs px-2 py-1.5 shadow-none hover:bg-accent [&>svg:not(.my-icon)]:hidden border border-transparent hover:border-border transition-colors justify-start gap-2 text-muted-foreground"
@@ -84,7 +89,7 @@ export const ModelChoiceMenu = ({ display = "icon" }: ModelChoiceMenuProps) => {
                   isRow ? (
                     <>
                       <CurrentFamilyIcon size={16} />
-                      <span className="text-xs truncate">Core LLM ({currentLabel})</span>
+                      <span className="text-xs truncate">{t("agent.settings.core_llm_value", { name: currentLabel })}</span>
                     </>
                   ) : (
                     <CurrentFamilyIcon size={16} />
@@ -94,14 +99,14 @@ export const ModelChoiceMenu = ({ display = "icon" }: ModelChoiceMenuProps) => {
             </SelectTrigger>
           </TooltipTrigger>
         </div>
-        <TooltipContent>Core LLM</TooltipContent>
+        <TooltipContent>{t("agent.settings.core_llm")}</TooltipContent>
       </Tooltip>
 
       <SelectContent side="top">
         <div className="max-h-[300px] overflow-y-auto scrollbar-thin">
           <SelectGroup>
             <SelectLabel className="text-[11px] uppercase tracking-wide text-muted-foreground">
-              Models
+              {t("agent.settings.models")}
             </SelectLabel>
           </SelectGroup>
 

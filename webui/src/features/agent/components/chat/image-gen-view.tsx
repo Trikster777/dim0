@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 import { CancelCircleStatusIcon, DownloadIcon, ImagePlaceholderIcon } from "@/components/icons"
 import { useGetImage } from "../../api/get-image"
@@ -20,6 +21,7 @@ export const ImageGenView = ({
   alt,
   className
 }: AgentImageProps) => {
+  const { t } = useTranslation()
   const { data, isLoading, isError, isFetching } = useGetImage(filename ?? "")
 
   const isPending = isLoading || isFetching || !filename
@@ -70,7 +72,7 @@ export const ImageGenView = ({
         <div className="relative w-full aspect-square">
           <img
             src={data}
-            alt={alt ?? filename ?? "Agent image"}
+            alt={alt ?? filename ?? t("agent.sources.image_alt")}
             className="block w-full h-full object-contain"
           />
 
@@ -78,7 +80,7 @@ export const ImageGenView = ({
             type="button"
             onClick={handleDownload}
             className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-md bg-background/80 shadow-sm backdrop-blur-sm border hover:bg-accent transition"
-            aria-label="Download image"
+            aria-label={t("agent.sources.download_image")}
           >
             <DownloadIcon className="size-4" strokeWidth={2} />
           </button>

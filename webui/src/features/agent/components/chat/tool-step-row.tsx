@@ -16,6 +16,7 @@ import { ImageGenView } from "./image-gen-view"
 import { NoteWidgetPreview } from "./note-widget-preview"
 import { useChat } from "../../hooks/chat-context"
 import { BoardUrl } from "@/routes"
+import { useTranslation } from "react-i18next"
 
 
 /**
@@ -24,11 +25,13 @@ import { BoardUrl } from "@/routes"
 const ReasoningMessage = ({
   reasoning
 }: { reasoning: string }) => {
+  const { t } = useTranslation()
+
   return (
     <div className='text-muted-foreground p-0 space-y-1 italic'>
       <div className='flex items-center gap-2 font-medium cursor-pointer text-xs'>
         <ThoughtIcon className='size-4' strokeWidth={2} />
-        <span>Thought</span>
+        <span>{t("agent.thought")}</span>
       </div>
       <span className='text-sm'>{reasoning}</span>
     </div>
@@ -42,6 +45,7 @@ const ReasoningMessage = ({
 export const CodeInterpreterResult = ({
   output
 }: { output: CodeInterpreterOutput }) => {
+  const { t } = useTranslation()
   const stdout = output.stdout.trim()
   const stderr = output.stderr.trim()
 
@@ -55,7 +59,7 @@ export const CodeInterpreterResult = ({
     <div className='w-full flex flex-col gap-2'>
       {stdout !== "" && (
         <div className='w-full flex flex-col gap-1'>
-          <span className='text-xs font-medium text-muted-foreground'>stdout</span>
+          <span className='text-xs font-medium text-muted-foreground'>{t("agent.code_result.stdout")}</span>
           <div className={cn(blockClass, "border-border bg-muted text-card-foreground")}>
             {stdout}
           </div>
@@ -63,7 +67,7 @@ export const CodeInterpreterResult = ({
       )}
       {stderr !== "" && (
         <div className='w-full flex flex-col gap-1'>
-          <span className='text-xs font-medium text-destructive'>stderr</span>
+          <span className='text-xs font-medium text-destructive'>{t("agent.code_result.stderr")}</span>
           <div className={cn(blockClass, "border-destructive/30 bg-destructive/5 text-destructive")}>
             {stderr}
           </div>
@@ -86,6 +90,7 @@ export const NoteToolResult = ({
   chatId?: string
   rootId?: string
 }) => {
+  const { t } = useTranslation()
   const typeLabel = output.noteType.replace(/-/g, " ")
   const boardId = output.graphUid
   const noteId = output.noteId
@@ -93,7 +98,7 @@ export const NoteToolResult = ({
   return (
     <div className='w-full rounded-lg border border-border bg-muted p-3'>
       <div className='flex items-center justify-between gap-2 text-xs font-medium text-muted-foreground'>
-        <span>note</span>
+        <span>{t("agent.note_tool.note_label")}</span>
         <Link
           to='/boards/$id'
           params={{ id: boardId }}
@@ -103,14 +108,14 @@ export const NoteToolResult = ({
             root_id: rootId || undefined,
           }}
           className='inline-flex items-center gap-1 rounded-md p-1 transition-colors hover:bg-background/70 hover:text-foreground'
-          title='Open on board'
-          aria-label='Open on board'
+          title={t("agent.note_tool.open_on_board")}
+          aria-label={t("agent.note_tool.open_on_board")}
         >
           <ExternalLinkIcon className='size-3.5' />
         </Link>
       </div>
       <div className='mt-1 text-sm text-card-foreground whitespace-pre-line'>
-        <span className='font-medium'>{output.label || "Untitled note"}</span>
+        <span className='font-medium'>{output.label || t("agent.note_tool.untitled_note")}</span>
         {` • ${typeLabel}`}
       </div>
     </div>
@@ -228,6 +233,7 @@ export const ToolStepRow = ({
   isStreaming?: boolean
   attachment?: ToolStepWidgetAttachment
 }) => {
+  const { t } = useTranslation()
   const { chatId } = useChat()
   const { rootId } = useSearch({
     from: BoardUrl,
@@ -257,7 +263,7 @@ export const ToolStepRow = ({
 
   const handleCopy = async (text: string) => {
     await navigator.clipboard.writeText(text)
-    toast("Copied to clipboard")
+    toast(t("agent.tool_step.copied_to_clipboard"))
   }
 
   const isLoading = isStreaming && step.state === "started"
@@ -294,17 +300,17 @@ export const ToolStepRow = ({
             )}
             {message !== "" ? (
               <div className='flex-1 min-w-0 flex flex-col'>
-                <h4 className={cn('text-sm font-medium font-mono leading-5 transition-colors', isLoading ? 'text-muted-foreground' : isFailed ? 'text-destructive' : 'text-foreground')}>{title}</h4>
+                <h4 className={cn('text-sm font-medium font-mono leading-5 transition-colors', isLoading ? 'text-muted-foreground' : isFailed ? 'text-destructive' : 'text-foreground')}>{t(title)}</h4>
                 <span className={cn(spanMessageClass, isFailed && 'text-destructive')}>{message}</span>
               </div>
             ) : (
-              <h4 className={cn('flex-1 min-w-0 truncate text-sm font-medium font-mono leading-5 transition-colors', isLoading ? 'text-muted-foreground' : isFailed ? 'text-destructive' : 'text-foreground')}>{title}</h4>
+              <h4 className={cn('flex-1 min-w-0 truncate text-sm font-medium font-mono leading-5 transition-colors', isLoading ? 'text-muted-foreground' : isFailed ? 'text-destructive' : 'text-foreground')}>{t(title)}</h4>
             )}
             {canExpand && (
               <button
                 className='flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors p-1 -mr-1'
                 onClick={() => setViewMore((v) => !v)}
-                aria-label={viewMore ? 'Collapse details' : 'Expand details'}
+                aria-label={viewMore ? t("agent.tool_step.collapse_details") : t("agent.tool_step.expand_details")}
                 aria-expanded={viewMore}
               >
                 <ChevronDownIcon
@@ -324,7 +330,7 @@ export const ToolStepRow = ({
                 <button
                   className='w-full text-left rounded-lg border border-sidebar-border bg-background/60 p-3 font-mono text-xs leading-5 whitespace-pre-wrap break-words hover:bg-background/80 transition-colors'
                   onClick={() => void handleCopy(input)}
-                  title='Copy code'
+                  title={t("agent.tool_step.copy_code")}
                 >
                   {input}
                 </button>

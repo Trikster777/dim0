@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { MemorySearchIcon } from "@/components/icons"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
@@ -34,6 +35,7 @@ const MemoryGroup = ({ label, records }: { label: string; records: MemoryRecord[
  * read-only; editing/deletion happens through the agent (or a later full panel).
  */
 export const MemoryButton = ({ boardId }: { boardId: string }) => {
+  const { t } = useTranslation()
   const [board, setBoard] = useState<MemoryRecord[]>([])
   const [global, setGlobal] = useState<MemoryRecord[]>([])
   const [loaded, setLoaded] = useState(false)
@@ -54,8 +56,8 @@ export const MemoryButton = ({ boardId }: { boardId: string }) => {
       <PopoverTrigger asChild>
         <button
           type="button"
-          title="Agent memory"
-          aria-label="Agent memory"
+          title={t("agent.memory.title")}
+          aria-label={t("agent.memory.title")}
           className={cn(
             "shrink-0 rounded-lg border border-transparent p-1.5 text-muted-foreground transition-colors",
             "hover:border-border hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-foreground/30",
@@ -66,18 +68,17 @@ export const MemoryButton = ({ boardId }: { boardId: string }) => {
       </PopoverTrigger>
       <PopoverContent align="start" className="max-h-[60vh] w-80 overflow-y-auto scrollbar-thin">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-sm font-medium">Memory</span>
+          <span className="text-sm font-medium">{t("agent.memory.heading")}</span>
           {loaded && <span className="font-mono text-xs text-muted-foreground/70">{total}</span>}
         </div>
         {loaded && total === 0 ? (
           <p className="text-xs text-muted-foreground">
-            Nothing saved yet. The agent remembers durable facts here as you work — stable preferences, decisions, and what
-            this board is about.
+            {t("agent.memory.empty")}
           </p>
         ) : (
           <>
-            <MemoryGroup label="This board" records={board} />
-            <MemoryGroup label="Global" records={global} />
+            <MemoryGroup label={t("agent.memory.this_board")} records={board} />
+            <MemoryGroup label={t("agent.memory.global")} records={global} />
           </>
         )}
       </PopoverContent>

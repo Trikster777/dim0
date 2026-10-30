@@ -1,4 +1,5 @@
 import { GlobeIcon, CodeInterpreterIcon, BrowserSearchIcon } from "@/components/icons"
+import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
@@ -15,27 +16,27 @@ import { useToolConfirm, type ToolConfirmRequest } from "@/features/agent/engine
 const asString = (value: unknown): string => (typeof value === "string" ? value : "")
 
 
-/** Human-facing copy + preview for a pending off-board tool request. */
+/** Human-facing copy keys + preview for a pending off-board tool request. */
 const describe = (req: ToolConfirmRequest): { title: string; hint: string; preview: string; Icon: typeof GlobeIcon } => {
   if (req.name === "fetch") {
     return {
-      title: "Allow the assistant to fetch a web page?",
-      hint: "It will send this request from your session. Only allow URLs you trust — a page or document on your board could try to smuggle your data into one.",
+      title: "agent.tool_confirm.allow_fetch_title",
+      hint: "agent.tool_confirm.allow_fetch_hint",
       preview: asString(req.args.url),
       Icon: GlobeIcon,
     }
   }
   if (req.name === "web_search") {
     return {
-      title: "Allow the assistant to search the web?",
-      hint: "It will send this query to a search provider. Content on your board could try to steer the query — check it says what you expect.",
+      title: "agent.tool_confirm.allow_search_title",
+      hint: "agent.tool_confirm.allow_search_hint",
       preview: asString(req.args.query),
       Icon: BrowserSearchIcon,
     }
   }
   return {
-    title: "Allow the assistant to run this code?",
-    hint: "It runs in a sandbox, but only allow code you understand — content on your board could try to make it exfiltrate data.",
+    title: "agent.tool_confirm.allow_code_title",
+    hint: "agent.tool_confirm.allow_code_hint",
     preview: asString(req.args.code),
     Icon: CodeInterpreterIcon,
   }
@@ -51,6 +52,7 @@ const describe = (req: ToolConfirmRequest): { title: string; hint: string; previ
  * inject markup.
  */
 export const ToolConfirmDialog = () => {
+  const { t } = useTranslation()
   const pending = useToolConfirm((s) => s.pending)
   const resolve = useToolConfirm((s) => s.resolve)
   if (!pending) return null
@@ -63,9 +65,9 @@ export const ToolConfirmDialog = () => {
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
             <Icon className="size-4 shrink-0 text-primary" strokeWidth={2} />
-            {title}
+            {t(title)}
           </AlertDialogTitle>
-          <AlertDialogDescription>{hint}</AlertDialogDescription>
+          <AlertDialogDescription>{t(hint)}</AlertDialogDescription>
         </AlertDialogHeader>
         {preview && (
           <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-border bg-muted/40 p-2 text-xs">
@@ -73,11 +75,11 @@ export const ToolConfirmDialog = () => {
           </pre>
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => resolve("deny")}>Don't allow</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => resolve("deny")}>{t("agent.tool_confirm.deny")}</AlertDialogCancel>
           {/* "Allow once" gates the next call again; "Allow for this request"
               auto-approves further calls to this tool for the rest of the run. */}
-          <Button variant="outline" onClick={() => resolve("once")}>Allow once</Button>
-          <Button onClick={() => resolve("always")}>Allow for this request</Button>
+          <Button variant="outline" onClick={() => resolve("once")}>{t("agent.tool_confirm.allow_once")}</Button>
+          <Button onClick={() => resolve("always")}>{t("agent.tool_confirm.allow_for_request")}</Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

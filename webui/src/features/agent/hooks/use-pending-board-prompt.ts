@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { useBoardAppStore } from "@/features/board/harness/store/board-app-store"
 import { getCanvasStoreRef } from "@/features/board/harness/canvas-store-ref"
@@ -44,6 +45,7 @@ export const canRunPendingPrompt = (r: PendingPromptReadiness): boolean =>
  * both chat surfaces (pill and sheet) mount a runner over time.
  */
 export const usePendingBoardPrompt = (boardId: string): void => {
+  const { t } = useTranslation()
   const { local } = useChat()
   const submit = useChatSubmit()
   const hasPending = usePendingPromptStore((s) => s.pending?.boardId === boardId)
@@ -69,9 +71,9 @@ export const usePendingBoardPrompt = (boardId: string): void => {
     const text = usePendingPromptStore.getState().takePending(boardId)
     if (!text) return
     void submit(text, { attachedBoardId: boardId }).catch((error: unknown) => {
-      toast.error(error instanceof Error ? error.message : "Could not send message.")
+      toast.error(error instanceof Error ? error.message : t("agent.input.send_failed"))
     })
-  }, [hasPending, boardId, local, scopeBoardId, boardRole, isLoading, loadedBoardId, hasModel, submit])
+  }, [hasPending, boardId, local, scopeBoardId, boardRole, isLoading, loadedBoardId, hasModel, submit, t])
 }
 
 

@@ -5,6 +5,7 @@ import { LockIcon, SearchEngineIcon } from "@/components/icons"
 import { useChatStore } from "@/features/agent/store/chat-store"
 import { WebSearchEngineDescription, WebSearchEngineIcons, WebSearchEngineName, type WebSearchEngine } from "@/features/agent/types/web"
 import { clsx } from "clsx"
+import { useTranslation } from "react-i18next"
 import { useShallow } from "zustand/shallow"
 
 
@@ -12,8 +13,9 @@ import { useShallow } from "zustand/shallow"
  * Component that displays information about a web search engine.
  */
 const SearchEngineCard: React.FC<{ searchEngine: WebSearchEngine | "-1", available?: boolean }> = ({ searchEngine, available }) => {
-  const name = searchEngine === "-1" ? "Disable Web Search" : WebSearchEngineName[searchEngine]
-  const description = searchEngine === "-1" ? "Disable the web search tool." : WebSearchEngineDescription[searchEngine]
+  const { t } = useTranslation()
+  const name = searchEngine === "-1" ? t("agent.settings.disable_web_search") : WebSearchEngineName[searchEngine]
+  const description = searchEngine === "-1" ? t("agent.settings.disable_web_search_desc") : t(WebSearchEngineDescription[searchEngine])
   const clss = clsx(
     "flex flex-row items-center gap-2",
     !available ? 'text-muted-foreground' : '',
@@ -50,6 +52,7 @@ const SearchEngineCard: React.FC<{ searchEngine: WebSearchEngine | "-1", availab
  * Component that allows users to select a web search engine
  */
 export const SearchEngineChoiceMenu = () => {
+  const { t } = useTranslation()
   const webSearchEngine = useChatStore((state) => state.webSearchEngine)
   const setWebSearchEngine = useChatStore((state) => state.setWebSearchEngine)
   const enabledTools = useChatStore((state) => state.enabledTools)
@@ -78,8 +81,8 @@ export const SearchEngineChoiceMenu = () => {
 
   const defaultValue = enabledTools.includes("web_search") ? webSearchEngine : "-1"
   const triggerLabel = enabledTools.includes("web_search")
-    ? `Web search (${WebSearchEngineName[webSearchEngine]})`
-    : "Web search"
+    ? t("agent.settings.web_search_trigger", { name: WebSearchEngineName[webSearchEngine] })
+    : t("agent.settings.web_search_label")
 
   return (
     <Select onValueChange={handleEngineChange} defaultValue={defaultValue}>
@@ -93,12 +96,12 @@ export const SearchEngineChoiceMenu = () => {
           </TooltipTrigger>
         </div>
         <TooltipContent>
-          Select Web Search Engine
+          {t("agent.settings.web_search_tooltip")}
         </TooltipContent>
       </Tooltip>
       <SelectContent side='top'>
         <SelectGroup className='max-h-[300px]'>
-          <SelectLabel>Select Web Search Engine</SelectLabel>
+          <SelectLabel>{t("agent.settings.web_search_tooltip")}</SelectLabel>
           {
             availableWebSearchServices.map((engine) => {
               const clName = clsx(

@@ -29,12 +29,13 @@ export const WebSearchEngineName: Record<WebSearchEngine, string> = {
 }
 
 
+// Keys, not copy: the engine picker renders them through `t()`.
 export const WebSearchEngineDescription: Record<WebSearchEngine, string> = {
-  openai: "OpenAI's web search",
-  perplexity: "Perplexity's web search pipeline",
-  tavily: "Tavily's search engine + LLM synthesis",
-  linkup: "Linkup's search engine + LLM synthesis",
-  exa: "Exa's search engine + LLM synthesis"
+  openai: "agent.search_engine.openai",
+  perplexity: "agent.search_engine.perplexity",
+  tavily: "agent.search_engine.tavily",
+  linkup: "agent.search_engine.linkup",
+  exa: "agent.search_engine.exa"
 }
 
 

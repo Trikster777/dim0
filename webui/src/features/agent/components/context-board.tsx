@@ -5,6 +5,7 @@ import { useParams } from "@tanstack/react-router"
 import { UNTITLED_LABEL } from "@/features/board/const"
 import { AddIcon, BoardContextIcon } from "@/components/icons"
 import { useAppStore } from "@/store"
+import { useTranslation } from "react-i18next"
 
 
 export interface ContextBoardProps {
@@ -19,6 +20,7 @@ export interface ContextBoardProps {
  * Context board selector component in chat interface
  */
 export const ContextBoard = ({ contextBoardId, boardAsContext }: ContextBoardProps) => {
+  const { t } = useTranslation()
   const userId = useAppStore(s => s.userId)
   const { data: boards } = useListBoards(userId)
   const { updateChat } = useUpdateChat()
@@ -31,7 +33,7 @@ export const ContextBoard = ({ contextBoardId, boardAsContext }: ContextBoardPro
   const value = attachedId ?? "-1"
   const label = attachedId
     ? boards.find((b) => b.uid === attachedId)?.label || UNTITLED_LABEL
-    : "Attach Board"
+    : t("agent.context_board.attach")
 
   const handleSelectBoard = (boardId: string) => {
     const finalId = boardId === "-1" ? undefined : boardId

@@ -24,6 +24,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useNavigate } from "@tanstack/react-router"
 import clsx from "clsx"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { useAppStore } from "@/store"
 import { useIsLocalBoard } from "@/features/board/lib/use-is-local-board"
@@ -72,6 +73,7 @@ export const SaveAsNote = ({
   useAnchors = false,
   compact = false,
 }: SaveAsNoteProps) => {
+  const { t } = useTranslation()
   const [processing, setProcessing] = useState<boolean>(false)
   const userId = useAppStore(s => s.userId)
   const rootId = useBoardAppStore(state => state.rootId) ?? undefined
@@ -99,7 +101,7 @@ export const SaveAsNote = ({
 
   const ensureMessage = () => {
     if (!message.trim()) {
-      toast.error("No message to convert!")
+      toast.error(t("agent.save_note.no_message"))
       return false
     }
     return true
@@ -114,12 +116,12 @@ export const SaveAsNote = ({
     try {
       const { ok } = await runLocalTransform(type, message)
       toast.dismiss(id)
-      if (ok) toast.success("Added to the board.", { icon: <SuccessIcon />, duration: 3000 })
-      else toast.error("Nothing was created.", { icon: <ErrorIcon />, duration: 4000 })
+      if (ok) toast.success(t("agent.save_note.added"), { icon: <SuccessIcon />, duration: 3000 })
+      else toast.error(t("agent.save_note.nothing_created"), { icon: <ErrorIcon />, duration: 4000 })
     } catch (error) {
       console.error("Local transform failed:", error)
       toast.dismiss(id)
-      toast.error("Failed — check your model key in settings.", { icon: <ErrorIcon />, duration: 4000 })
+      toast.error(t("agent.save_note.local_failed"), { icon: <ErrorIcon />, duration: 4000 })
     } finally {
       setProcessing(false)
     }
@@ -132,13 +134,13 @@ export const SaveAsNote = ({
 
     setProcessing(true)
     const startedAt = Date.now()
-    const formatElapsed = () => `${Math.max(0, Math.floor((Date.now() - startedAt) / 1000))}s`
-    const id = toast(`Rewriting… ${formatElapsed()}`, {
+    const formatElapsed = () => String(Math.max(0, Math.floor((Date.now() - startedAt) / 1000)))
+    const id = toast(t("agent.save_note.rewriting", { elapsed: formatElapsed() }), {
       icon: <LoadingIcon />,
       duration: Infinity
     })
     const timer = window.setInterval(() => {
-      toast(`Rewriting… ${formatElapsed()}`, {
+      toast(t("agent.save_note.rewriting", { elapsed: formatElapsed() }), {
         id,
         icon: <LoadingIcon />,
         duration: Infinity
@@ -155,11 +157,11 @@ export const SaveAsNote = ({
       window.clearInterval(timer)
       toast.dismiss(id)
       const finalElapsed = formatElapsed()
-      toast.success(`Notes updated. (${finalElapsed})`, {
+      toast.success(t("agent.save_note.notes_updated", { elapsed: finalElapsed }), {
         icon: <SuccessIcon />,
         duration: 3000,
         action: {
-          label: "Go to board",
+          label: t("agent.save_note.go_to_board"),
           onClick: () => {
             goToBoard(boardId)
           }
@@ -170,7 +172,7 @@ export const SaveAsNote = ({
       window.clearInterval(timer)
       toast.dismiss(id)
       const finalElapsed = formatElapsed()
-      toast.error(`Failed to rewrite. (${finalElapsed})`, {
+      toast.error(t("agent.save_note.rewrite_failed", { elapsed: finalElapsed }), {
         icon: <ErrorIcon />,
         duration: 4000
       })
@@ -187,16 +189,16 @@ export const SaveAsNote = ({
 
     setProcessing(true)
     const startedAt = Date.now()
-    const formatElapsed = () => `${Math.max(0, Math.floor((Date.now() - startedAt) / 1000))}s`
+    const formatElapsed = () => String(Math.max(0, Math.floor((Date.now() - startedAt) / 1000)))
     const id = toast(
-      `Creating board and rewriting… ${formatElapsed()}`,
+      t("agent.save_note.creating", { elapsed: formatElapsed() }),
       {
         icon: <LoadingIcon />,
         duration: Infinity
       }
     )
     const timer = window.setInterval(() => {
-      toast(`Creating board and rewriting… ${formatElapsed()}`, {
+      toast(t("agent.save_note.creating", { elapsed: formatElapsed() }), {
         id,
         icon: <LoadingIcon />,
         duration: Infinity
@@ -209,12 +211,12 @@ export const SaveAsNote = ({
       toast.dismiss(id)
       const finalElapsed = formatElapsed()
       toast.success(
-        `Notes updated. (${finalElapsed})`,
+        t("agent.save_note.notes_updated", { elapsed: finalElapsed }),
         {
           icon: <SuccessIcon />,
           duration: 3000,
           action: {
-            label: "Go to board",
+            label: t("agent.save_note.go_to_board"),
             onClick: () => {
               goToBoard(boardId)
             }
@@ -227,7 +229,7 @@ export const SaveAsNote = ({
       toast.dismiss(id)
       const finalElapsed = formatElapsed()
       toast.error(
-        `Could not create the board or rewrite. (${finalElapsed})`,
+        t("agent.save_note.create_failed", { elapsed: finalElapsed }),
         {
           icon: <ErrorIcon />,
           duration: 4000
@@ -238,17 +240,21 @@ export const SaveAsNote = ({
     }
   }
 
-  const label = type === "notify" ? "Notify" : type === "mapify" ? "Mapify" : "Schemify"
+  const label = type === "notify"
+    ? t("agent.save_note.type_notify")
+    : type === "mapify"
+      ? t("agent.save_note.type_mapify")
+      : t("agent.save_note.type_schemify")
   const Icon: AppIconComponent = type === "notify"
     ? NotebookIcon
     : type === "mapify"
       ? TreeMapIcon
       : SchemaMapIcon
   const actionLabel = type === "notify"
-    ? "Convert current answer to a sticky note"
+    ? t("agent.save_note.aria_notify")
     : type === "mapify"
-    ? "Convert current answer to a mind map"
-    : "Convert current answer to a schema"
+    ? t("agent.save_note.aria_mapify")
+    : t("agent.save_note.aria_schemify")
 
   const buttonClass = clsx(
     "transition-all text-muted-foreground hover:text-foreground flex flex-row items-center rounded-md",
@@ -314,10 +320,10 @@ export const SaveAsNote = ({
         <DropdownMenu>
           {withTooltip(dropdownTrigger)}
           <DropdownMenuContent className="w-48">
-            <DropdownMenuLabel>Boards</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("agent.save_note.boards")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="bg-accent/50" onClick={createAndLaunch}>
-              <span>Create New Board</span>
+              <span>{t("agent.save_note.create_new_board")}</span>
             </DropdownMenuItem>
             {boardList?.map((board) => (
               <DropdownMenuItem key={board.uid} onClick={() => launchGeneration(board.uid)}>
@@ -330,10 +336,10 @@ export const SaveAsNote = ({
         <ContextMenu>
           {withTooltip(contextTrigger)}
           <ContextMenuContent className="w-48">
-            <ContextMenuLabel>Select a different board</ContextMenuLabel>
+            <ContextMenuLabel>{t("agent.save_note.select_board")}</ContextMenuLabel>
             <ContextMenuSeparator />
             <ContextMenuItem className="bg-accent/50" onClick={createAndLaunch}>
-              <span>Create New Board</span>
+              <span>{t("agent.save_note.create_new_board")}</span>
             </ContextMenuItem>
             {boardList?.map((board) => (
               <ContextMenuItem key={board.uid} onClick={() => launchGeneration(board.uid)}>

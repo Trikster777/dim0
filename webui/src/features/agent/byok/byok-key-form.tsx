@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 import type { ByokProvider } from "@/features/agent/engine/byok-client"
 import { useByokStore } from "./byok-store"
@@ -21,6 +22,7 @@ const fieldClass =
  * back when saved. The key is sent only to the provider, never to our servers.
  */
 export function ByokKeyForm({ onSaved }: { onSaved?: () => void }) {
+  const { t } = useTranslation()
   const store = useByokStore()
   const [provider, setProvider] = useState<ByokProvider>(store.provider)
   const [apiKey, setApiKey] = useState(store.llm[store.provider]?.apiKey ?? "")
@@ -62,7 +64,7 @@ export function ByokKeyForm({ onSaved }: { onSaved?: () => void }) {
       </div>
 
       <label className="flex flex-col gap-1">
-        <span className="text-xs text-muted-foreground">API key</span>
+        <span className="text-xs text-muted-foreground">{t("agent.settings.api_key")}</span>
         <input
           type="password"
           value={apiKey}
@@ -73,7 +75,7 @@ export function ByokKeyForm({ onSaved }: { onSaved?: () => void }) {
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="text-xs text-muted-foreground">Model</span>
+        <span className="text-xs text-muted-foreground">{t("agent.settings.model")}</span>
         <input
           value={model}
           onChange={(e) => setModel(e.target.value)}
@@ -88,12 +90,11 @@ export function ByokKeyForm({ onSaved }: { onSaved?: () => void }) {
         disabled={!apiKey.trim()}
         className="rounded-lg bg-foreground px-3 py-1.5 text-sm font-medium text-background transition hover:opacity-90 disabled:opacity-40"
       >
-        Save
+        {t("common.save")}
       </button>
 
       <p className="text-[11px] leading-snug text-muted-foreground">
-        Sent directly to the provider, never to dim0&apos;s servers. Kept on this device until you
-        Forget keys.
+        {t("agent.settings.byok_footnote")}
       </p>
     </div>
   )

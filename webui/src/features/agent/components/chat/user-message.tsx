@@ -1,25 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { ChatMessage } from "../../types/chat"
 import { CheckIcon, CopyActionIcon, SelectionContextIcon } from "@/components/icons"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { getLanguage } from "@/i18n"
 
 /**
  * UserMessage component displays a message sent by the user in the chat interface.
  */
 export const UserMessage = ({ message, isLatest }: { message: ChatMessage, isLatest: boolean }) => {
+  const { t } = useTranslation()
   const ref = useRef<HTMLDivElement>(null)
   const text = message.content.markdown
   const contextText = message.properties.context?.text?.trim()
 
   const sentLabel = useMemo(() => {
     const timestamp = message.createdAt || message.sentAt
-    if (!timestamp) return "Pending…"
+    if (!timestamp) return t("agent.chat.pending")
     const date = new Date(timestamp)
     if (Number.isNaN(date.getTime())) return timestamp
-    return date.toLocaleString()
-  }, [message.createdAt, message.sentAt])
+    return date.toLocaleString(getLanguage() === "ru" ? "ru-RU" : "en-US")
+  }, [message.createdAt, message.sentAt, t])
 
   // Scroll this block into view if it's the latest user message
   useEffect(() => {
@@ -60,16 +63,16 @@ export const UserMessage = ({ message, isLatest }: { message: ChatMessage, isLat
                 <button
                   type="button"
                   className="opacity-80 hover:opacity-100 transition-opacity"
-                  aria-label="Show message context"
+                  aria-label={t("agent.chat.show_context")}
                 >
                   <Badge variant="secondary" className="text-[10px] bg-muted text-muted-foreground flex items-center gap-1 px-1.5 py-0.5">
                     <SelectionContextIcon className="size-3 shrink-0" strokeWidth={2} />
-                    <span>Context</span>
+                    <span>{t("agent.chat.context")}</span>
                   </Badge>
                 </button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-96 max-w-[80vw]">
-                <p className="text-xs font-medium text-muted-foreground mb-2">Context used</p>
+                <p className="text-xs font-medium text-muted-foreground mb-2">{t("agent.chat.context_used")}</p>
                 <pre className="text-xs whitespace-pre-wrap break-words max-h-64 overflow-auto scrollbar-thin">
                   {contextText}
                 </pre>
@@ -83,12 +86,13 @@ export const UserMessage = ({ message, isLatest }: { message: ChatMessage, isLat
 }
 
 const CopyUserMessageButton = ({ text, className }: { text: string, className?: string }) => {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
     void navigator.clipboard.writeText(text).then(() => {
       setCopied(true)
-      toast("Message copied to clipboard!")
+      toast(t("agent.chat.copied"))
       setTimeout(() => setCopied(false), 2000)
     })
   }
@@ -102,7 +106,7 @@ const CopyUserMessageButton = ({ text, className }: { text: string, className?: 
       type="button"
     >
       <Icon className="size-4 shrink-0" strokeWidth={2} />
-      <span>Copy</span>
+      <span>{t("agent.chat.copy")}</span>
     </button>
   )
 }

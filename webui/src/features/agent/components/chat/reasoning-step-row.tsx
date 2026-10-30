@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { ArrowCollapseIcon, ArrowExpandIcon } from "@/components/icons"
 import type { ReasoningTextStep } from "../../types/stream"
 import { ThinkingDots } from "@/components/animations/thinking-indicator"
@@ -27,6 +28,7 @@ export const ReasoningStepRow = ({
   docSources?: DocSource[]
   messageId?: string
 }) => {
+  const { t } = useTranslation()
   const [viewMore, setViewMore] = useState(false)
   const hasReasoningDetails = !isStreaming && step.reasoning !== ""
   const isSynthesis = step.isSynthesis === true
@@ -61,7 +63,7 @@ export const ReasoningStepRow = ({
     >
       {isSynthesis && (
         <div className='pb-2 text-center text-sm font-medium text-muted-foreground font-mono'>
-          Synthesis
+          {t("agent.synthesis")}
         </div>
       )}
       {hasReasoningDetails && (
@@ -70,7 +72,7 @@ export const ReasoningStepRow = ({
             className='inline-flex items-center gap-1 text-sm font-normal text-muted-foreground'
             onClick={() => setViewMore((value) => !value)}
           >
-            <span>Reasoning</span>
+            <span>{t("agent.chat.reasoning")}</span>
             {viewMore ? (
               <ArrowCollapseIcon
                 className='size-4'
@@ -101,7 +103,7 @@ export const ReasoningStepRow = ({
         // label, and its hidden reasoning stays hidden until the turn ends (when
         // the "Reasoning" expander takes this slot).
         <span className='inline-flex items-center gap-1 font-mono text-sm font-medium text-muted-foreground'>
-          {isActive ? "Thinking" : "Thought"}
+          {isActive ? t("agent.thinking") : t("agent.thought")}
           {isActive && <ThinkingDots />}
         </span>
       ) : null}

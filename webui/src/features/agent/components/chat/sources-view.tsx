@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Sheet,
   SheetContent,
@@ -17,6 +18,7 @@ import { LinkIcon, LinksIcon } from '@/components/icons'
  * Compact sources pill that opens a full sources sheet on click.
  */
 export const SourcesView = ({ answer }: { answer: AgentResponse }) => {
+  const { t } = useTranslation()
   const annotations = extractAnswerWebSources(answer)
   const previewFavicons = useMemo(
     () => annotations.slice(0, 3).map((annotation) => annotation.favicon).filter(Boolean) as string[],
@@ -34,10 +36,10 @@ export const SourcesView = ({ answer }: { answer: AgentResponse }) => {
               variant='outline'
               size='sm'
               className='rounded-lg !p-2 gap-1 !bg-transparent hover:bg-accent/60 border-border/60 shadow-none mb-1 ml-1'
-              title='Open sources'
+              title={t('agent.sources.open_sources')}
             >
               <LinksIcon className='size-4 shrink-0 text-primary' strokeWidth={2} />
-              <span className='text-xs font-mono text-primary'>Sources</span>
+              <span className='text-xs font-mono text-primary'>{t('agent.sources.sources')}</span>
               <div className='flex items-center -space-x-2'>
                 {previewFavicons.length > 0 ? (
                   previewFavicons.map((favicon, index) => (
@@ -76,9 +78,9 @@ export const SourcesView = ({ answer }: { answer: AgentResponse }) => {
           <div className='border-b border-border p-3 flex items-center gap-2'>
             <LinksIcon className='size-5 shrink-0 text-primary' strokeWidth={2} />
             <div className='flex flex-col'>
-              <SheetTitle className='text-primary'>Sources</SheetTitle>
+              <SheetTitle className='text-primary'>{t('agent.sources.sources')}</SheetTitle>
               <SheetDescription className='text-muted-foreground'>
-                These are the links referenced by the answer. Click any card to open the original page.
+                {t('agent.sources.sources_description')}
               </SheetDescription>
             </div>
           </div>
@@ -100,7 +102,7 @@ export const SourcesView = ({ answer }: { answer: AgentResponse }) => {
         </SheetContent>
         <SheetHeader className='sr-only'>
           {/* keeps a11y happy even though we render custom header above */}
-          <SheetTitle>Sources</SheetTitle>
+          <SheetTitle>{t('agent.sources.sources')}</SheetTitle>
         </SheetHeader>
       </Sheet>
     </div>
