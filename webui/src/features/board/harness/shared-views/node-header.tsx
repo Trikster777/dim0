@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react"
 import { Lock } from "@phosphor-icons/react"
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 
@@ -29,9 +30,11 @@ export function NodeHeader({
   emojiIcon,
   onTitleEdit,
   locked,
-  placeholder = "Untitled",
+  placeholder,
   className,
 }: NodeHeaderProps) {
+  const { t } = useTranslation()
+  const resolvedPlaceholder = placeholder ?? t("harness.node.untitled")
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -82,7 +85,7 @@ export function NodeHeader({
           className={cn("flex-1 truncate", !title && "italic text-muted-foreground")}
           onDoubleClick={beginEdit}
         >
-          {title || placeholder}
+          {title || resolvedPlaceholder}
         </span>
       )}
 

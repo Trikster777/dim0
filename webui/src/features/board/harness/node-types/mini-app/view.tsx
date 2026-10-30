@@ -15,6 +15,7 @@
 // canvas chrome conventions live there.
 
 import { useCallback, useEffect, useRef } from "react"
+import { useTranslation } from "react-i18next"
 
 import { CursorClickIcon } from "@phosphor-icons/react"
 import { type NodeId } from "@canvas-harness/core"
@@ -63,6 +64,7 @@ export interface MiniAppViewProps {
  */
 export function MiniAppView({ id }: MiniAppViewProps) {
   const node = useNode(id)
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const openNodeSurface = useBoardAppStore((s) => s.openNodeSurface)
   const canEdit = useBoardAppStore((s) => s.canEdit)
@@ -185,7 +187,7 @@ export function MiniAppView({ id }: MiniAppViewProps) {
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center text-sm text-muted-foreground">
               <CursorClickIcon className="size-5 shrink-0" />
-              <span>{source ? "Mini-app paused" : "Mini-app source will render here"}</span>
+              <span>{source ? t("harness.node.mini_app_paused") : t("harness.node.mini_app_placeholder")}</span>
             </div>
           )}
         </div>
@@ -200,7 +202,7 @@ export function MiniAppView({ id }: MiniAppViewProps) {
         <NodeTitleCaption
           nodeId={id}
           label={label}
-          placeholder="Untitled mini-app"
+          placeholder={t("harness.surface.untitled_mini_app")}
           textClassName="text-center text-sm font-handwriting text-foreground"
         />
       </div>

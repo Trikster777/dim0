@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { CaretRight } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
@@ -23,6 +24,7 @@ export type NodeBreadcrumbProps = {
  * the user is multiple folders deep.
  */
 export function NodeBreadcrumb({ path, onNavigate, className }: NodeBreadcrumbProps) {
+  const { t } = useTranslation()
   if (path.length === 0) return null
 
   return (
@@ -31,7 +33,7 @@ export function NodeBreadcrumb({ path, onNavigate, className }: NodeBreadcrumbPr
         "flex items-center gap-1 px-2 text-xs text-muted-foreground",
         className,
       )}
-      aria-label="Node path"
+      aria-label={t("harness.breadcrumb.node_path")}
     >
       {path.map((item, i) => {
         const isLast = i === path.length - 1

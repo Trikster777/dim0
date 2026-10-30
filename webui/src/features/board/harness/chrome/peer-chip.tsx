@@ -1,5 +1,6 @@
 import { memo } from "react"
 import { useNodes, usePresence } from "@canvas-harness/react"
+import { useTranslation } from "react-i18next"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils"
  * That's the soft edit indicator — no enforcement, just awareness.
  */
 export const HarnessPeerChip = memo(function HarnessPeerChip() {
+  const { t } = useTranslation()
   const remotes = usePresence()
   const peers = [...remotes.values()].filter((p) => p.name)
   if (peers.length === 0) return null
@@ -34,7 +36,7 @@ export const HarnessPeerChip = memo(function HarnessPeerChip() {
       <PopoverTrigger asChild>
         <button
           type="button"
-          aria-label={`${peers.length} ${peers.length === 1 ? "peer" : "peers"} online`}
+          aria-label={t("harness.peer.online", { count: peers.length })}
           className={cn(
             "flex items-center gap-1 rounded-md px-1 py-1 text-xs",
             "transition-opacity hover:opacity-80",
@@ -60,7 +62,7 @@ export const HarnessPeerChip = memo(function HarnessPeerChip() {
             <PeerRow
               key={peer.clientId as unknown as string}
               color={peer.color}
-              name={peer.name ?? "Anonymous"}
+              name={peer.name ?? t("harness.peer.anonymous")}
               editingNodeId={peer.editing as string | null | undefined}
             />
           ))}
@@ -98,6 +100,7 @@ const PeerRow = ({
   editingNodeId: string | null | undefined
 }) => {
   const nodes = useNodes()
+  const { t } = useTranslation()
   const editingNode = editingNodeId
     ? nodes.find((n) => (n.id as unknown as string) === editingNodeId)
     : null
@@ -109,7 +112,9 @@ const PeerRow = ({
         <span className="truncate font-medium text-foreground">{name}</span>
         {editingNodeId ? (
           <span className="truncate text-muted-foreground">
-            {editingLabel ? `Editing "${editingLabel}"` : "Editing"}
+            {editingLabel
+              ? t("harness.peer.editing_named", { name: editingLabel })
+              : t("harness.peer.editing")}
           </span>
         ) : null}
       </div>

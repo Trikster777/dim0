@@ -6,6 +6,7 @@
 // harness op log.
 
 import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { CancelPlainIcon, DownloadIcon, LayoutIcon } from "@/components/icons"
 import { Button } from "@/components/ui/button"
@@ -33,6 +34,7 @@ export const MiniAppPanel = memo(function MiniAppPanel({
   onClose,
 }: MiniAppPanelProps) {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const node = useNode(nodeId as NodeId)
   const data = (node?.data ?? {}) as Partial<NoteNodeData>
   const setActiveSurfaceLabel = useBoardAppStore((s) => s.setActiveSurfaceLabel)
@@ -114,16 +116,16 @@ export const MiniAppPanel = memo(function MiniAppPanel({
   if (!node) {
     return (
       <div className={`${SURFACE_PANEL_CLASS} items-center justify-center gap-3 text-sm text-muted-foreground`}>
-        <p>This mini-app no longer exists.</p>
+        <p>{t("harness.surface.mini_app_missing")}</p>
         <Button variant="outline" size="sm" onClick={onClose}>
-          Close
+          {t("common.close")}
         </Button>
       </div>
     )
   }
 
   const source = sourceDraft.trim()
-  const displayTitle = data.label?.markdown?.trim() || "Untitled mini-app"
+  const displayTitle = data.label?.markdown?.trim() || t("harness.surface.untitled_mini_app")
 
   return (
     <div className={SURFACE_PANEL_CLASS} onClick={(e) => e.stopPropagation()}>
@@ -148,7 +150,7 @@ export const MiniAppPanel = memo(function MiniAppPanel({
                   }
                 }}
                 className="w-full border-0 border-b border-foreground/30 bg-transparent px-0 py-0.5 text-sm font-semibold text-foreground focus:border-secondary-foreground focus:outline-none"
-                placeholder="Untitled mini-app"
+                placeholder={t("harness.surface.untitled_mini_app")}
               />
             ) : (
               <button
@@ -167,8 +169,8 @@ export const MiniAppPanel = memo(function MiniAppPanel({
             variant="ghost"
             size="icon-sm"
             onClick={handleDownloadSource}
-            title="Download .tsx"
-            aria-label="Download source"
+            title={t("harness.surface.download_tsx")}
+            aria-label={t("harness.surface.download_source")}
             disabled={!source}
           >
             <DownloadIcon className="size-4" />
@@ -177,8 +179,8 @@ export const MiniAppPanel = memo(function MiniAppPanel({
             variant="ghost"
             size="icon-sm"
             onClick={onClose}
-            title="Close"
-            aria-label="Close"
+            title={t("common.close")}
+            aria-label={t("common.close")}
           >
             <CancelPlainIcon className="size-4" />
           </Button>
@@ -188,8 +190,8 @@ export const MiniAppPanel = memo(function MiniAppPanel({
       <Tabs value={activeTab} onValueChange={setActiveTab} className="min-h-0 flex-1 gap-0">
         <div className="border-b border-border/70 px-4 py-2">
           <TabsList>
-            <TabsTrigger value="rendered">Rendered</TabsTrigger>
-            <TabsTrigger value="code">Code</TabsTrigger>
+            <TabsTrigger value="rendered">{t("harness.surface.rendered")}</TabsTrigger>
+            <TabsTrigger value="code">{t("harness.surface.code")}</TabsTrigger>
           </TabsList>
         </div>
 
@@ -203,7 +205,7 @@ export const MiniAppPanel = memo(function MiniAppPanel({
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-                Mini-app source is empty.
+                {t("harness.surface.mini_app_empty")}
               </div>
             )}
           </div>

@@ -1,4 +1,5 @@
 import { useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { LayoutIcon } from "@phosphor-icons/react"
 import { type NodeId } from "@canvas-harness/core"
 import { useCanvasStore, useNode, useSelection } from "@canvas-harness/react"
@@ -29,6 +30,7 @@ export type WidgetViewProps = {
  */
 export function WidgetView({ id }: WidgetViewProps) {
   const node = useNode(id)
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const openNodeSurface = useBoardAppStore((s) => s.openNodeSurface)
   const canEdit = useBoardAppStore((s) => s.canEdit)
@@ -61,7 +63,7 @@ export function WidgetView({ id }: WidgetViewProps) {
           {html && isInView ? (
             <WidgetIframe
               html={html}
-              title="Widget"
+              title={t("harness.surface.widget")}
               className={cn(
                 "h-full w-full bg-transparent",
                 isSelected ? "pointer-events-auto" : "pointer-events-none",
@@ -70,7 +72,7 @@ export function WidgetView({ id }: WidgetViewProps) {
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center text-sm text-muted-foreground">
               <LayoutIcon className="size-5 shrink-0" />
-              <span>{html ? "Widget paused" : "Widget HTML will render here"}</span>
+              <span>{html ? t("harness.node.widget_paused") : t("harness.node.widget_placeholder")}</span>
             </div>
           )}
         </div>
@@ -85,7 +87,7 @@ export function WidgetView({ id }: WidgetViewProps) {
         <NodeTitleCaption
           nodeId={id}
           label={label}
-          placeholder="Untitled widget"
+          placeholder={t("harness.surface.untitled_widget")}
           textClassName="text-center text-sm font-handwriting text-foreground"
         />
       </div>

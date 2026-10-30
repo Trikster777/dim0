@@ -1,5 +1,6 @@
 import { ChartLineIcon } from "@phosphor-icons/react"
 import { useCanvasStore } from "@canvas-harness/react"
+import { useTranslation } from "react-i18next"
 
 import {
   CodeFileIcon,
@@ -65,6 +66,7 @@ const MoreMenuItems = ({
   upload: LocalDocUpload
 }) => {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const userPlan = useAppStore((s) => s.userPlan)
   const setTool = useBoardAppStore((s) => s.setTool)
   const setChromeDialog = useBoardAppStore((s) => s.setChromeDialog)
@@ -78,17 +80,17 @@ const MoreMenuItems = ({
     <>
       <DropdownMenuItem onSelect={() => setChromeDialog("icon-search")} className="gap-2 text-sm">
         <PuzzlePieceIcon className="size-4 shrink-0" />
-        <span>Icons</span>
+        <span>{t("harness.more.icons")}</span>
         <DropdownMenuShortcut>G</DropdownMenuShortcut>
       </DropdownMenuItem>
       <DropdownMenuItem onSelect={() => setChromeDialog("image-search")} className="gap-2 text-sm">
         <ImageStackIcon className="size-4 shrink-0" />
-        <span>Images</span>
+        <span>{t("harness.more.images")}</span>
         <DropdownMenuShortcut>I</DropdownMenuShortcut>
       </DropdownMenuItem>
       <DropdownMenuItem onSelect={() => setTool("folder")} className="gap-2 text-sm">
         <FolderPlusActionIcon className="size-4 shrink-0" />
-        <span>Sub-board</span>
+        <span>{t("harness.more.sub_board")}</span>
         <NodeLimitBadge count={folderCount} limit={nodeLimitFor("folder", userPlan)} />
       </DropdownMenuItem>
       <DropdownMenuItem
@@ -97,21 +99,21 @@ const MoreMenuItems = ({
         // parsing is unavailable (no managed access and no BYOK Mistral key).
         onSelect={() => (localUpload ? upload.pick() : setChromeDialog("document-upload"))}
         disabled={localUpload && !upload.canParse}
-        title={localUpload && !upload.canParse ? "Sign in or add a Mistral key to upload documents" : undefined}
+        title={localUpload && !upload.canParse ? t("harness.more.document_upload_unavailable") : undefined}
         className="gap-2 text-sm"
       >
         <DocumentFileIcon className="size-4 shrink-0" />
-        <span>Document</span>
+        <span>{t("harness.more.document")}</span>
         <NodeLimitBadge count={documentCount} limit={nodeLimitFor("document", userPlan)} />
       </DropdownMenuItem>
       <DropdownMenuItem onSelect={() => setTool("code-sandbox")} className="gap-2 text-sm">
         <CodeFileIcon className="size-4 shrink-0" />
-        <span>Code sandbox</span>
+        <span>{t("harness.more.code_sandbox")}</span>
         <NodeLimitBadge count={codeSandboxCount} limit={nodeLimitFor("code-sandbox", userPlan)} />
       </DropdownMenuItem>
       <DropdownMenuItem onSelect={() => setTool("applet")} className="gap-2 text-sm">
         <ChartLineIcon className="size-4 shrink-0" />
-        <span>Applet</span>
+        <span>{t("harness.more.applet")}</span>
         <NodeLimitBadge count={appletCount} limit={nodeLimitFor("applet", userPlan)} />
       </DropdownMenuItem>
     </>
@@ -127,6 +129,7 @@ const MoreMenuItems = ({
  * type shows its per-board `{count}/{limit}` counter.
  */
 export function HarnessToolbarMore({ local = false }: { local?: boolean } = {}) {
+  const { t } = useTranslation()
   const chromeDialog = useBoardAppStore((s) => s.chromeDialog)
   const setChromeDialog = useBoardAppStore((s) => s.setChromeDialog)
   const boardId = useBoardAppStore((s) => s.boardId) ?? ""
@@ -148,14 +151,14 @@ export function HarnessToolbarMore({ local = false }: { local?: boolean } = {}) 
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                aria-label="More actions"
+                aria-label={t("harness.toolbar.more_actions")}
                 className={cn(moreButtonClass)}
               >
                 <EllipsisIcon className="size-4 shrink-0" />
               </button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
-          <TooltipContent side="bottom" sideOffset={10}>More actions</TooltipContent>
+          <TooltipContent side="bottom" sideOffset={10}>{t("harness.toolbar.more_actions")}</TooltipContent>
         </Tooltip>
         <DropdownMenuContent
           align="end"

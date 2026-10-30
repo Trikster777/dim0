@@ -8,17 +8,18 @@
  * confirm dialog instead. This map is the single source of truth for both:
  * add an entry to make a new node type durable + confirmed on delete.
  */
-export type DurableDeleteMeta = { title: string; description: string }
+export type DurableDeleteMeta = { titleKey: string; descriptionKey: string }
 
 
+/** Copy is stored as translation keys — resolve with `t()` at the call site. */
 export const DURABLE_DELETE: Record<string, DurableDeleteMeta> = {
   folder: {
-    title: "Delete this folder?",
-    description: "Its contents are removed from the board. This can't be undone.",
+    titleKey: "harness.durable_delete.folder_title",
+    descriptionKey: "harness.durable_delete.folder_description",
   },
   document: {
-    title: "Delete this document?",
-    description: "It's removed from the board along with its Q&A content. This can't be undone.",
+    titleKey: "harness.durable_delete.document_title",
+    descriptionKey: "harness.durable_delete.document_description",
   },
 }
 

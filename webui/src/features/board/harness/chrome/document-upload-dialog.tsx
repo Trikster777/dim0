@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { toast } from "sonner"
 import { useCanvasStore } from "@canvas-harness/react"
+import { useTranslation } from "react-i18next"
 import {
   CancelStatusIcon,
   CheckCircleStatusIcon,
@@ -43,6 +44,7 @@ const DocumentUploadDialogBody = ({
   onOpenChange: (open: boolean) => void
 }) => {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const boardId = useBoardAppStore((s) => s.boardId)
   const rootId = useBoardAppStore((s) => s.rootId)
   const parseDocument = useHarnessParseDocument(store, boardId, rootId)
@@ -58,8 +60,7 @@ const DocumentUploadDialogBody = ({
     const documentCount = store.getAllNodes().filter((n) => n.type === "document").length
     if (isNodeTypeAtLimit("document", userPlan, documentCount)) {
       toast.error(
-        `You've reached this board's document limit (${nodeLimitFor("document", userPlan)}). ` +
-        `Upgrade for more.`,
+        t("harness.document_upload.limit", { limit: nodeLimitFor("document", userPlan) }),
       )
       return
     }
@@ -68,12 +69,12 @@ const DocumentUploadDialogBody = ({
     const startedAt = Date.now()
     const formatElapsed = () =>
       `${Math.max(0, Math.floor((Date.now() - startedAt) / 1000))}s`
-    const id = toast(`Parsing & Analyzing document… ${formatElapsed()}`, {
+    const id = toast(t("harness.document_upload.parsing_analyzing", { elapsed: formatElapsed() }), {
       icon: <LoadingIcon />,
       duration: Infinity,
     })
     const timer = window.setInterval(() => {
-      toast(`Parsing & Analyzing document… ${formatElapsed()}`, {
+      toast(t("harness.document_upload.parsing_analyzing", { elapsed: formatElapsed() }), {
         id,
         icon: <LoadingIcon />,
         duration: Infinity,
@@ -85,7 +86,7 @@ const DocumentUploadDialogBody = ({
       await parseDocument(file)
       window.clearInterval(timer)
       toast.dismiss(id)
-      toast.success(`Document parsed. (${formatElapsed()})`, {
+      toast.success(t("harness.document_upload.parsed", { elapsed: formatElapsed() }), {
         icon: <SuccessIcon />,
         duration: 3000,
       })
@@ -94,7 +95,7 @@ const DocumentUploadDialogBody = ({
       console.error("[harness] document parse failed", err)
       window.clearInterval(timer)
       toast.dismiss(id)
-      toast.error(`Failed to parse document. (${formatElapsed()})`, {
+      toast.error(t("harness.document_upload.parse_failed", { elapsed: formatElapsed() }), {
         icon: <ErrorIcon />,
         duration: 4000,
       })
@@ -112,9 +113,9 @@ const DocumentUploadDialogBody = ({
           accept="application/pdf"
           onChange={(event) => setFile(event.target.files?.[0] ?? null)}
         />
-        <p className="text-xs text-muted-foreground">PDF files only.</p>
+        <p className="text-xs text-muted-foreground">{t("harness.document_upload.pdf_only")}</p>
         <p className="text-xs text-muted-foreground">
-          Document must stay within both limits: 30 pages max and 5 MB max.
+          {t("harness.document_upload.limits")}
         </p>
       </div>
       <div className="flex justify-end gap-2">
@@ -124,10 +125,10 @@ const DocumentUploadDialogBody = ({
           onClick={() => onOpenChange(false)}
           disabled={submitting}
         >
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button type="submit" disabled={!file || !boardId || submitting}>
-          {submitting ? "Parsing…" : "Upload & Parse"}
+          {submitting ? t("harness.document_upload.parsing") : t("harness.document_upload.upload_parse")}
         </Button>
       </div>
     </form>
@@ -143,13 +144,16 @@ const DocumentUploadDialogBody = ({
 export const DocumentUploadDialog = ({
   open,
   onOpenChange,
-}: DocumentUploadDialogProps) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="sm:max-w-md">
-      <DialogHeader>
-        <DialogTitle>Upload a document</DialogTitle>
-      </DialogHeader>
-      {open && <DocumentUploadDialogBody onOpenChange={onOpenChange} />}
-    </DialogContent>
-  </Dialog>
-)
+}: DocumentUploadDialogProps) => {
+  const { t } = useTranslation()
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t("harness.document_upload.title")}</DialogTitle>
+        </DialogHeader>
+        {open && <DocumentUploadDialogBody onOpenChange={onOpenChange} />}
+      </DialogContent>
+    </Dialog>
+  )
+}

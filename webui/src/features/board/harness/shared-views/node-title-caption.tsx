@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import clsx from "clsx"
 import { useQueryClient } from "@tanstack/react-query"
 import type { NodeId } from "@canvas-harness/core"
@@ -46,7 +47,7 @@ const BUTTON_BASE_CLS =
 export const NodeTitleCaption = memo(function NodeTitleCaption({
   nodeId,
   label,
-  placeholder = "Untitled",
+  placeholder,
   className,
   textClassName,
   emptyTextClassName,
@@ -54,6 +55,8 @@ export const NodeTitleCaption = memo(function NodeTitleCaption({
   maxLines = 3,
   onEditingChange,
 }: NodeTitleCaptionProps) {
+  const { t } = useTranslation()
+  const resolvedPlaceholder = placeholder ?? t("harness.node.untitled")
   const store = useCanvasStore()
   const queryClient = useQueryClient()
   const canEdit = useBoardAppStore((s) => s.canEdit)
@@ -84,7 +87,7 @@ export const NodeTitleCaption = memo(function NodeTitleCaption({
   useStopCanvasDblClick(wrapperRef)
 
   const storedTitle = label?.trim() ?? ""
-  const displayTitle = storedTitle || placeholder
+  const displayTitle = storedTitle || resolvedPlaceholder
 
   useEffect(() => {
     if (editing) return
@@ -177,7 +180,7 @@ export const NodeTitleCaption = memo(function NodeTitleCaption({
           onDoubleClick={(event) => event.stopPropagation()}
           className={clsx(INPUT_BASE_CLS, textClassName)}
           style={textStyle}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
         />
       ) : (
         <button

@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { CancelPlainIcon, ConsoleIcon, LoaderIcon, PlayIcon } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { useCanvasStore, useNode } from "@canvas-harness/react"
@@ -53,6 +54,7 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
   onClose,
 }: CodeSandboxPanelProps) {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const node = useNode(nodeId as NodeId)
   const data = (node?.data ?? {}) as Partial<NoteNodeData>
   const boardId = useBoardAppStore((s) => s.boardId)
@@ -172,31 +174,34 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
       setResult({
         status: "error",
         stdout: "",
-        stderr: error instanceof Error ? error.message : "Execution failed.",
+        stderr: error instanceof Error ? error.message : t("harness.surface.execution_failed"),
         durationMs: 0,
       })
     } finally {
       setIsExecuting(false)
     }
-  }, [boardId, codeDraft, isExecuting, runnable, language, nodeId, saveDraft])
+  }, [boardId, codeDraft, isExecuting, runnable, language, nodeId, saveDraft, t])
 
   const lastRunLabel = useMemo(
-    () => (result.durationMs > 0 ? `Last run • ${result.durationMs} ms` : "Last run"),
-    [result.durationMs],
+    () =>
+      result.durationMs > 0
+        ? t("harness.surface.last_run_with_ms", { ms: result.durationMs })
+        : t("harness.surface.last_run"),
+    [result.durationMs, t],
   )
 
   if (!node) {
     return (
       <div className={`${PANEL_CLASS} items-center justify-center gap-3 text-sm text-muted-foreground`}>
-        <p>This sandbox no longer exists.</p>
+        <p>{t("harness.surface.sandbox_missing")}</p>
         <Button variant="outline" size="sm" onClick={onClose}>
-          Close
+          {t("common.close")}
         </Button>
       </div>
     )
   }
 
-  const displayTitle = data.label?.markdown?.trim() || "Untitled code"
+  const displayTitle = data.label?.markdown?.trim() || t("harness.surface.untitled_code")
 
   return (
     <div className={PANEL_CLASS} onClick={(e) => e.stopPropagation()}>
@@ -221,7 +226,7 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
                   }
                 }}
                 className="w-full border-0 border-b border-current/30 bg-transparent px-0 py-0.5 text-sm font-semibold text-foreground focus:border-secondary-foreground focus:outline-none"
-                placeholder="Untitled code"
+                placeholder={t("harness.surface.untitled_code")}
               />
             ) : (
               <button
@@ -238,7 +243,7 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
             <SelectTrigger
               size="sm"
               className="h-7 w-[136px] shrink-0 text-xs"
-              aria-label="Language"
+              aria-label={t("harness.surface.language")}
             >
               <SelectValue />
             </SelectTrigger>
@@ -255,7 +260,7 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
           {runnable ? (
             <>
               <span className="text-xs text-muted-foreground">
-                Max runtime 60s
+                {t("harness.surface.max_runtime")}
               </span>
               <Button
                 type="button"
@@ -269,20 +274,22 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
                 ) : (
                   <PlayIcon className="size-4 shrink-0" strokeWidth={2} />
                 )}
-                {isExecuting ? "Running" : "Execute"}
+                {isExecuting
+                  ? t("harness.surface.running")
+                  : t("harness.surface.execute")}
               </Button>
             </>
           ) : (
             <span className="text-xs text-muted-foreground">
-              Run not supported
+              {t("harness.surface.run_not_supported")}
             </span>
           )}
           <Button
             variant="ghost"
             size="icon-sm"
             onClick={onClose}
-            title="Close"
-            aria-label="Close"
+            title={t("common.close")}
+            aria-label={t("common.close")}
             className="text-foreground"
           >
             <CancelPlainIcon className="size-4" />
@@ -306,7 +313,7 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
             value={codeDraft}
             onChange={setCodeDraft}
             language={language as CodeAreaLanguage}
-            placeholder="Write code here"
+            placeholder={t("harness.surface.code_placeholder")}
           />
         </div>
 
@@ -321,7 +328,7 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
                 stdout
               </div>
               <pre className="scrollbar-thin h-full overflow-auto overflow-x-auto whitespace-pre-wrap break-all px-4 pb-4 font-mono text-xs leading-5 text-foreground">
-                {result.stdout || "No stdout"}
+                {result.stdout || t("harness.surface.no_stdout")}
               </pre>
             </div>
 
@@ -335,7 +342,7 @@ export const CodeSandboxPanel = memo(function CodeSandboxPanel({
                   result.stderr ? "text-destructive" : "text-muted-foreground",
                 )}
               >
-                {result.stderr || "No stderr"}
+                {result.stderr || t("harness.surface.no_stderr")}
               </pre>
             </div>
           </div>

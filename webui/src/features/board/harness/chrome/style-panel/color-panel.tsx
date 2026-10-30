@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Label } from "@/components/ui/label"
 import {
   ContextMenu,
@@ -47,6 +48,7 @@ export function ColorGrid({
   onShadeChange,
   variant = "default",
 }: Props) {
+  const { t } = useTranslation()
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === "dark"
   const isValueTransparent = isTransparent(value)
@@ -58,7 +60,7 @@ export function ColorGrid({
   const shade: Shade = controlledShade ?? internalShade
   const isCompact = variant === "compact"
   const activeFamilyLabel = activeFamily.family
-    ? `${activeFamily.family.charAt(0).toUpperCase()}${activeFamily.family.slice(1)}`
+    ? t(`harness.colors.${activeFamily.family}`)
     : ""
 
   useEffect(() => {
@@ -217,7 +219,9 @@ export function ColorGrid({
       {activeFamily.family ? (
         <div className="space-y-1">
           <Label className="text-xs text-muted-foreground">
-            {isCompact ? activeFamilyLabel : `Shades — ${activeFamilyLabel}`}
+            {isCompact
+              ? activeFamilyLabel
+              : t("harness.colors.shades", { family: activeFamilyLabel })}
           </Label>
           <div className={cn("flex flex-wrap items-center", isCompact ? "gap-1" : "gap-2")}>
             {SHADE_STEPS.map((step, i) => {

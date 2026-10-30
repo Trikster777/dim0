@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { FilePdf, File as FileIcon, Clock, CheckCircle, Warning } from "@phosphor-icons/react"
 import { type NodeId } from "@canvas-harness/core"
 import { useCanvasStore, useNode } from "@canvas-harness/react"
@@ -16,12 +17,12 @@ export type DocumentViewProps = {
 
 const STATUS_META: Record<
   string,
-  { label: string; tone: string; icon: typeof Clock }
+  { labelKey: string; tone: string; icon: typeof Clock }
 > = {
-  pending: { label: "Pending", tone: "text-muted-foreground", icon: Clock },
-  processing: { label: "Processing", tone: "text-amber-600 dark:text-amber-400", icon: Clock },
-  completed: { label: "Ready", tone: "text-emerald-600 dark:text-emerald-400", icon: CheckCircle },
-  failed: { label: "Failed", tone: "text-destructive", icon: Warning },
+  pending: { labelKey: "harness.node.status_pending", tone: "text-muted-foreground", icon: Clock },
+  processing: { labelKey: "harness.node.status_processing", tone: "text-amber-600 dark:text-amber-400", icon: Clock },
+  completed: { labelKey: "harness.node.status_ready", tone: "text-emerald-600 dark:text-emerald-400", icon: CheckCircle },
+  failed: { labelKey: "harness.node.status_failed", tone: "text-destructive", icon: Warning },
 }
 
 
@@ -32,6 +33,7 @@ const STATUS_META: Record<
  */
 export function DocumentView({ id }: DocumentViewProps) {
   const node = useNode(id)
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const canEdit = useBoardAppStore((s) => s.canEdit)
   if (!node) return null
@@ -50,7 +52,10 @@ export function DocumentView({ id }: DocumentViewProps) {
     <div className="pointer-events-none relative h-full w-full select-none">
       <NodeTrafficLights
         onDelete={canEdit ? () => removeNodeSubtree(store, id) : undefined}
-        confirmDelete={DURABLE_DELETE.document}
+        confirmDelete={{
+          title: t(DURABLE_DELETE.document.titleKey),
+          description: t(DURABLE_DELETE.document.descriptionKey),
+        }}
       />
 
       <div
@@ -62,7 +67,7 @@ export function DocumentView({ id }: DocumentViewProps) {
         {statusMeta && StatusIcon ? (
           <div className={cn("flex items-center gap-1 text-xs", statusMeta.tone)}>
             <StatusIcon className="size-3" weight="fill" />
-            <span>{statusMeta.label}</span>
+            <span>{t(statusMeta.labelKey)}</span>
           </div>
         ) : null}
       </div>
@@ -71,7 +76,7 @@ export function DocumentView({ id }: DocumentViewProps) {
         <NodeTitleCaption
           nodeId={id}
           label={filename}
-          placeholder="Untitled file"
+          placeholder={t("harness.surface.untitled_file")}
           textClassName="text-center text-sm font-handwriting text-foreground"
         />
       </div>

@@ -1,5 +1,6 @@
 import { type CSSProperties, useEffect, useMemo, useState } from "react"
 import { useEdges, useNodes } from "@canvas-harness/react"
+import { useTranslation } from "react-i18next"
 
 import { useBoardAppStore } from "../store/board-app-store"
 import "./empty-board-coachmarks.css"
@@ -38,10 +39,10 @@ type Callout = {
 
 
 const CALLOUTS: Callout[] = [
-  { anchor: "title", label: "name your\ncanvas", color: SIDEBAR_COLORS[1], side: "below", dx: 18, dy: 70 },
-  { anchor: "toolbar", label: "tools to\nbuild", color: SIDEBAR_COLORS[0], side: "below", dx: 6, dy: 84 },
-  { anchor: "share", label: "share &\ninvite", color: SIDEBAR_COLORS[2], side: "below", dx: -14, dy: 70 },
-  { anchor: "ai-island", label: "or ask the\nAI agent", color: SIDEBAR_COLORS[3], side: "above", dx: 0, dy: -96 },
+  { anchor: "title", label: "harness.coachmarks.name_canvas", color: SIDEBAR_COLORS[1], side: "below", dx: 18, dy: 70 },
+  { anchor: "toolbar", label: "harness.coachmarks.tools_to_build", color: SIDEBAR_COLORS[0], side: "below", dx: 6, dy: 84 },
+  { anchor: "share", label: "harness.coachmarks.share_invite", color: SIDEBAR_COLORS[2], side: "below", dx: -14, dy: 70 },
+  { anchor: "ai-island", label: "harness.coachmarks.ask_ai", color: SIDEBAR_COLORS[3], side: "above", dx: 0, dy: -96 },
 ]
 
 
@@ -56,14 +57,14 @@ type Ambient = {
 
 
 const AMBIENT: Ambient[] = [
-  { kind: "note", color: SIDEBAR_COLORS[0], label: "ideas", fx: 0.15, fy: 0.34 },
-  { kind: "chip", color: SIDEBAR_COLORS[2], label: "#topic", fx: 0.28, fy: 0.66 },
+  { kind: "note", color: SIDEBAR_COLORS[0], label: "harness.coachmarks.ideas", fx: 0.15, fy: 0.34 },
+  { kind: "chip", color: SIDEBAR_COLORS[2], label: "harness.coachmarks.tag_topic", fx: 0.28, fy: 0.66 },
   { kind: "dot", color: SIDEBAR_COLORS[1], label: "", fx: 0.21, fy: 0.5 },
-  { kind: "idea", color: SIDEBAR_COLORS[0], label: "a hunch", fx: 0.8, fy: 0.36 },
-  { kind: "note", color: SIDEBAR_COLORS[3], label: "notes", fx: 0.86, fy: 0.62 },
+  { kind: "idea", color: SIDEBAR_COLORS[0], label: "harness.coachmarks.a_hunch", fx: 0.8, fy: 0.36 },
+  { kind: "note", color: SIDEBAR_COLORS[3], label: "harness.coachmarks.notes", fx: 0.86, fy: 0.62 },
   { kind: "dot", color: SIDEBAR_COLORS[2], label: "", fx: 0.72, fy: 0.52 },
-  { kind: "chip", color: SIDEBAR_COLORS[1], label: "#link", fx: 0.52, fy: 0.82 },
-  { kind: "note", color: SIDEBAR_COLORS[1], label: "to-do", fx: 0.62, fy: 0.2 },
+  { kind: "chip", color: SIDEBAR_COLORS[1], label: "harness.coachmarks.tag_link", fx: 0.52, fy: 0.82 },
+  { kind: "note", color: SIDEBAR_COLORS[1], label: "harness.coachmarks.todo", fx: 0.62, fy: 0.2 },
   { kind: "dot", color: SIDEBAR_COLORS[0], label: "", fx: 0.4, fy: 0.18 },
 ]
 
@@ -91,6 +92,7 @@ const MOBILE_BREAKPOINT = 768
  * node or edge created unmounts it.
  */
 export function EmptyBoardCoachmarks({ ready }: { ready: boolean }) {
+  const { t } = useTranslation()
   const canEdit = useBoardAppStore((s) => s.canEdit)
   const presentationMode = useBoardAppStore((s) => s.presentationMode)
   const nodes = useNodes()
@@ -201,7 +203,7 @@ export function EmptyBoardCoachmarks({ ready }: { ready: boolean }) {
           key={`an-${i}`}
           kind={p.kind}
           color={p.color}
-          label={p.label}
+          label={t(p.label)}
           x={p.x}
           y={p.y}
           floatSeed={i}
@@ -213,7 +215,7 @@ export function EmptyBoardCoachmarks({ ready }: { ready: boolean }) {
           key={`cl-${callout.anchor}`}
           kind="idea"
           color={callout.color}
-          label={callout.label}
+          label={t(callout.label)}
           x={bubble.x}
           y={bubble.y}
           floatSeed={i + 0.5}

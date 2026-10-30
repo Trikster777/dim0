@@ -18,6 +18,7 @@ import { Component, type ErrorInfo, type ReactNode } from "react"
 import { WarningIcon } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
+import { i18n } from "@/i18n"
 
 
 export interface NodeErrorBoundaryProps {
@@ -61,8 +62,8 @@ export class NodeErrorBoundary extends Component<NodeErrorBoundaryProps, State> 
           <WarningIcon className="size-5 shrink-0 text-destructive" />
           <span className="text-sm font-medium text-destructive">
             {this.props.nodeType
-              ? `${this.props.nodeType} failed to render`
-              : "Node failed to render"}
+              ? i18n.t("harness.node.render_failed_with_type", { type: this.props.nodeType })
+              : i18n.t("harness.node.render_failed")}
           </span>
           <span className="font-mono text-xs text-muted-foreground line-clamp-2">
             {this.state.error.message}

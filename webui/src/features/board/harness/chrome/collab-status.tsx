@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 import { useCollabConnState } from "../canvas/collab-reconnect"
 
@@ -7,11 +8,11 @@ type StatusKey = "idle" | "connecting" | "live" | "reconnecting" | "failed" | "r
 
 const STATUS_LABEL: Record<StatusKey, string> = {
   idle: "",
-  connecting: "Connecting…",
+  connecting: "harness.collab.connecting",
   live: "",
-  reconnecting: "Reconnecting…",
-  failed: "Disconnected — refresh to retry",
-  "room-full": "Board is full — try again later",
+  reconnecting: "harness.collab.reconnecting",
+  failed: "harness.collab.failed",
+  "room-full": "harness.collab.room_full",
 }
 
 
@@ -35,9 +36,10 @@ const STATUS_CLASS: Record<StatusKey, string> = {
  * `harness-canvas.tsx`.
  */
 export function HarnessCollabStatus() {
+  const { t } = useTranslation()
   const state = useCollabConnState()
-  const label = STATUS_LABEL[state]
-  if (!label) return null
+  const labelKey = STATUS_LABEL[state]
+  if (!labelKey) return null
   return (
     <div
       className={cn(
@@ -47,7 +49,7 @@ export function HarnessCollabStatus() {
       aria-live="polite"
       role="status"
     >
-      {label}
+      {t(labelKey)}
     </div>
   )
 }

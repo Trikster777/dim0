@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { type CanvasStore, type NodeId } from "@canvas-harness/core"
 import { toast } from "sonner"
 
@@ -22,6 +23,7 @@ import { toast } from "sonner"
  * `<textarea>` / `contentEditable` targets.
  */
 export const useBlockFolderCopy = (store: CanvasStore): void => {
+  const { t } = useTranslation()
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const isCopyOrCut =
@@ -47,13 +49,13 @@ export const useBlockFolderCopy = (store: CanvasStore): void => {
       e.stopPropagation()
       toast.info(
         e.key === "x" || e.key === "X"
-          ? "Folders can't be cut — open the folder and cut its contents instead."
-          : "Folders can't be copied — open the folder and copy its contents instead.",
+          ? t("harness.toast.folder_cut_blocked")
+          : t("harness.toast.folder_copy_blocked"),
       )
     }
     document.addEventListener("keydown", onKeyDown, { capture: true })
     return () => {
       document.removeEventListener("keydown", onKeyDown, { capture: true })
     }
-  }, [store])
+  }, [store, t])
 }

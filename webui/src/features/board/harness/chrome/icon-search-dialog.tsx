@@ -2,6 +2,7 @@ import { useCallback, useState } from "react"
 import { Icon } from "@iconify/react"
 import { screenToWorld } from "@canvas-harness/core"
 import { useCanvasStore } from "@canvas-harness/react"
+import { useTranslation } from "react-i18next"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -61,6 +62,7 @@ const IconSearchDialogBody = ({
   onClose: () => void
 }) => {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const wrapRef = useHarnessWrapRef()
   const boardId = useBoardAppStore((s) => s.boardId)
   const rootId = useBoardAppStore((s) => s.rootId)
@@ -90,11 +92,11 @@ const IconSearchDialogBody = ({
   return (
     <>
       <DialogHeader className="w-full border-b p-4 text-center text-secondary-foreground">
-        <DialogTitle>Search icons</DialogTitle>
+        <DialogTitle>{t("harness.icon_search.title")}</DialogTitle>
       </DialogHeader>
       <div className="p-4">
         <Input
-          placeholder="Search Icon…"
+          placeholder={t("harness.icon_search.placeholder")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           autoFocus
@@ -124,7 +126,7 @@ const IconSearchDialogBody = ({
             ))}
             {debouncedQ && !data?.length && (
               <div className="col-span-full p-4 text-sm text-muted-foreground">
-                No results
+                {t("harness.icon_search.no_results")}
               </div>
             )}
           </div>

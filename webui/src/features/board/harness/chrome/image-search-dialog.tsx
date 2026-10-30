@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "react"
 import { screenToWorld } from "@canvas-harness/core"
 import { useCanvasStore } from "@canvas-harness/react"
+import { useTranslation } from "react-i18next"
 import { ImagePlaceholderIcon } from "@/components/icons"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -49,6 +50,7 @@ const ImageSearchDialogBody = ({
   onClose: () => void
 }) => {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const wrapRef = useHarnessWrapRef()
   const boardId = useBoardAppStore((s) => s.boardId)
   const rootId = useBoardAppStore((s) => s.rootId)
@@ -110,11 +112,11 @@ const ImageSearchDialogBody = ({
   return (
     <>
       <DialogHeader className="w-full border-b p-4 text-center text-secondary-foreground">
-        <DialogTitle>Search images</DialogTitle>
+        <DialogTitle>{t("harness.image_search.title")}</DialogTitle>
       </DialogHeader>
       <div className="p-4">
         <Input
-          placeholder="Search Unsplash…"
+          placeholder={t("harness.image_search.placeholder")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           autoFocus
@@ -129,7 +131,11 @@ const ImageSearchDialogBody = ({
           className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-muted-foreground/40 bg-muted/30 px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-secondary-foreground/75 hover:bg-muted/50 hover:text-secondary-foreground disabled:cursor-not-allowed disabled:opacity-60"
         >
           <ImagePlaceholderIcon className="size-4 shrink-0" />
-          <span>{isImporting ? "Importing…" : "Import from computer"}</span>
+          <span>
+            {isImporting
+              ? t("harness.image_search.importing")
+              : t("harness.image_search.import_from_computer")}
+          </span>
         </button>
         <input
           ref={fileInputRef}
@@ -159,7 +165,7 @@ const ImageSearchDialogBody = ({
               >
                 <img
                   src={img.url}
-                  alt={img.description || "image"}
+                  alt={img.description || t("harness.image_search.alt")}
                   loading="lazy"
                   decoding="async"
                   className="size-full object-cover"
@@ -168,7 +174,7 @@ const ImageSearchDialogBody = ({
             ))}
             {debouncedQ && !data?.length && (
               <div className="col-span-full p-4 text-sm text-muted-foreground">
-                No results
+                {t("harness.image_search.no_results")}
               </div>
             )}
           </div>

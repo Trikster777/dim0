@@ -1,4 +1,5 @@
 import { useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { PaletteIcon } from "@phosphor-icons/react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useTheme } from "@/components/theme-provider"
@@ -29,6 +30,7 @@ type SheetColorPickerProps = {
  * on shade-100 membership, so this never pollutes the shared style memory.
  */
 export function SheetColorPicker({ value, onPick }: SheetColorPickerProps) {
+  const { t } = useTranslation()
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === "dark"
   // Preview the dot the way the canvas paints it — dark-adapted in dark mode,
@@ -47,8 +49,8 @@ export function SheetColorPicker({ value, onPick }: SheetColorPickerProps) {
           type="button"
           onClick={(e) => e.stopPropagation()}
           onDoubleClick={(e) => e.stopPropagation()}
-          aria-label="Background color"
-          title="Background color"
+          aria-label={t("harness.sheet_color.background_color")}
+          title={t("harness.sheet_color.background_color")}
           className={cn(
             "pointer-events-auto flex size-6 items-center justify-center rounded-full",
             "border border-border/60 bg-card/80 text-muted-foreground shadow-sm backdrop-blur",
@@ -84,7 +86,7 @@ export function SheetColorPicker({ value, onPick }: SheetColorPickerProps) {
             )}
           >
             <span className="size-4 rounded-sm border border-border/60 bg-card" />
-            Default
+            {t("harness.sheet_color.default")}
           </button>
           <div className="grid grid-cols-6 gap-1">
             {SHADE_100.map((c) => (

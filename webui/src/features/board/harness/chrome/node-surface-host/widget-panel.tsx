@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { CancelPlainIcon, DownloadIcon, LayoutIcon } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -32,6 +33,7 @@ export const WidgetPanel = memo(function WidgetPanel({
   onClose,
 }: WidgetPanelProps) {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const node = useNode(nodeId as NodeId)
   const data = (node?.data ?? {}) as Partial<NoteNodeData>
   const setActiveSurfaceLabel = useBoardAppStore((s) => s.setActiveSurfaceLabel)
@@ -113,7 +115,7 @@ export const WidgetPanel = memo(function WidgetPanel({
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "") || "widget"
 
-    const fullHtml = buildWidgetDocument(html, data.label?.markdown || "Widget")
+    const fullHtml = buildWidgetDocument(html, data.label?.markdown || t("harness.surface.widget"))
     const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
@@ -123,21 +125,21 @@ export const WidgetPanel = memo(function WidgetPanel({
     link.click()
     link.remove()
     URL.revokeObjectURL(url)
-  }, [htmlDraft, data.label?.markdown])
+  }, [htmlDraft, data.label?.markdown, t])
 
   if (!node) {
     return (
       <div className={`${PANEL_CLASS} items-center justify-center gap-3 text-sm text-muted-foreground`}>
-        <p>This widget no longer exists.</p>
+        <p>{t("harness.surface.widget_missing")}</p>
         <Button variant="outline" size="sm" onClick={onClose}>
-          Close
+          {t("common.close")}
         </Button>
       </div>
     )
   }
 
   const html = htmlDraft.trim()
-  const displayTitle = data.label?.markdown?.trim() || "Untitled widget"
+  const displayTitle = data.label?.markdown?.trim() || t("harness.surface.untitled_widget")
 
   return (
     <div className={PANEL_CLASS} onClick={(e) => e.stopPropagation()}>
@@ -162,7 +164,7 @@ export const WidgetPanel = memo(function WidgetPanel({
                   }
                 }}
                 className="w-full border-0 border-b border-foreground/30 bg-transparent px-0 py-0.5 text-sm font-semibold text-foreground focus:border-secondary-foreground focus:outline-none"
-                placeholder="Untitled widget"
+                placeholder={t("harness.surface.untitled_widget")}
               />
             ) : (
               <button
@@ -181,8 +183,8 @@ export const WidgetPanel = memo(function WidgetPanel({
             variant="ghost"
             size="icon-sm"
             onClick={handleDownloadHtml}
-            title="Download HTML"
-            aria-label="Download HTML"
+            title={t("harness.surface.download_html")}
+            aria-label={t("harness.surface.download_html")}
             disabled={!html}
           >
             <DownloadIcon className="size-4" />
@@ -191,8 +193,8 @@ export const WidgetPanel = memo(function WidgetPanel({
             variant="ghost"
             size="icon-sm"
             onClick={onClose}
-            title="Close"
-            aria-label="Close"
+            title={t("common.close")}
+            aria-label={t("common.close")}
           >
             <CancelPlainIcon className="size-4" />
           </Button>
@@ -202,8 +204,8 @@ export const WidgetPanel = memo(function WidgetPanel({
       <Tabs value={activeTab} onValueChange={setActiveTab} className="min-h-0 flex-1 gap-0">
         <div className="border-b border-border/70 px-4 py-2">
           <TabsList>
-            <TabsTrigger value="rendered">Rendered</TabsTrigger>
-            <TabsTrigger value="code">Code</TabsTrigger>
+            <TabsTrigger value="rendered">{t("harness.surface.rendered")}</TabsTrigger>
+            <TabsTrigger value="code">{t("harness.surface.code")}</TabsTrigger>
           </TabsList>
         </div>
 
@@ -212,12 +214,12 @@ export const WidgetPanel = memo(function WidgetPanel({
             {html ? (
               <WidgetIframe
                 html={html}
-                title="Widget"
+                title={t("harness.surface.widget")}
                 className="h-full w-full border-0 bg-transparent"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-                Widget HTML is empty.
+                {t("harness.surface.widget_empty")}
               </div>
             )}
           </div>
