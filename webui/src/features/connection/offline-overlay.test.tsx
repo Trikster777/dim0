@@ -1,6 +1,7 @@
 import { act } from "react"
 import { createRoot, type Root } from "react-dom/client"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
+import { initI18n } from "@/i18n"
 
 
 const state = vi.hoisted(() => ({
@@ -32,6 +33,10 @@ const overlay = (): Element | null => container.querySelector("[role='alertdialo
 
 
 describe("OfflineOverlay", () => {
+  beforeAll(async () => {
+    await initI18n()
+  })
+
   beforeEach(() => {
     container = document.createElement("div")
     document.body.appendChild(container)

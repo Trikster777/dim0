@@ -17,6 +17,7 @@ import { useBoardOfflineStatus } from "@/features/board/api/board-offline-status
 import { nodeSurfaceKindFromPath } from "@/features/board/utils/node-surface-url"
 import { useState, type MouseEvent } from "react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+import { useTranslation } from "react-i18next"
 
 /**
  * The open surface (sheet/code-sandbox/applet) — or scoped folder — node id for
@@ -46,6 +47,7 @@ function useActiveTreeId(boardId: string): string | null {
  * Dashboard menu item component
  */
 export function DashboardMenuItem() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
 
@@ -63,7 +65,7 @@ export function DashboardMenuItem() {
         isActive={isActive}
       >
         <DashboardAddIcon className="shrink-0 size-4 text-sidebar-icon-2" weight={isActive ? 'fill' : undefined} strokeWidth={2} />
-        <span>Dashboard</span>
+        <span>{t('sidebar.nav.dashboard')}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
@@ -76,11 +78,12 @@ export function DashboardMenuItem() {
  * here. Local-only boards are the dialog's fallback, not created from this button.
  */
 export function NewBoardItem({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation()
   return (
     <SidebarMenuItem>
       <SidebarMenuButton className="text-xs text-secondary-foreground font-medium transition-all" onClick={onClick}>
         <EditIcon className="text-xs shrink-0 text-sidebar-icon-1" strokeWidth={2} />
-        <span>New board</span>
+        <span>{t('sidebar.board.new_board')}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
@@ -93,6 +96,7 @@ export function NewBoardItem({ onClick }: { onClick: () => void }) {
  * is wired by the sidebar to the local registry + navigation.
  */
 export function NewLocalBoardItem({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation()
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
@@ -100,7 +104,7 @@ export function NewLocalBoardItem({ onClick }: { onClick: () => void }) {
         onClick={onClick}
       >
         <EditIcon className="text-xs shrink-0 text-sidebar-icon-1" strokeWidth={2} />
-        <span>New board</span>
+        <span>{t('sidebar.board.new_board')}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
@@ -134,6 +138,7 @@ export function LocalBoardItem({
 }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const { t } = useTranslation()
   const boardLabel = label || UNTITLED_LABEL
   const boardDisplayLabel = trimText(boardLabel, 20)
 
@@ -164,7 +169,7 @@ export function LocalBoardItem({
                 >
                   <span
                     role="button"
-                    aria-label={isOpen ? "Collapse board" : "Expand board"}
+                    aria-label={isOpen ? t('sidebar.board.collapse') : t('sidebar.board.expand')}
                     onClick={handleToggle}
                     className="size-4 shrink-0 grid place-items-center cursor-pointer"
                   >
@@ -186,7 +191,7 @@ export function LocalBoardItem({
             </TooltipTrigger>
             <TooltipContent side="right" align="center" className="max-w-64">
               <p className="text-xs">{boardLabel}</p>
-              <p className="mt-1 text-[10px] text-muted-foreground">On this device</p>
+              <p className="mt-1 text-[10px] text-muted-foreground">{t('sidebar.board.on_this_device')}</p>
             </TooltipContent>
           </Tooltip>
 
@@ -197,7 +202,7 @@ export function LocalBoardItem({
               className="text-xs flex flex-row items-center"
             >
               <CloudArrowUpIcon className="mr-2 size-4" strokeWidth={2} />
-              <span>{syncing ? "Enabling sync…" : "Enable sync"}</span>
+              <span>{syncing ? t('sidebar.board.enabling_sync') : t('sidebar.board.enable_sync')}</span>
             </ContextMenuItem>
             <ContextMenuItem
               onSelect={() =>
@@ -207,15 +212,15 @@ export function LocalBoardItem({
               className="text-xs flex flex-row items-center"
             >
               <DeleteIcon className="mr-2 size-4" strokeWidth={2} />
-              <span>Delete board</span>
+              <span>{t('sidebar.board.delete')}</span>
             </ContextMenuItem>
           </ContextMenuContent>
 
           <CollapsibleContent>
             {isLoading && rootContents.length === 0 ? (
-              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">Loading…</p>
+              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">{t('common.loading')}</p>
             ) : rootContents.length === 0 ? (
-              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">Empty</p>
+              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">{t('common.empty')}</p>
             ) : (
               <ul className="flex flex-col">
                 {rootContents.map((item) => (
@@ -248,8 +253,8 @@ export function LocalBoardItem({
           e.stopPropagation()
           onEnableSync()
         }}
-        title={syncing ? "Enabling sync…" : "Enable sync — back up + share this board"}
-        aria-label="Enable sync"
+        title={syncing ? t('sidebar.board.enabling_sync') : t('sidebar.board.enable_sync_hint')}
+        aria-label={t('sidebar.board.enable_sync')}
         className={cn(
           "text-muted-foreground/50 hover:text-secondary-foreground",
           syncing && "opacity-50",
@@ -289,6 +294,7 @@ export function BoardItem({
 }) {
   const { deleteBoard } = useDeleteBoard()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const pathname = useRouterState({ select: s => s.location.pathname })
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
@@ -358,7 +364,7 @@ export function BoardItem({
                 >
                   <span
                     role="button"
-                    aria-label={isOpen ? "Collapse board" : "Expand board"}
+                    aria-label={isOpen ? t('sidebar.board.collapse') : t('sidebar.board.expand')}
                     onClick={handleToggle}
                     className="size-4 shrink-0 grid place-items-center cursor-pointer"
                   >
@@ -382,7 +388,7 @@ export function BoardItem({
               <p className="text-xs">{boardLabel}</p>
               {sharedByEmail && (
                 <p className="mt-1 text-[10px] text-muted-foreground">
-                  shared by {sharedByEmail}
+                  {t('sidebar.board.shared_by', { email: sharedByEmail })}
                 </p>
               )}
             </TooltipContent>
@@ -396,22 +402,22 @@ export function BoardItem({
                 className="text-xs flex flex-row items-center"
               >
                 <DeleteIcon className="mr-2 size-4" strokeWidth={2} />
-                <span>Delete Board</span>
+                <span>{t('sidebar.board.delete_synced')}</span>
               </ContextMenuItem>
             </ContextMenuContent>
           )}
 
           <CollapsibleContent>
             {offlineAvailable === undefined ? (
-              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">Loading…</p>
+              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">{t('common.loading')}</p>
             ) : !canShowTree ? (
               <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">
-                Download for offline to view contents
+                {t('sidebar.board.download_to_view')}
               </p>
             ) : isLoadingContents && rootContents.length === 0 ? (
-              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">Loading…</p>
+              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">{t('common.loading')}</p>
             ) : rootContents.length === 0 ? (
-              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">Empty</p>
+              <p className="pl-7 py-1 text-[11px] italic text-muted-foreground">{t('common.empty')}</p>
             ) : (
               <ul className="flex flex-col">
                 {rootContents.map((item) => (
@@ -436,8 +442,8 @@ export function BoardItem({
       <SidebarMenuAction
         className="right-1.5 text-muted-foreground/40 hover:text-muted-foreground hover:bg-transparent"
         onClick={() => setChatsDialogOpen(true)}
-        title="View chats in this board"
-        aria-label="View chats in this board"
+        title={t('sidebar.board.view_chats')}
+        aria-label={t('sidebar.board.view_chats')}
       >
         <ChatHistoryIcon className="size-4" strokeWidth={2} />
       </SidebarMenuAction>
@@ -446,7 +452,7 @@ export function BoardItem({
         open={chatsDialogOpen}
         onOpenChange={setChatsDialogOpen}
         boardId={boardId}
-        title={`Chats — ${boardDisplayLabel}`}
+        title={t('sidebar.chats.dialog_title_for_board', { board: boardDisplayLabel })}
       />
 
       <ConfirmDeleteBoardAlert

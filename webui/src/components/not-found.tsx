@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const DotLottieReact = lazy(async () => {
   const m = await import('@lottiefiles/dotlottie-react')
@@ -23,10 +24,11 @@ function Lottie404({ size = 540 }: { size?: number }) {
  * 404 Not Found Page
  */
 export function NotFoundPage() {
+  const { t } = useTranslation()
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-transparent">
       <div className="flex flex-col items-center justify-center gap-0 text-center px-4">
-        <div className="text-3xl sm:text-4xl font-semibold text-foreground">Page not found</div>
+        <div className="text-3xl sm:text-4xl font-semibold text-foreground">{t('not_found.title')}</div>
         <Lottie404 />
       </div>
     </div>

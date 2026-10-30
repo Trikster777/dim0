@@ -9,6 +9,7 @@ import { BOARD_CONTENT_KIND_ICONS } from "@/features/board/utils/board-content-k
 import { nodeSurfacePath } from "@/features/board/utils/node-surface-url"
 import { trimText } from "@/lib/common"
 import { UNTITLED_LABEL } from "@/features/board/const"
+import { useTranslation } from "react-i18next"
 
 
 const MAX_VISUAL_DEPTH = 5
@@ -67,6 +68,7 @@ export function BoardTreeNode({
   activeId,
 }: BoardTreeNodeProps) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
 
   const isFolder = item.kind === "folder"
@@ -150,7 +152,7 @@ export function BoardTreeNode({
             type="button"
             onClick={handleToggle}
             className="size-5 shrink-0 grid place-items-center rounded hover:bg-sidebar-accent-foreground/10"
-            aria-label={expanded ? `Collapse ${item.kind}` : `Expand ${item.kind}`}
+            aria-label={expanded ? t('sidebar.tree.collapse', { kind: item.kind }) : t('sidebar.tree.expand', { kind: item.kind })}
           >
             {customIcon ? (
               <span
@@ -215,7 +217,7 @@ export function BoardTreeNode({
               className="py-1 text-[11px] italic text-muted-foreground"
               style={{ paddingLeft: paddingLeft + INDENT_PX_PER_LEVEL + 20 }}
             >
-              {isSheet ? "No sub-pages" : "Empty"}
+              {isSheet ? t('sidebar.tree.no_sub_pages') : t('common.empty')}
             </li>
           ) : (
             children.map((child) => (

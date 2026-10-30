@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { CSSProperties } from "react"
+import { useTranslation } from "react-i18next"
 
 import { useCanvasSurface } from "@/lib/canvas/use-canvas-surface"
 import { useCaptureReady } from "@/lib/canvas/use-capture-ready"
@@ -40,6 +41,7 @@ function definiteHeight(height: number | string | undefined): string | undefined
 
 export function MapElement(props: MapProps) {
   const { height = 320 } = props
+  const { t } = useTranslation()
   const [geo, setGeo] = useState<WorldGeo | null>(null)
   const [failed, setFailed] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -117,7 +119,7 @@ export function MapElement(props: MapProps) {
   if (failed) {
     return (
       <div data-capture-ready="true" className="flex items-center justify-center p-4 text-sm text-muted-foreground" style={wrapStyle}>
-        Map failed to load.
+        {t("charts.map.failed")}
       </div>
     )
   }
@@ -125,7 +127,7 @@ export function MapElement(props: MapProps) {
   if (!view) {
     return (
       <div data-capture-ready="false" className="flex items-center justify-center p-4 text-sm text-muted-foreground" style={wrapStyle}>
-        Loading map…
+        {t("charts.map.loading")}
       </div>
     )
   }

@@ -43,6 +43,7 @@ import { LanguageToggle } from '@/components/language-toggle'
 import { HomeMenuItem } from './home'
 import { useNavigate } from '@tanstack/react-router'
 import { TierBadge } from '@/features/user-settings/components/tier-badge'
+import { useTranslation } from 'react-i18next'
 
 
 /**
@@ -61,6 +62,7 @@ type AppSidebarProps = {
 const CHAT_HISTORY_PAGE_SIZE = 50
 
 export function AppSidebar({ onLogout }: AppSidebarProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const userId = useAppStore(s => s.userId)
   const userEmail = useAppStore(s => s.userEmail)
@@ -107,9 +109,9 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
     if (creatingLocalRef.current) return
     creatingLocalRef.current = true
     try {
-      const meta = await createBoard("Untitled board")
+      const meta = await createBoard(t('sidebar.board.untitled_title'))
       if (meta) openLocal(meta.id)
-      else toast.error("Couldn't create a board. Please try again.")
+      else toast.error(t('sidebar.board.create_failed'))
     } finally {
       creatingLocalRef.current = false
     }
@@ -150,7 +152,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
             return
           }
           // Genuine failure (offline, 5xx).
-          toast.error("Couldn't create a board. Please try again.")
+          toast.error(t('sidebar.board.create_failed'))
         },
       )
       .finally(() => {
@@ -258,7 +260,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                       className="h-auto py-2 min-w-0 flex-1"
                       onClick={() => navigate({ to: "/" })}
                     >
-                      <img src="/dim0.svg" alt="Dim0 Home" className="h-7 w-7 shrink-0" />
+                      <img src="/dim0.svg" alt={t('sidebar.brand.logo_alt')} className="h-7 w-7 shrink-0" />
                       <span className="font-medium">Dim0</span>
                     </SidebarMenuButton>
 
@@ -266,8 +268,8 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                       type="button"
                       className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                       onClick={() => navigate({ to: "/install" })}
-                      aria-label="Install app"
-                      title="Install app"
+                      aria-label={t('sidebar.install.label')}
+                      title={t('sidebar.install.label')}
                     >
                       <InstallAppIcon className="size-4" strokeWidth={2} />
                     </button>
@@ -282,7 +284,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
         <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin [.tauri:not(.tauri-fullscreen)_&]:pt-11">
           <div className="pb-0">
             <SidebarGroup>
-              <SidebarGroupLabel><span>WORKSPACE</span></SidebarGroupLabel>
+              <SidebarGroupLabel><span>{t('sidebar.section.workspace')}</span></SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   <HomeMenuItem />
@@ -298,7 +300,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                     on-device board directly (paid users never hit the at-limit
                     dialog, so this is their only entry point). */}
                 <SidebarGroup>
-                  <SidebarGroupLabel><span>SYNCED</span></SidebarGroupLabel>
+                  <SidebarGroupLabel><span>{t('sidebar.section.synced')}</span></SidebarGroupLabel>
                   <SidebarGroupContent>
                     <SidebarMenu>
                       <NewBoardItem onClick={handleNewBoard} />
@@ -308,14 +310,14 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                 </SidebarGroup>
 
                 <SidebarGroup>
-                  <SidebarGroupLabel><span>LOCAL</span></SidebarGroupLabel>
+                  <SidebarGroupLabel><span>{t('sidebar.section.local')}</span></SidebarGroupLabel>
                   <SidebarGroupAction
                     type="button"
-                    title="New local board"
+                    title={t('sidebar.board.new_local_board')}
                     onClick={() => void handleNewLocal()}
                   >
                     <PlusIcon strokeWidth={2} />
-                    <span className="sr-only">New local board</span>
+                    <span className="sr-only">{t('sidebar.board.new_local_board')}</span>
                   </SidebarGroupAction>
                   <SidebarGroupContent>
                     <SidebarMenu>
@@ -327,7 +329,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
             ) : (
               // Signed-out: local-first. "New board" creates an on-device board.
               <SidebarGroup>
-                <SidebarGroupLabel><span>LOCAL</span></SidebarGroupLabel>
+                <SidebarGroupLabel><span>{t('sidebar.section.local')}</span></SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <NewLocalBoardItem onClick={() => void handleNewLocal()} />
@@ -339,7 +341,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
 
             {sharedBoardItems.length > 0 && (
               <SidebarGroup>
-                <SidebarGroupLabel><span>SHARED WITH ME</span></SidebarGroupLabel>
+                <SidebarGroupLabel><span>{t('sidebar.section.shared_with_me')}</span></SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {sharedBoardItems}
@@ -350,7 +352,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
 
             {signedIn && (
               <SidebarGroup>
-                <SidebarGroupLabel><span>CHATS</span></SidebarGroupLabel>
+                <SidebarGroupLabel><span>{t('sidebar.section.chats')}</span></SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <NewChatItem />
@@ -363,7 +365,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                         className="font-medium text-xs"
                       >
                         <ChatHistoryIcon className="size-4 shrink-0" strokeWidth={2} />
-                        <span>View all chats</span>
+                        <span>{t('sidebar.chats.view_all')}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   </SidebarMenu>
@@ -416,7 +418,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                           onClick={() => navigate({ to: "/settings" })}
                         >
                           <UserProfileIcon className="mr-2 h-4 w-4" strokeWidth={2} />
-                          <span>Profile</span>
+                          <span>{t('sidebar.account.profile')}</span>
                         </DropdownMenuItem>
                         {billingActive ? (
                           <DropdownMenuItem
@@ -424,13 +426,13 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                             onClick={() => navigate({ to: "/settings/billing" })}
                           >
                             <AwardIcon className="mr-2 h-4 w-4 text-secondary-foreground" strokeWidth={2} />
-                            <span>Upgrade Plan</span>
+                            <span>{t('sidebar.account.upgrade_plan')}</span>
                           </DropdownMenuItem>
                         ) : null}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={onLogout} className='text-xs'>
                           <LogoutIcon className="mr-2 h-4 w-4" strokeWidth={2} />
-                          <span>Logout</span>
+                          <span>{t('sidebar.account.logout')}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -440,7 +442,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
 
                   <div className="ml-auto shrink-0 pt-1 flex items-center gap-1">
                     <LanguageToggle />
-                    <ModeToggle aria-label="Toggle theme" />
+                    <ModeToggle aria-label={t('theme.toggle')} />
                   </div>
                 </div>
               </SidebarMenuItem>

@@ -5,6 +5,7 @@ import {
   useBoardOfflineStatus,
   useDownloadBoard,
 } from "@/features/board/api/board-offline-status"
+import { useTranslation } from "react-i18next"
 
 
 /**
@@ -14,6 +15,7 @@ import {
  * downloading). Sits left of the chats action (`right-8`).
  */
 export function BoardOfflineAction({ boardId }: { boardId: string }) {
+  const { t } = useTranslation()
   const { data: offline } = useBoardOfflineStatus(boardId)
   const download = useDownloadBoard()
   const downloading = download.isPending
@@ -25,8 +27,8 @@ export function BoardOfflineAction({ boardId }: { boardId: string }) {
     return (
       <SidebarMenuAction
         className="right-8 text-secondary-foreground/50 hover:bg-transparent cursor-default"
-        title="Available offline"
-        aria-label="Available offline"
+        title={t('sidebar.offline.available')}
+        aria-label={t('sidebar.offline.available')}
         tabIndex={-1}
       >
         <CloudCheckIcon className="size-4" strokeWidth={2} />
@@ -44,8 +46,8 @@ export function BoardOfflineAction({ boardId }: { boardId: string }) {
         e.stopPropagation()
         if (!downloading) download.mutate(boardId)
       }}
-      title={downloading ? "Downloading for offline…" : "Download for offline use"}
-      aria-label={downloading ? "Downloading for offline" : "Download for offline use"}
+      title={downloading ? t('sidebar.offline.downloading') : t('sidebar.offline.download')}
+      aria-label={downloading ? t('sidebar.offline.downloading_label') : t('sidebar.offline.download')}
     >
       <CloudArrowDownIcon
         className={cn("size-4", downloading && "animate-pulse")}

@@ -1,10 +1,36 @@
 {
+  "charts": {
+    "chart": {
+      "loading": "Loading chart"
+    },
+    "map": {
+      "failed": "Map failed to load.",
+      "loading": "Loading map…"
+    }
+  },
   "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "command_palette": {
+      "description": "Search for a command to run...",
+      "title": "Command Palette"
+    },
+    "delete": "Delete",
+    "empty": "Empty",
     "language_toggle": {
       "aria_label": "Change language",
       "english": "English",
       "label": "Language",
       "russian": "Русский"
+    },
+    "loading": "Loading…"
+  },
+  "desktop": {
+    "window": {
+      "close": "Close",
+      "maximize": "Maximize",
+      "minimize": "Minimize",
+      "restore": "Restore"
     }
   },
   "errors": {
@@ -20,5 +46,144 @@
     "timeout": "The request timed out. Try again.",
     "unauthorized": "Your session has expired. Sign in again.",
     "unavailable": "The service is unavailable right now. Try again."
+  },
+  "home": {
+    "page": {
+      "note_boards": "Note Boards"
+    }
+  },
+  "markdown": {
+    "link": {
+      "source_label": "source"
+    },
+    "page_ref": {
+      "untitled": "Untitled"
+    },
+    "table": {
+      "container": "Table container"
+    }
+  },
+  "not_found": {
+    "title": "Page not found"
+  },
+  "offline": {
+    "overlay": {
+      "board_description": "You're offline and this board hasn't been downloaded to this device. It'll open automatically once you're back online.",
+      "board_title": "This board isn't available offline",
+      "server_description": "Check your internet connection. We'll reconnect automatically as soon as the server is reachable again.",
+      "server_title": "Can't reach the Dim0 server"
+    }
+  },
+  "progress": {
+    "bar": {
+      "estimated": "Estimated"
+    }
+  },
+  "sidebar": {
+    "account": {
+      "billing": "Billing",
+      "logout": "Logout",
+      "profile": "Profile",
+      "upgrade_plan": "Upgrade Plan"
+    },
+    "board": {
+      "collapse": "Collapse board",
+      "create_failed": "Couldn't create a board. Please try again.",
+      "delete": "Delete board",
+      "delete_synced": "Delete Board",
+      "download_to_view": "Download for offline to view contents",
+      "enable_sync": "Enable sync",
+      "enable_sync_hint": "Enable sync — back up + share this board",
+      "enabling_sync": "Enabling sync…",
+      "expand": "Expand board",
+      "new_board": "New board",
+      "new_local_board": "New local board",
+      "on_this_device": "On this device",
+      "shared_by": "shared by {{email}}",
+      "untitled_title": "Untitled board",
+      "view_chats": "View chats in this board"
+    },
+    "brand": {
+      "logo_alt": "Dim0 Home"
+    },
+    "chat": {
+      "delete": "Delete Chat",
+      "new_chat": "New Chat"
+    },
+    "chats": {
+      "all": "All chats",
+      "dialog_title_for_board": "Chats — {{board}}",
+      "empty": "No chats yet.",
+      "in_this_board": "Chats in this board",
+      "view_all": "View all chats"
+    },
+    "confirm_delete": {
+      "description": "This will permanently delete this board and all its chats. This action cannot be undone.",
+      "title": "Delete this board?"
+    },
+    "install": {
+      "label": "Install app"
+    },
+    "mobile": {
+      "description": "Displays the mobile sidebar.",
+      "title": "Sidebar"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "home": "Home",
+      "newsfeed": "Newsfeed"
+    },
+    "offline": {
+      "available": "Available offline",
+      "download": "Download for offline use",
+      "downloading": "Downloading for offline…",
+      "downloading_label": "Downloading for offline"
+    },
+    "section": {
+      "chats": "CHATS",
+      "local": "LOCAL",
+      "shared_with_me": "SHARED WITH ME",
+      "synced": "SYNCED",
+      "workspace": "WORKSPACE"
+    },
+    "sheet": {
+      "label": "Sheet"
+    },
+    "sign_in_cta": {
+      "hint": "Signing up is completely free — no credit card required",
+      "label": "Sign in to sync & share"
+    },
+    "subscriptions": {
+      "fallback": "Topics"
+    },
+    "toggle": "Toggle Sidebar",
+    "tree": {
+      "collapse": "Collapse {{kind}}",
+      "expand": "Expand {{kind}}",
+      "no_sub_pages": "No sub-pages"
+    }
+  },
+  "theme": {
+    "mode": {
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System"
+    },
+    "name": {
+      "catppuccin": "Catppuccin",
+      "gruvbox": "Gruvbox",
+      "matcha": "Matcha",
+      "monokai_pro": "Monokai Pro",
+      "noir": "Noir",
+      "parchment": "Parchment",
+      "rose_pine": "Rosé Pine",
+      "tokyo_night": "Tokyo Night"
+    },
+    "section": {
+      "mode": "Mode",
+      "theme": "Theme"
+    },
+    "toggle": "Toggle theme",
+    "toggle_label": "Theme and mode"
   }
 }

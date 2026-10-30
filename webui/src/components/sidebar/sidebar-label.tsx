@@ -18,8 +18,10 @@ import { useGetNote } from "@/features/board/api/get-note"
 import { useUpdateNote } from "@/features/board/api/update-note"
 import { useAppStore } from "@/store"
 import type { NoteNodeData } from "@/features/board/harness/convert/note-to-node"
+import { useTranslation } from "react-i18next"
 
 export const SidebarLabel = ({ mobileContextOnly = false }: { mobileContextOnly?: boolean }) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { updateNote } = useUpdateNote()
   const userId = useAppStore(s => s.userId)
@@ -114,29 +116,29 @@ export const SidebarLabel = ({ mobileContextOnly = false }: { mobileContextOnly?
       return
     }
     if (active.view === "new-chat") {
-      setLabel("New Chat")
+      setLabel(t('sidebar.chat.new_chat'))
       return
     }
     if (active.view === "subscriptions") {
       const c = subscriptionList?.find((s) => s.id === active.id)
-      setLabel(c?.label.markdown ?? "Topics")
+      setLabel(c?.label.markdown ?? t('sidebar.subscriptions.fallback'))
       return
     }
     if (active.view === "sheet") {
       const sheetLabel = sheetNodeLabel ?? fetchedSheet?.label?.markdown
-      setLabel(sheetLabel ?? "Sheet")
+      setLabel(sheetLabel ?? t('sidebar.sheet.label'))
       return
     }
     if (active.view === "settings") {
-      setLabel("Profile")
+      setLabel(t('sidebar.account.profile'))
       return
     }
     if (active.view === "settings-billing") {
-      setLabel("Billing")
+      setLabel(t('sidebar.account.billing'))
       return
     }
     setLabel("")
-  }, [active.view, active.id, boardList, boardLabel, localBoards, chatList, subscriptionList, sheetNodeLabel, fetchedSheet])
+  }, [active.view, active.id, boardList, boardLabel, localBoards, chatList, subscriptionList, sheetNodeLabel, fetchedSheet, t])
 
   const handleSaveEdit = (newLabel: string) => {
     setLabel(newLabel)
@@ -216,17 +218,17 @@ export const SidebarLabel = ({ mobileContextOnly = false }: { mobileContextOnly?
 
   // HOME
   if (active.view === "home")
-    return <div className={wrapClass}>Home</div>
+    return <div className={wrapClass}>{t('sidebar.nav.home')}</div>
 
   // DASHBOARD
   if (active.view === "dashboard")
-    return <div className={wrapClass}>Dashboard</div>
+    return <div className={wrapClass}>{t('sidebar.nav.dashboard')}</div>
 
   if (active.view === "settings")
-    return <div className={wrapClass}>Profile</div>
+    return <div className={wrapClass}>{t('sidebar.account.profile')}</div>
 
   if (active.view === "settings-billing")
-    return <div className={wrapClass}>Billing</div>
+    return <div className={wrapClass}>{t('sidebar.account.billing')}</div>
 
   // SUBSCRIPTIONS
   if (active.view === "subscriptions") {
@@ -238,9 +240,9 @@ export const SidebarLabel = ({ mobileContextOnly = false }: { mobileContextOnly?
           type="button"
           onClick={goSubscriptionsRoot}
           className={`${crumbBtn} font-medium`}
-          title="Newsfeed"
+          title={t('sidebar.nav.newsfeed')}
         >
-          Newsfeed
+          {t('sidebar.nav.newsfeed')}
         </button>
         {active.id && (
           <>
@@ -277,7 +279,7 @@ export const SidebarLabel = ({ mobileContextOnly = false }: { mobileContextOnly?
         {sep}
         <LabelEditor
           key={`sheet:${active.id}`}
-          initialLabel={label || "Sheet"}
+          initialLabel={label || t('sidebar.sheet.label')}
           onSave={handleSaveEdit}
           className="flex-1 min-w-0"
         />

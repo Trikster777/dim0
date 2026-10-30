@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 let __tblScrollInjected = false
@@ -29,6 +30,8 @@ export const CustomTable: React.FC<CustomTableProps> = ({
   wrapperClassName,
   ...props
 }) => {
+  const { t } = useTranslation()
+
   React.useEffect(() => {
     ensureScrollCSS()
   }, [])
@@ -40,7 +43,7 @@ export const CustomTable: React.FC<CustomTableProps> = ({
         wrapperClassName
       )}
       role='region'
-      aria-label='Table container'
+      aria-label={t('markdown.table.container')}
     >
       <table
         className={cn(

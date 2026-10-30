@@ -3,6 +3,7 @@ import { Dialog as SheetPrimitive } from "@base-ui/react/dialog"
 
 import { CloseIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root {...props} />
@@ -45,6 +46,7 @@ function SheetContent({
   showOverlay?: boolean
   showClose?: boolean
 }) {
+  const { t } = useTranslation()
   return (
     <SheetPortal>
       {showOverlay ? <SheetOverlay /> : null}
@@ -69,7 +71,7 @@ function SheetContent({
             className="ring-offset-background focus:ring-ring absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
           >
             <CloseIcon className="size-4" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{t('common.close')}</span>
           </SheetPrimitive.Close>
         ) : null}
       </SheetPrimitive.Popup>
