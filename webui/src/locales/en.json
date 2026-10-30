@@ -787,6 +787,11 @@
   },
   "harness": {
     "applet": {
+      "error": {
+        "line": "(line {{line}})",
+        "retry": "Retry",
+        "title": "Applet error"
+      },
       "smoke": {
         "array_prop": "<{{tag}}> prop `{{prop}}` must be an array, but it evaluates to {{value}} on the initial state. Initialize it as an array (e.g. a `data`/`state` array literal) so the applet renders instead of throwing.",
         "chart_data_not_object": "<Chart> `data` must be an object `{ labels, datasets: [{ data: [...] }] }`, but it evaluates to {{value}}.",

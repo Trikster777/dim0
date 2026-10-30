@@ -8,6 +8,7 @@
 // widget is layout-contained (§5.2).
 
 import { createElement, useCallback, useMemo, useReducer, useRef, type ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 
 import { toast } from "sonner"
 
@@ -73,16 +74,17 @@ export function AppletRenderer({ source, initialState, onPersist, className }: A
 
 /** The failure UI for a compile error or a caught render throw. */
 function ErrorCard({ message, line, onRetry }: { message: string; line?: number; onRetry?: () => void }) {
+  const { t } = useTranslation()
   return (
     <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
-      <div className="font-medium">Applet error</div>
+      <div className="font-medium">{t("harness.applet.error.title")}</div>
       <div className="mt-0.5 text-xs opacity-90">
         {message}
-        {line ? ` (line ${line})` : ""}
+        {line ? <> {t("harness.applet.error.line", { line })}</> : ""}
       </div>
       {onRetry ? (
         <button type="button" onClick={onRetry} className="mt-2 rounded-md border px-2 py-0.5 text-xs hover:bg-destructive/10">
-          Retry
+          {t("harness.applet.error.retry")}
         </button>
       ) : null}
     </div>
