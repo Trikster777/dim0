@@ -1,0 +1,1031 @@
+
+> webui@0.3.101 test:run
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/Андрей/Desktop/DIM/dim0/webui[39m
+
+[90mstderr[2m | src/features/applet/render/snapshot.test.ts[2m > [22m[2msnapshotApplet[2m > [22m[2mreturns null (never throws) when snapDOM fails — e.g. a tainted canvas
+[22m[39m[applet] snapshotApplet failed — falling back to placeholder: Error: tainted canvas
+    at C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/render/snapshot.test.ts:51:41
+    at [90mfile:///C:/Users/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9/Desktop/DIM/dim0/webui/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:302:11
+    at [90mfile:///C:/Users/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9/Desktop/DIM/dim0/webui/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:1903:26
+    at [90mfile:///C:/Users/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9/Desktop/DIM/dim0/webui/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel [90m(file:///C:/Users/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9/Desktop/DIM/dim0/webui/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2323:10[90m)[39m
+    at [90mfile:///C:/Users/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9/Desktop/DIM/dim0/webui/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///C:/Users/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9/Desktop/DIM/dim0/webui/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2272:10[90m)[39m
+    at [90mfile:///C:/Users/%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B9/Desktop/DIM/dim0/webui/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-artifact.js:2956:64
+
+ [32m✓[39m src/features/mini-app/mount.test.tsx [2m([22m[2m14 tests[22m[2m)[22m[32m 121[2mms[22m[39m
+ [32m✓[39m src/features/applet/render/chart/theme-data.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 141[2mms[22m[39m
+ [32m✓[39m src/features/applet/render/snapshot.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 180[2mms[22m[39m
+[90mstderr[2m | src/components/charts/graph-draw.test.ts[2m > [22m[2mdrawGraph[2m > [22m[2mdraws one arc per node
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/graph-draw.test.ts[2m > [22m[2mdrawGraph[2m > [22m[2mstrokes each edge line
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/graph-draw.test.ts[2m > [22m[2mdrawGraph[2m > [22m[2mrenders node labels, the sublabel, and the edge label as text
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/graph-draw.test.ts[2m > [22m[2mdrawGraph[2m > [22m[2mfits within a save/restore and applies a scale+translate transform
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/graph-draw.test.ts[2m > [22m[2mdrawGraph[2m > [22m[2madds an arrowhead fill for a directed edge (triangle path → fill)
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/graph-draw.test.ts[2m > [22m[2mdrawGraph[2m > [22m[2mreturns true when it paints
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--muted-foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+
+ [32m✓[39m src/components/charts/graph-draw.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 166[2mms[22m[39m
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mshows the layer on a ready, empty, editable board
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mshows the layer on a ready, empty, editable board
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden until hydration is ready
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden until hydration is ready
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden once the board has any node
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden once the board has any node
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden once the board has any edge
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden once the board has any edge
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden for a read-only viewer
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden for a read-only viewer
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden in presentation mode
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden in presentation mode
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden on narrow (mobile) viewports
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mstays hidden on narrow (mobile) viewports
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mdraws one connector per chrome anchor present in the DOM
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mdraws one connector per chrome anchor present in the DOM
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mskips callouts whose anchor is absent (e.g. Share hidden for non-owners)
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/chrome/empty-board-coachmarks.test.tsx[2m > [22m[2mEmptyBoardCoachmarks[2m > [22m[2mskips callouts whose anchor is absent (e.g. Share hidden for non-owners)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/board/harness/chrome/empty-board-coachmarks.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 290[2mms[22m[39m
+ [31m❯[39m src/features/applet/compile/skill-examples.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 11[2mms[22m[39m
+[31m     [31m×[31m the skill contains several full <Widget> examples[39m[32m 8[2mms[22m[39m
+ [32m✓[39m src/components/editor/tiptap/underline/underline-extension.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 323[2mms[22m[39m
+ [32m✓[39m src/features/board/persist/local/sqlite-engine.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 377[2mms[22m[39m
+[90mstderr[2m | src/features/applet/render/render.test.tsx[2m > [22m[2mfailure handling[2m > [22m[2mdegrades a binding that throws at render to nothing (no crash)
+[22m[39m[applet] expression error AppletError: unknown string method: toFixed
+    at callValueMethod (C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/interpreter/eval-expr.ts:365:44)
+    at C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/interpreter/eval-expr.ts:298:25
+    at native (C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/interpreter/eval-expr.ts:152:12)
+    at evalCall (C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/interpreter/eval-expr.ts:298:12)
+    at evalExpr (C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/interpreter/eval-expr.ts:131:14)
+    at tryEval (C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/render/renderer.tsx:212:12)
+    at renderNode (C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/render/renderer.tsx:146:58)
+    at C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/render/renderer.tsx:175:53
+    at Array.map (<anonymous>)
+    at renderElement (C:/Users/Андрей/Desktop/DIM/dim0/webui/src/features/applet/render/renderer.tsx:175:35)
+
+ [32m✓[39m src/features/applet/render/render.test.tsx [2m([22m[2m15 tests[22m[2m)[22m[33m 1963[2mms[22m[39m
+     [33m[2m✓[22m[39m renders a component (Table) from data [33m 305[2mms[22m[39m
+     [33m[2m✓[22m[39m caps a huge list and shows a '… N more' note [33m 1270[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/components/flow/widget-document.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 286[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/components/charts/map-draw.test.ts[2m > [22m[2mdrawMap[2m > [22m[2mreturns true and fits within a save/restore + scale/translate transform
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-3)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/map-draw.test.ts[2m > [22m[2mdrawMap[2m > [22m[2mtraces + fills each region (geoPath issues moveTo/lineTo, then fill + stroke)
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-3)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/map-draw.test.ts[2m > [22m[2mdrawMap[2m > [22m[2mdraws a dot per marker and a caption only for a labeled one
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-2)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-3)" — using foreground fallback
+
+ [32m✓[39m src/features/board/persist/local/board-persistence.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 240[2mms[22m[39m
+[90mstderr[2m | src/components/charts/map-draw.test.ts[2m > [22m[2mdrawMap[2m > [22m[2mrenders with no markers (regions only)
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+
+[90mstderr[2m | src/components/charts/map-draw.test.ts[2m > [22m[2mdrawMap[2m > [22m[2mskips the dot for a non-positive/invalid marker radius but still draws its label (SVG parity, no throw)
+[22m[39m[applet] resolveCssColor: unresolvable color "var(--border)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-1)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--background)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--foreground)" — using foreground fallback
+[applet] resolveCssColor: unresolvable color "var(--chart-4)" — using foreground fallback
+
+ [32m✓[39m src/components/charts/map-draw.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 264[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/tools.test.ts [2m([22m[2m80 tests[22m[2m)[22m[32m 180[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/agent-loop.test.ts [2m([22m[2m50 tests[22m[2m)[22m[32m 142[2mms[22m[39m
+ [32m✓[39m src/features/applet/render/chart/chart-options.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 290[2mms[22m[39m
+ [32m✓[39m src/lib/theme/resolve-token.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 235[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/sync/ws-relay.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 114[2mms[22m[39m
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2mrenders nothing while online
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2mrenders nothing while online
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline on a non-board route → blocks with the generic server message
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline on a non-board route → blocks with the generic server message
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline on an offline-available board → does not block
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline on an offline-available board → does not block
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline on an undownloaded board → blocks with the board-specific message
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline on an undownloaded board → blocks with the board-specific message
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline while the board status is still resolving → does not flash the block
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/offline-overlay.test.tsx[2m > [22m[2mOfflineOverlay[2m > [22m[2moffline while the board status is still resolving → does not flash the block
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/connection/offline-overlay.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/search/local-index.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 84[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mcaptures an edge style change live, without a remount, and persists it
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mcaptures an edge style change live, without a remount, and persists it
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mexposes the remembered canonical edge colors via getEdgeStoredColors
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mexposes the remembered canonical edge colors via getEdgeStoredColors
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mgetEdgeStoredColors returns undefined when only non-color edge style changed
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mgetEdgeStoredColors returns undefined when only non-color edge style changed
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mcaptures edge pathStyle changes too
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mcaptures edge pathStyle changes too
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mkeeps a stable api identity while its values change — why consumers must read it each render
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mkeeps a stable api identity while its values change — why consumers must read it each render
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2ma per-render arrowDefaults (the fix) picks up edge restyles
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2ma per-render arrowDefaults (the fix) picks up edge restyles
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mcaptures a node style change live (notes already worked — guards against regressing them)
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-style-memory.test.tsx[2m > [22m[2museStyleMemory[2m > [22m[2mcaptures a node style change live (notes already worked — guards against regressing them)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/board/harness/canvas/use-style-memory.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 92[2mms[22m[39m
+ [32m✓[39m src/features/board/persist/local/materialize-board.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 66[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/persist/local/board-registry.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 86[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/persist/local/engine.test.ts [2m([22m[2m33 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/shared-views/node-error-boundary.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/features/home/screens/index-home.test.tsx[2m > [22m[2mIndexHome[2m > [22m[2msigned out (root) → local board dashboard, no chat home
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/home/screens/index-home.test.tsx[2m > [22m[2mIndexHome[2m > [22m[2msigned out (root) → local board dashboard, no chat home
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/home/screens/index-home.test.tsx[2m > [22m[2mIndexHome[2m > [22m[2msigned in → full HomePage
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/home/screens/index-home.test.tsx[2m > [22m[2mIndexHome[2m > [22m[2msigned in → full HomePage
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/home/screens/index-home.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m src/features/board/providers/board-page-provider.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/sync/enable-sync.window.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m src/features/applet/compile/dry-eval.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m src/components/charts/graph-layout.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+ [32m✓[39m src/features/applet/compile/validate-errors.test.ts [2m([22m[2m36 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m src/features/applet/interpreter/redteam.test.ts [2m([22m[2m52 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+[90mstderr[2m | src/features/agent/hooks/use-submit-prompt.test.tsx[2m > [22m[2museSubmitPrompt autoCreateBoard[2m > [22m[2mqueues the prompt for the new board and skips the server agent
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-submit-prompt.test.tsx[2m > [22m[2museSubmitPrompt autoCreateBoard[2m > [22m[2mqueues the prompt for the new board and skips the server agent
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-submit-prompt.test.tsx[2m > [22m[2museSubmitPrompt autoCreateBoard[2m > [22m[2mkeeps the server-agent flow when the browser agent is opted out
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-submit-prompt.test.tsx[2m > [22m[2museSubmitPrompt autoCreateBoard[2m > [22m[2mkeeps the server-agent flow when the browser agent is opted out
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-submit-prompt.test.tsx[2m > [22m[2museSubmitPrompt autoCreateBoard[2m > [22m[2mpropagates a board-creation failure (e.g. the plan limit) without queuing
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-submit-prompt.test.tsx[2m > [22m[2museSubmitPrompt autoCreateBoard[2m > [22m[2mpropagates a board-creation failure (e.g. the plan limit) without queuing
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/agent/hooks/use-submit-prompt.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/sync/board-sync.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/persist/local/doc-repo.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/graph/subtree.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/persist/local/memory-repo.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/features/board/harness/canvas/use-stamp-new-edges.test.tsx[2m > [22m[2museStampNewEdges — paste preservation[2m > [22m[2mpreserves a pasted edge's _storedColors when scope + theme already match
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-stamp-new-edges.test.tsx[2m > [22m[2museStampNewEdges — paste preservation[2m > [22m[2mpreserves a pasted edge's _storedColors when scope + theme already match
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/board/harness/canvas/use-stamp-new-edges.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/local/ingest-doc.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32m✓[39m src/features/applet/interpreter/eval-expr.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/convert/round-trip.test.ts [2m([22m[2m57 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/board-mutator.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/store/chat-repo.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/features/board/harness/canvas/use-stamp-new-nodes.test.tsx[2m > [22m[2museStampNewNodes — autoFit normalization[2m > [22m[2mforces autoFit:false on locally-created custom nodes (sheet, mini-app)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-stamp-new-nodes.test.tsx[2m > [22m[2museStampNewNodes — autoFit normalization[2m > [22m[2mforces autoFit:false on locally-created custom nodes (sheet, mini-app)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-stamp-new-nodes.test.tsx[2m > [22m[2museStampNewNodes — autoFit normalization[2m > [22m[2mleaves a rectangle's autoFit untouched (it should grow-to-fit)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/canvas/use-stamp-new-nodes.test.tsx[2m > [22m[2museStampNewNodes — autoFit normalization[2m > [22m[2mleaves a rectangle's autoFit untouched (it should grow-to-fit)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/board/harness/canvas/use-stamp-new-nodes.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/local/conversation-context.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/agent/arrange-created-nodes.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/local-stores.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/chrome/node-surface-host/use-off-scene-note.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/byok-client.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/board-snapshot.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/components/icons/picker-set.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/parallel-search.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/mini-app/mini-app-repo.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/doc-search.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mfires onDelete immediately when there is no confirm copy
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mfires onDelete immediately when there is no confirm copy
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mdoes NOT fire onDelete on the first click — it opens the confirm dialog
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mdoes NOT fire onDelete on the first click — it opens the confirm dialog
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mfires onDelete only after the dialog is confirmed
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mfires onDelete only after the dialog is confirmed
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mdoes not fire onDelete when the dialog is cancelled
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/harness/shared-views/node-traffic-lights.test.tsx[2m > [22m[2mNodeTrafficLights delete confirmation[2m > [22m[2mdoes not fire onDelete when the dialog is cancelled
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/board/harness/shared-views/node-traffic-lights.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 646[2mms[22m[39m
+     [33m[2m✓[22m[39m does NOT fire onDelete on the first click — it opens the confirm dialog [33m 352[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/code-interpreter.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m src/features/applet/compile/compile.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 66[2mms[22m[39m
+Not implemented: navigation to another Document
+ [32m✓[39m src/features/signin/lib/web-google.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/features/board/harness/export/export-selection-image.test.ts[2m > [22m[2minjectAppletImages[2m > [22m[2mreturns the SVG unmodified when the translate group is missing (unexpected shape)
+[22m[39m[export] harness SVG shape not recognized (no content translate group); applet overlays skipped
+
+ [32m✓[39m src/features/board/harness/export/export-selection-image.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/persist/local/board-outbox.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m src/features/board/search/use-search-index.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/features/board/persist/local/open-board.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/persist/snapshot-load.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m mini-app-runtime/compile.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/components/markdown/sanitize-schema.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m src/features/board/search/use-doc-index.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/transport.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/features/applet/interpreter/run-action.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/transport-clients.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+[90mstderr[2m | src/features/connection/connection-indicator.test.tsx[2m > [22m[2mConnectionIndicator[2m > [22m[2mrenders nothing while online
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/connection-indicator.test.tsx[2m > [22m[2mConnectionIndicator[2m > [22m[2mrenders nothing while online
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/connection-indicator.test.tsx[2m > [22m[2mConnectionIndicator[2m > [22m[2mshows an offline badge while offline
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/connection/connection-indicator.test.tsx[2m > [22m[2mConnectionIndicator[2m > [22m[2mshows an offline badge while offline
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/connection/connection-indicator.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 97[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/agent-pipeline.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 105[2mms[22m[39m
+[90mstderr[2m | src/features/board/screens/boards-home.test.tsx[2m > [22m[2mBoardsHome[2m > [22m[2msigned out (root sentinel): on-device boards + a sign-in CTA under Synced
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/screens/boards-home.test.tsx[2m > [22m[2mBoardsHome[2m > [22m[2msigned out (root sentinel): on-device boards + a sign-in CTA under Synced
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/screens/boards-home.test.tsx[2m > [22m[2mBoardsHome[2m > [22m[2msigned in: renders both groups, deduped by id
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/board/screens/boards-home.test.tsx[2m > [22m[2mBoardsHome[2m > [22m[2msigned in: renders both groups, deduped by id
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/board/screens/boards-home.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 148[2mms[22m[39m
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — #doc- citation[2m > [22m[2mrenders the title text as an anchor (not the bare link icon)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — #doc- citation[2m > [22m[2mrenders the title text as an anchor (not the bare link icon)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — #doc- citation[2m > [22m[2mopens the target <details> and scrolls to it on click
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — #doc- citation[2m > [22m[2mopens the target <details> and scrolls to it on click
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — #doc- citation[2m > [22m[2mdispatches REVEAL_SOURCE_EVENT on a non-<details> target (React-controlled card) and scrolls
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — #doc- citation[2m > [22m[2mdispatches REVEAL_SOURCE_EVENT on a non-<details> target (React-controlled card) and scrolls
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-pending-board-prompt.test.tsx[2m > [22m[2musePendingBoardPrompt[2m > [22m[2mwaits for the board to be ready, then submits exactly once
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-pending-board-prompt.test.tsx[2m > [22m[2musePendingBoardPrompt[2m > [22m[2mwaits for the board to be ready, then submits exactly once
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-pending-board-prompt.test.tsx[2m > [22m[2musePendingBoardPrompt[2m > [22m[2mdoes not run a prompt queued for another board
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-pending-board-prompt.test.tsx[2m > [22m[2musePendingBoardPrompt[2m > [22m[2mdoes not run a prompt queued for another board
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-pending-board-prompt.test.tsx[2m > [22m[2musePendingBoardPrompt[2m > [22m[2mholds the prompt while no model is available
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/hooks/use-pending-board-prompt.test.tsx[2m > [22m[2musePendingBoardPrompt[2m > [22m[2mholds the prompt while no model is available
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/agent/hooks/use-pending-board-prompt.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[32m 110[2mms[22m[39m
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "javascript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "javascript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "JavaScript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "JavaScript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href " javascript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href " javascript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "java\tscript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "java\tscript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "java\nscript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "java\nscript:alert(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "data:text/html,<script>alert(1)</script>" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "data:text/html,<script>alert(1)</script>" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "vbscript:msgbox(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "vbscript:msgbox(1)" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "blob:https://example.com/abc" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "blob:https://example.com/abc" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "file:///etc/passwd" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mneutralizes the dangerous href "file:///etc/passwd" (no href attribute emitted)
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "https://example.com/"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "https://example.com/"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "http://example.com/"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "http://example.com/"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "//example.com/"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "//example.com/"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "mailto:hi@example.com"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "mailto:hi@example.com"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "tel:+15551234567"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "tel:+15551234567"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/agent/store/chat-persist.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 55[2mms[22m[39m
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "sms:+15551234567"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "sms:+15551234567"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "/boards/b1/n/n1"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "/boards/b1/n/n1"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "#section"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "#section"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "?q=1"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "?q=1"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "relative/path"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/components/markdown/markdown-link.test.tsx[2m > [22m[2mMarkdownLink — href scheme allowlist[2m > [22m[2mpreserves the legitimate href "relative/path"
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/components/markdown/markdown-link.test.tsx [2m([22m[2m22 tests[22m[2m)[22m[32m 253[2mms[22m[39m
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mkeeps the composer usable and opens the limit dialog instead of submitting
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mkeeps the composer usable and opens the limit dialog instead of submitting
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mkeeps the composer usable and opens the limit dialog instead of submitting
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2m'Create a local-only board' queues the prompt and opens the local board
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2m'Create a local-only board' queues the prompt and opens the local board
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2m'Create a local-only board' queues the prompt and opens the local board
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2m'Create a local-only board' queues the prompt and opens the local board
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mkeeps the typed prompt when the board create fails for another reason
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mkeeps the typed prompt when the board create fails for another reason
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mkeeps the typed prompt when the board create fails for another reason
+[22m[39mThe current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mkeeps the typed prompt when the board create fails for another reason
+[22m[39mThe current testing environment is not configured to support act(...)
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mopens the dialog when the server rejects the create at the cap
+[22m[39mThe current testing environment is not configured to support act(...)
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mopens the dialog when the server rejects the create at the cap
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mopens the dialog when the server rejects the create at the cap
+[22m[39mThe current testing environment is not configured to support act(...)
+The current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/board/local/save-local-thumbnail.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 24[2mms[22m[39m
+[90mstderr[2m | src/features/agent/components/chat/input.test.tsx[2m > [22m[2mInputBar at the board limit (home composer)[2m > [22m[2mopens the dialog when the server rejects the create at the cap
+[22m[39mThe current testing environment is not configured to support act(...)
+
+ [32m✓[39m src/features/agent/components/chat/input.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 814[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps the composer usable and opens the limit dialog instead of submitting [33m 363[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/describe-board.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/desktop-parse.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/sync/reconnect-supervisor.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/features/board/search/doc-index.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/agent/use-doc-node-cascade.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/mini-app/state-client.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m src/features/mini-app/validate.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/tool-schema.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+ [32m✓[39m src/features/agent/settings/tool-trust-store.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/canvas/presence-throttle.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/doc-parse.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/features/board/api/board-offline-status.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/sync/enable-sync.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/desktop-search.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/doc-chunk.test.ts [2m([22m[2m57 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/agent/doc-node.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/fetch-url.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/components/charts/chart-translate.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m mini-app-runtime/rpc.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/canvas/collab-reconnect-flow.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/features/agent/store/pending-prompt-store.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/tool-result-view.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m src/lib/i18n/errors.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/components/charts/map-projection.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/agent/beneath-border.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/web-search.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/features/board/persist/local/apply-content.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/byok-relay-fallback.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/engine/stream-assemble.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/agent-loop.stream.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/sync/inbound-normalize.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/managed-run-id.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/features/board/components/breadcrumb/build-node-path.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/persist/diff-snapshots.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/seed-transcripts.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/clients.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/managed-client.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/canvas/use-history-batch-ids.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/tool-confirm-store.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/sync/outbound-enrich.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/features/agent/byok/byok-store.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/features/connection/connection-detector.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/tool-result.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/features/board/utils/node-meta.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/components/icons/picker-value-mapping.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/board-drift.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/resolve.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/model/layer.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/context.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/debug.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/features/board/lib/board-limit.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/features/board/api/apply-title-update-to-board-contents.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/features/board/search/search-index-ref.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/features/desktop/desktop-config.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/sync/outbound-dedupe.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/features/agent/utils/citations.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/features/board/api/apply-icon-update-to-board-contents.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/features/agent/prompts/prompts.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/features/board/screens/partition-boards.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/components/charts/color-token.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/canvas/use-sync-engine.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/components/icons/icon-color-resolver.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/canvas/use-board-keyboard.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/local-llm.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/canvas/custom-node-types.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/harness/canvas/normalize-autofit.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/canvas/use-sidebar-contents-sync.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/features/agent/utils/stream/throttle.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/note-size.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/canvas/presence-identity.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/canvas/collab-reconnect.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/components/charts/graph.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/services/run.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/board-image-gate.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/agent/store/local-messages-store.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/search/notes-search.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/board/local/use-enable-sync.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/board/utils/context-text.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/board/api/list-board-contents.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/lib/auth.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/features/agent/engine/byok-client.stream.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/node-types/durable-delete.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m mini-app-runtime/single-frontend.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/transforms.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/agent-event-to-step.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/message-context.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ [32m✓[39m src/features/agent/types/model-catalog.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/agent/utils/doc-sources.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/features/agent/local/chat-history.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/features/board/harness/node-types/applet/def.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/features/agent/types/stream.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/features/agent/utils/note-sources.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/features/agent/utils/url.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/features/applet/compile/skill-examples.test.ts[2m > [22mapplet skill worked examples[2m > [22mthe skill contains several full <Widget> examples
+[31m[1mAssertionError[22m: expected 0 to be greater than or equal to 5[39m
+[36m [2m❯[22m src/features/applet/compile/skill-examples.test.ts:[2m31:29[22m[39m
+    [90m 29|[39m
+    [90m 30|[39m   [34mit[39m([32m"the skill contains several full <Widget> examples"[39m[33m,[39m () [33m=>[39m {
+    [90m 31|[39m     [34mexpect[39m(examples[33m.[39mlength)[33m.[39m[34mtoBeGreaterThanOrEqual[39m([34m5[39m)
+    [90m   |[39m                             [31m^[39m
+    [90m 32|[39m   })
+    [90m 33|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m168 passed[39m[22m[90m (169)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1705 passed[39m[22m[90m (1706)[39m
+[2m   Start at [22m 02:20:11
+[2m   Duration [22m 141.01s[2m (transform 76.51s, setup 35.18s, import 751.83s, tests 11.26s, environment 520.94s)[22m
+

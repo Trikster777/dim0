@@ -2,7 +2,7 @@
 
 **Требования:** R12, R13, R16, R19, R31, R33, R37, G01, G02, G03, G04, G28, G29, G30, G33
 **Зависит от:** 05
-**Зона:** `webui/src/features/board/harness/` · `webui/src/features/applet/compile/` · `webui/src/locales/en.json`
+**Зона:** `webui/src/features/board/harness/` · `webui/src/features/applet/` · `webui/src/locales/en.json`
 **Волна:** 6
 **Ревью:** нет
 **Модель:** обычная
@@ -30,7 +30,7 @@
 
 ## Критерии приёмки
 
-- [ ] В `features/board/harness/**` пользовательские литералы заменены на `t()`; тосты контекстного меню и `confirm` переведены
+- [ ] В `features/board/harness/**` пользовательские литералы заменены на `t()`; тосты контекстного меню и `confirm` переведены; ключи добавлены в `en.json` и `ru.json` (в ru временно английский текст)
 - [ ] `code-sandbox-panel` / `applet-panel` / `mini-app-panel` и `document-upload-dialog` переведены
 - [ ] Проверены типы `@canvas-harness`: результат (есть ли props для строк) записан в отчёт таска; при наличии — подключены
 - [ ] В `features/applet/compile/dry-eval.ts` тексты `SmokeFail` переведены через ключи (без изменения логики)

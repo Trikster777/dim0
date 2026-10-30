@@ -30,5 +30,5 @@ Quote, Code block, Math, Table, Divider, Image, TOC, Subpage и их ключе�
 - [ ] `SLASH_COMMANDS` хранит ключи, `t()` — в слэш-меню; ключевые слова поиска тоже переводятся
 - [ ] `status-bar.tsx` использует плюрализацию слов и символов (`_one/_few/_many/_other` в ru)
 - [ ] `UNTITLED_LABEL` больше не литерал: дефолтное имя доски берётся из ключа
-- [ ] `en.json` пополнен блоками `board.*`, `editor.*`; `git diff` не трогает `harness/`
+- [ ] `en.json` пополнен блоками `board.*`, `editor.*`; те же ключи в `ru.json` (временно английский текст); `git diff` не трогает `harness/`
 - [ ] `npm run check-all` и `npm run i18n:check` зелёные

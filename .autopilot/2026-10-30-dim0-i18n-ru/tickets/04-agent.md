@@ -32,7 +32,7 @@
 ## Критерии приёмки
 
 - [ ] В `features/agent/**` (кроме `prompts/**`, `engine/tools.ts`) пользовательские литералы заменены на `t()`
-- [ ] `ToolNameDescription` хранит ключи `agent.tool.*`, `t()` вызывается в `tool-step-row`/`reasoning-step-row`; при `ru` подписи шагов русские
+- [ ] `ToolNameDescription` хранит ключи `agent.tool.*`, `t()` вызывается в `tool-step-row`/`reasoning-step-row`; ключи добавлены в `en.json` и `ru.json` (в ru временно английский текст)
 - [ ] `settings-dialog.tsx` (NAV, провайдеры, поисковые движки, чипы) переведён; `AUTO_LLM_OPTION` — да
 - [ ] `git diff` не содержит изменений в `features/agent/prompts/**` и `engine/tools.ts`
 - [ ] `use-local-submit-prompt.ts` не изменил строку даты для промпта
