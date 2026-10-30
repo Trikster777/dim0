@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { formatNewsletterDate } from '../../utils/date'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,6 +14,7 @@ import { DeleteIcon, FolderIcon } from '@/components/icons'
 import { useDeleteNewsfeed } from '@/features/newsfeed/api/delete-newsfeed'
 import { dateToTailwindColor } from '../../utils/color'
 import { getLuminance, toBaseHex } from '@/features/board/lib/colors/tailwind'
+import { getLanguage } from '@/i18n'
 import { useTheme } from '@/components/theme-provider'
 import { darkModeDisplayHex } from '@/features/board/lib/colors/dark-variants'
 
@@ -34,6 +36,7 @@ export function NewsletterCard({
   /** estimated generation duration (seconds). default: 4 minutes */
   estimatedDuration?: number
 }) {
+  const { t } = useTranslation()
   const del = useDeleteNewsfeed(subscriptionId)
 
   // deterministic bg from date (shade 100)
@@ -71,17 +74,19 @@ export function NewsletterCard({
     return Math.min(99, Math.max(0, value))
   }, [generating, elapsedSec, estimatedDuration])
 
-  const title = generating ? 'Generating…' : `Newsletter ${formatNewsletterDate(createdAt)}`
+  const title = generating
+    ? t('newsfeed.generating')
+    : t('newsfeed.newsletter_title', { date: formatNewsletterDate(createdAt) })
   const subtitle = useMemo(() => {
     if (generating) {
       return `${formatElapsed(elapsedSec)} • ${pct}%`
     }
-    return new Date(createdAt).toLocaleString()
+    return new Date(createdAt).toLocaleString(getLanguage() === 'ru' ? 'ru-RU' : 'en-US')
   }, [generating, elapsedSec, pct, createdAt])
 
   const handleDelete = async () => {
     if (generating) return
-    const ok = window.confirm('Delete this newsletter? This cannot be undone.')
+    const ok = window.confirm(t('newsfeed.confirm_delete_newsletter'))
     if (!ok) return
     try {
       await del.mutateAsync({ newsfeedId: id })
@@ -139,7 +144,7 @@ export function NewsletterCard({
           disabled={!!generating}
         >
           <FolderIcon className='mr-2 size-4' strokeWidth={2} />
-          Open
+          {t('newsfeed.open')}
         </ContextMenuItem>
 
         <ContextMenuSeparator />
@@ -151,7 +156,7 @@ export function NewsletterCard({
           disabled={!!generating || del.isPending}
         >
           <DeleteIcon className='mr-2 size-4' strokeWidth={2} />
-          Delete
+          {t('common.delete')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

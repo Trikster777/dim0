@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { ChatHistoryIcon, GridViewIcon, InfoCircleIcon, TextListIcon, TextParagraphIcon } from '@/components/icons'
@@ -12,6 +13,7 @@ export function TopViewPanel({
   setViewMode: (m: ViewMode) => void
   hasLatest: boolean
 }) {
+  const { t } = useTranslation()
   const normalButtonClass = `
     transition-colors
     text-card-foreground
@@ -44,8 +46,8 @@ export function TopViewPanel({
         disabled={disabled}
         onClick={() => !disabled && setViewMode(mode)}
         className={cls}
-        title={`${label} view`}
-        aria-label={`${label} view`}
+        title={t('newsfeed.view_mode.switch_title', { label })}
+        aria-label={t('newsfeed.view_mode.switch_title', { label })}
         aria-pressed={active}
       >
         {icon}
@@ -66,35 +68,35 @@ export function TopViewPanel({
         md:flex-row md:items-center
       `}
       role='toolbar'
-      aria-label='Newsfeed view modes'
+      aria-label={t('newsfeed.view_mode.toolbar')}
     >
       <ModeButton
         mode='linear'
-        label='Linear'
+        label={t('newsfeed.view_mode.linear')}
         icon={<TextListIcon className='size-4 shrink-0' strokeWidth={2} />}
         disabled={!hasLatest}
       />
       <ModeButton
         mode='grid'
-        label='Grid'
+        label={t('newsfeed.view_mode.grid')}
         icon={<GridViewIcon className='size-4 shrink-0' strokeWidth={2} />}
         disabled={!hasLatest}
       />
       <ModeButton
         mode='article'
-        label='Article'
+        label={t('newsfeed.view_mode.article')}
         icon={<TextParagraphIcon className='size-4 shrink-0' strokeWidth={2} />}
         disabled={!hasLatest}
       />
       <Separator orientation='vertical' className='md:!h-6 hidden md:block' />
       <ModeButton
         mode='history'
-        label='History'
+        label={t('newsfeed.view_mode.history')}
         icon={<ChatHistoryIcon className='size-4 shrink-0' strokeWidth={2} />}
       />
       <ModeButton
         mode='info'
-        label='Info'
+        label={t('newsfeed.view_mode.info')}
         icon={<InfoCircleIcon className='size-4 shrink-0' strokeWidth={2} />}
       />
     </div>

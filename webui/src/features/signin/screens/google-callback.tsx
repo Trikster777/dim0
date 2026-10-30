@@ -1,7 +1,9 @@
 import * as React from "react"
 import { Link } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { googleSigninWeb } from "@/api"
 import { Loader2Icon } from "@/components/icons"
+import { localizeApiError } from "@/lib/i18n/errors"
 import { consumePendingGoogleOAuth, webGoogleRedirectUri } from "../lib/web-google"
 import { useCompleteSignin } from "../hooks/use-complete-signin"
 
@@ -14,6 +16,7 @@ import { useCompleteSignin } from "../hooks/use-complete-signin"
  * the error with a way back to sign-in.
  */
 export function GoogleCallbackPage() {
+  const { t } = useTranslation()
   const completeSignin = useCompleteSignin()
   const started = React.useRef(false)
   const [error, setError] = React.useState<string | null>(null)
@@ -34,17 +37,17 @@ export function GoogleCallbackPage() {
     window.history.replaceState(null, "", window.location.pathname)
 
     void (async () => {
-      if (oauthError) return setError("Google sign in was cancelled or did not complete.")
-      if (!code || !state || !pending) return setError("Google sign in could not be completed. Please try again.")
-      if (state !== pending.state) return setError("Google sign in failed a security check. Please try again.")
+      if (oauthError) return setError(t("auth.google_callback.cancelled"))
+      if (!code || !state || !pending) return setError(t("auth.google_callback.incomplete"))
+      if (state !== pending.state) return setError(t("auth.google_callback.security_check"))
       try {
         const token = await googleSigninWeb(code, pending.verifier, webGoogleRedirectUri())
         await completeSignin(token)
       } catch (e) {
-        setError((e as Error).message || "Google sign in failed. Please try again.")
+        setError(localizeApiError(e, "auth.google_callback.error_fallback"))
       }
     })()
-  }, [completeSignin])
+  }, [completeSignin, t])
 
   return (
     <div className="w-full max-w-md mx-auto py-16 text-center">
@@ -56,13 +59,13 @@ export function GoogleCallbackPage() {
             replace
             className="inline-block text-sm font-medium text-primary underline underline-offset-4"
           >
-            Back to sign in
+            {t("auth.back_to_sign_in")}
           </Link>
         </div>
       ) : (
         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
           <Loader2Icon className="size-4 animate-spin" />
-          Completing sign in…
+          {t("auth.google_callback.completing")}
         </div>
       )}
     </div>

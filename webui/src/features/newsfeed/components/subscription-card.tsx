@@ -1,5 +1,6 @@
 // src/features/newsfeed/components/subscription-card.tsx
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent } from '@/components/ui/card'
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
 import { DeleteIcon, PropertyIcon } from '@/components/icons'
@@ -23,9 +24,10 @@ export function SubscriptionCard({
   onDelete?: () => void
   estimatedDurationSec?: number
 }) {
+  const { t } = useTranslation()
   const title = sub.label?.markdown ?? ''
   const topicKey = matchPredefined(title)
-  const label = topicKey ? TOPIC_DISPLAY[topicKey] : title || 'Subscription'
+  const label = topicKey ? t(TOPIC_DISPLAY[topicKey]) : title || t('newsfeed.subscription_fallback')
   const description = sub.properties?.rawDescription?.text
   const TopicIcon = topicKey ? TOPIC_EMOJI[topicKey] : PropertyIcon
 
@@ -116,7 +118,7 @@ export function SubscriptionCard({
                     />
                   )}
                   <span className='truncate text-base font-medium'>
-                    {sub.creating ? 'Creating subscription…' : label}
+                    {sub.creating ? t('newsfeed.subscription.creating') : label}
                   </span>
                 </div>
                 {sub.creating && subtitle && (
@@ -142,7 +144,7 @@ export function SubscriptionCard({
           className='text-destructive focus:text-destructive'
         >
           <DeleteIcon className='w-4 h-4 mr-2' strokeWidth={2} />
-          Delete
+          {t('common.delete')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

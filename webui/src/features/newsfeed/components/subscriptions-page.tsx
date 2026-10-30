@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useListSubscriptions } from '../api/list-subscriptions'
 import { SubscriptionCard } from '../components/subscription-card'
 import { CreateSubscriptionDialog } from '../components/create-subscription-dialog'
@@ -24,6 +25,7 @@ export default function SubscriptionsPage({
   mode?: Mode
   hideTitle?: boolean
 }) {
+  const { t } = useTranslation()
   const pageClassName = clsx('w-full h-full', className)
   const subs = useListSubscriptions()
   const navigate = useNavigate()
@@ -40,7 +42,7 @@ export default function SubscriptionsPage({
     <div className={pageClassName}>
       {!hideTitle && (
         <div className='pt-8 pb-4 flex flex-row items-center justify-center gap-4 px-4 sm:px-6 lg:px-8'>
-          <ThemedWelcome name={'Shark'} message={'Newsfeed'} className='w-auto' />
+          <ThemedWelcome name={'Shark'} message={t('newsfeed.title')} className='w-auto' />
         </div>
       )}
 
@@ -50,7 +52,7 @@ export default function SubscriptionsPage({
             <CreateSubscriptionDialog
               trigger={
                 <CreateSubscriptionCardTrigger>
-                  <span className='sr-only'>Create</span>
+                  <span className='sr-only'>{t('newsfeed.create_sr')}</span>
                 </CreateSubscriptionCardTrigger>
               }
             />
@@ -58,7 +60,7 @@ export default function SubscriptionsPage({
               onClick={() => navigate({ to: '/subscriptions' })}
               className='text-sm font-medium text-muted-foreground hover:text-foreground underline underline-offset-4 decoration-muted-foreground/40 hover:decoration-foreground'
             >
-              View All Topics
+              {t('newsfeed.view_all_topics')}
             </button>
           </div>
         ) : (
@@ -67,7 +69,7 @@ export default function SubscriptionsPage({
               <CreateSubscriptionDialog
                 trigger={
                   <CreateSubscriptionCardTrigger>
-                    <span className='sr-only'>Create</span>
+                    <span className='sr-only'>{t('newsfeed.create_sr')}</span>
                   </CreateSubscriptionCardTrigger>
                 }
               />
@@ -77,11 +79,11 @@ export default function SubscriptionsPage({
             </div>
 
             {subs.isLoading && (
-              <div className='text-center mt-6 text-muted-foreground text-sm'>Loading…</div>
+              <div className='text-center mt-6 text-muted-foreground text-sm'>{t('common.loading')}</div>
             )}
             {subs.isError && (
               <div className='text-center mt-6 text-destructive text-sm'>
-                Failed to load subscriptions
+                {t('newsfeed.error.load_subscriptions')}
               </div>
             )}
           </>

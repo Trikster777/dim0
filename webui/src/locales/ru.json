@@ -1,4 +1,200 @@
 {
+  "auth": {
+    "back_to_sign_in": "Back to sign in",
+    "email_label": "Email",
+    "forgot_password": {
+      "description": "Enter your email and we'll send you a link to reset it.",
+      "error_fallback": "Unable to send reset link",
+      "remembered_it": "Remembered it?",
+      "sending": "Sending…",
+      "sent_prefix": "If an account exists for",
+      "sent_suffix": "we've sent a password reset link to that address. Check your inbox and spam folder.",
+      "submit": "Send reset link",
+      "title": "Forgot your password?"
+    },
+    "google": {
+      "browser_hint": "Opens your browser to sign in, then returns here.",
+      "continue": "Continue with Google",
+      "continue_in_browser": "Continue in your browser…",
+      "error_fallback": "Unable to continue with Google",
+      "redirecting": "Redirecting to Google…"
+    },
+    "google_callback": {
+      "cancelled": "Google sign in was cancelled or did not complete.",
+      "completing": "Completing sign in…",
+      "error_fallback": "Google sign in failed. Please try again.",
+      "incomplete": "Google sign in could not be completed. Please try again.",
+      "security_check": "Google sign in failed a security check. Please try again."
+    },
+    "graph": {
+      "chip_flow": "#flow",
+      "chip_focus": "#focus",
+      "connect": "connect",
+      "ideas": "ideas",
+      "notes": "notes",
+      "spark": "a spark",
+      "todo": "to-do"
+    },
+    "legal": {
+      "and": "and",
+      "privacy": "Privacy Policy",
+      "sign_in_prefix": "By signing in, you agree to our",
+      "sign_up_prefix": "By creating an account, you agree to our",
+      "terms": "Terms"
+    },
+    "name_label": "Name",
+    "or": "or",
+    "password_label": "Password",
+    "password_strength": {
+      "check_lowercase": "1 lowercase letter",
+      "check_min_length": "At least 8 characters",
+      "check_number": "1 number",
+      "check_special": "1 special character",
+      "check_uppercase": "1 uppercase letter",
+      "fair": "Fair",
+      "good": "Good",
+      "label": "Strength:",
+      "strong": "Strong",
+      "very_weak": "Very weak",
+      "weak": "Weak"
+    },
+    "passwords_do_not_match": "Passwords do not match.",
+    "placeholder_email": "you@example.com",
+    "placeholder_name": "Ada Lovelace",
+    "placeholder_username": "ada_l",
+    "reset_password": {
+      "confirm_password_label": "Confirm password",
+      "description": "Choose a new password for your account.",
+      "error_fallback": "Unable to reset password",
+      "link_problem": "Link expired or invalid?",
+      "missing_token": "This reset link is missing a token. Please request a new password reset email.",
+      "new_password_label": "New password",
+      "request_new_link": "Request a new reset link",
+      "request_new_one": "Request a new one",
+      "submit": "Reset password",
+      "submitting": "Resetting…",
+      "success": "Password reset. Please sign in with your new password.",
+      "title": "Reset your password"
+    },
+    "sign_in": {
+      "back_to_local_boards": "← Back to local boards",
+      "create_one": "Create one",
+      "description": "Sign in to continue to your workspace",
+      "error_fallback": "Unable to sign in",
+      "forgot_password": "Forgot password?",
+      "logo_alt": "Dim0 Logo",
+      "methods_error": "Unable to load sign-in methods",
+      "no_account": "Don’t have an account?",
+      "no_methods": "No sign-in methods are currently available.",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "title": "Welcome back!"
+    },
+    "sign_up": {
+      "description": "Start organizing your chats and boards",
+      "error_fallback": "Unable to sign up",
+      "have_account": "Already have an account?",
+      "sign_in": "Sign in",
+      "submit": "Create account",
+      "submitting": "Creating…",
+      "title": "Create your account"
+    },
+    "username_label": "Username",
+    "verify_email": {
+      "checking": "Checking...",
+      "continue": "I've verified, continue",
+      "invalid_link": "Verification link is invalid or expired.",
+      "resend": "Resend verification email",
+      "resend_error": "Could not resend verification email.",
+      "sending": "Sending...",
+      "sent": "Verification email sent. Please check your inbox.",
+      "sent_to_prefix": "We sent a verification link to",
+      "sign_out": "Sign out",
+      "status_error": "Could not check verification status.",
+      "still_unverified": "Email is still not verified yet.",
+      "title": "Verify your email",
+      "token_error": "Could not verify email token.",
+      "verified": "Email verified successfully. Redirecting...",
+      "verifying": "Verifying email..."
+    },
+    "weak_password": "Please choose a stronger password before continuing."
+  },
+  "billing": {
+    "access_until": "Access remains active until {{date}}.",
+    "cancels_at_period_end": "Cancels at period end",
+    "cancels_on": "Cancels on {{date}}",
+    "choose_basic": "Choose Basic",
+    "current_badge": "Current",
+    "current_plan": "Current Plan",
+    "current_subscription": {
+      "description": "Choose your plan and manage your subscription",
+      "title": "Current subscription"
+    },
+    "error": {
+      "create_checkout": "Could not create checkout session.",
+      "load_status": "Could not load billing status.",
+      "missing_checkout_url": "No checkout url returned",
+      "missing_portal_url": "No portal url returned",
+      "open_portal": "Could not open billing portal.",
+      "refresh_after_checkout": "Could not refresh billing plan after checkout."
+    },
+    "features": {
+      "ai_requests_day_150": "150 AI requests / day",
+      "ai_requests_day_50": "50 AI requests / day",
+      "ai_requests_month_3000": "3,000 AI requests / month",
+      "ai_requests_month_750": "750 AI requests / month",
+      "ai_requests_unlimited": "Unlimited AI requests",
+      "boards_5": "5 boards",
+      "boards_unlimited": "Unlimited boards",
+      "collaborators_10": "Up to 10 collaborators / board",
+      "collaborators_20": "Up to 20 collaborators / board",
+      "collaborators_5": "Up to 5 collaborators / board",
+      "community_support": "Community support",
+      "documents_10": "10 documents / board",
+      "documents_25": "25 documents / board",
+      "documents_3": "3 documents / board",
+      "frontier_models": "Frontier models: GPT, Claude, Gemini & more",
+      "lite_models_no_top_tier": "Lite models (no top-tier AI)",
+      "lite_models_only": "Lite models only",
+      "mini_apps_10": "10 mini-apps / board",
+      "mini_apps_100": "100 mini-apps / board",
+      "mini_apps_20": "20 mini-apps / board",
+      "priority_support": "Priority support",
+      "standard_support": "Standard support"
+    },
+    "get_the_code": "Get the code on GitHub →",
+    "manage_subscription": "Manage Subscription",
+    "open_source_note": "Prefer to run it yourself? Dim0 is open source (MIT).",
+    "opening_portal": "Opening portal...",
+    "plan": {
+      "basic": "Basic",
+      "free": "Free",
+      "plus": "Plus"
+    },
+    "plans": {
+      "basic": {
+        "tagline": "For steady, everyday use"
+      },
+      "free": {
+        "footnote": "Great for trying Dim0 and personal projects. Upgrade any time as your workspace grows.",
+        "tagline": "Starter plan for personal exploration"
+      },
+      "plus": {
+        "tagline": "Best for active daily workflows"
+      }
+    },
+    "price_free": "Free",
+    "redirecting": "Redirecting...",
+    "resume_membership": "Resume Membership",
+    "status": "Status",
+    "status_active": "Active",
+    "subtitle": "Pick the plan that matches your workspace needs",
+    "switch_to_basic": "Switch to Basic",
+    "switch_to_plus": "Switch to Plus",
+    "this_period_end": "the end of this period",
+    "title": "Billing Plans",
+    "upgrade_to_plus": "Upgrade to Plus"
+  },
   "charts": {
     "chart": {
       "loading": "Loading chart"
@@ -52,6 +248,33 @@
       "note_boards": "Note Boards"
     }
   },
+  "install": {
+    "android": {
+      "add_to_home_screen": "Add to Home screen",
+      "browser_chrome": "Chrome",
+      "install": "Install",
+      "install_app": "Install app",
+      "menu": "menu",
+      "tap_browser_menu": "Tap the browser",
+      "title": "Android"
+    },
+    "common": {
+      "choose": "Choose",
+      "in": "in",
+      "open": "Open",
+      "or": "or",
+      "tap": "Tap"
+    },
+    "description": "Add Dim0 to your home screen to use it like an app on mobile.",
+    "iphone": {
+      "add": "Add",
+      "add_to_home_screen": "Add to Home Screen",
+      "browser_safari": "Safari",
+      "share_button": "Share",
+      "title": "iPhone & iPad"
+    },
+    "title": "Install Dim0"
+  },
   "markdown": {
     "link": {
       "source_label": "source"
@@ -63,10 +286,104 @@
       "container": "Table container"
     }
   },
+  "mini_app": {
+    "frame_title": "mini-app",
+    "failed": {
+      "description": "The runtime didn't respond. Network blip, bad deploy, or the iframe was blocked.",
+      "retry": "Retry",
+      "title": "Mini-app failed to load"
+    }
+  },
+  "newsfeed": {
+    "confirm_delete_newsletter": "Delete this newsletter? This cannot be undone.",
+    "create_newsfeed": "Create Newsfeed",
+    "create_sr": "Create",
+    "date": {
+      "month_apr": "Apr",
+      "month_aug": "Aug",
+      "month_dec": "Dec",
+      "month_feb": "Feb",
+      "month_jan": "Jan",
+      "month_jul": "Jul",
+      "month_jun": "Jun",
+      "month_mar": "Mar",
+      "month_may": "May",
+      "month_nov": "Nov",
+      "month_oct": "Oct",
+      "month_sep": "Sept",
+      "ordinal_nd": "nd",
+      "ordinal_rd": "rd",
+      "ordinal_st": "st",
+      "ordinal_th": "th"
+    },
+    "error": {
+      "load": "Failed to load newsfeed",
+      "load_newsletters": "Failed to load newsletters",
+      "load_subscriptions": "Failed to load subscriptions"
+    },
+    "generating": "Generating…",
+    "info": {
+      "description_placeholder": "Describe your topic…",
+      "description_section": "Description",
+      "edit": "Edit",
+      "keyword_placeholder": "Add keyword and press Enter",
+      "keywords_section": "Keywords",
+      "remove_keyword": "Remove",
+      "save": "Save",
+      "seed_placeholder": "Add a source URL then Enter",
+      "seed_sources_section": "Seed sources",
+      "title_placeholder": "Topic title",
+      "title_section": "Title"
+    },
+    "loading_newsletters": "Loading newsletters…",
+    "newsletter_title": "Newsletter {{date}}",
+    "no_links": "No links in this newsfeed",
+    "no_newsletters": "No newsletters yet",
+    "open": "Open",
+    "subscription": {
+      "add": "Add new subscription",
+      "create": "Create",
+      "create_new_topic": "Create New Topic",
+      "create_title": "Create a new Topic subscription",
+      "creating": "Creating subscription…",
+      "creating_title": "Creating subscription",
+      "custom_topic": "Custom topic",
+      "description_hint": "Add a few lines to improve results (sources, sub-topics, exclusions…)",
+      "description_label": "Description (optional)",
+      "description_placeholder": "Describe your topic in more details",
+      "matched": "Matched to: {{topic}}",
+      "topic_label": "Topic",
+      "topic_placeholder": "custom topic"
+    },
+    "subscription_fallback": "Subscription",
+    "title": "Newsfeed",
+    "topic": {
+      "ai": "Artificial Intelligence",
+      "climate": "Climate",
+      "finance": "Finance",
+      "health": "Health",
+      "technology": "Technology"
+    },
+    "untitled": "Untitled",
+    "view_all_topics": "View All Topics",
+    "view_mode": {
+      "article": "Article",
+      "grid": "Grid",
+      "history": "History",
+      "info": "Info",
+      "linear": "Linear",
+      "switch_title": "{{label}} view",
+      "toolbar": "Newsfeed view modes"
+    }
+  },
   "not_found": {
     "title": "Page not found"
   },
   "offline": {
+    "indicator": {
+      "label": "Offline",
+      "title": "You're offline — changes sync once the connection returns"
+    },
     "overlay": {
       "board_description": "You're offline and this board hasn't been downloaded to this device. It'll open automatically once you're back online.",
       "board_title": "This board isn't available offline",
@@ -78,6 +395,83 @@
     "bar": {
       "estimated": "Estimated"
     }
+  },
+  "settings": {
+    "billing": {
+      "description": "Manage subscription and usage limits",
+      "open": "Open billing",
+      "title": "Billing"
+    },
+    "current_plan": "Current plan",
+    "email_label": "Email",
+    "expires_at_period_end": "Expires at period end",
+    "expires_on": "Expires on {{date}}",
+    "profile": {
+      "description": "Basic account details",
+      "title": "Profile"
+    }
+  },
+  "share": {
+    "anyone_with_link": "Anyone with the link can:",
+    "button": {
+      "aria_label": "Share this board",
+      "label": "Share"
+    },
+    "checking_invitation": "Checking invitation…",
+    "confirm_disable": "Disable sharing? Existing members keep access; only future invites are blocked.",
+    "confirm_remove": "Remove {{email}} from this board?",
+    "copy": "Copy",
+    "create_link": "Create link",
+    "creating": "Creating…",
+    "disable": "Disable sharing",
+    "disabling": "Disabling…",
+    "error": {
+      "accept": "Couldn't accept the invitation. Try again.",
+      "copy": "Couldn't copy. Long-press to select.",
+      "create_link": "Couldn't create share link. Try again.",
+      "disable": "Couldn't disable sharing. Try again.",
+      "inactive_link": "This link is no longer active. Ask the owner for a new one.",
+      "missing_token": "Missing share token in the URL.",
+      "remove_member": "Couldn't remove member. Try again.",
+      "unknown": "Unknown error."
+    },
+    "error_panel": {
+      "back_home": "Back home",
+      "title": "This invitation isn't usable"
+    },
+    "joining": "Joining the board…",
+    "no_active_edit_link": "No active edit link yet.",
+    "no_active_view_link": "No active view link yet.",
+    "people_with_access": "People with access",
+    "ready": {
+      "member": "You'll be able to view and edit this board.",
+      "open": "Open board",
+      "title": "You've been invited",
+      "viewer": "You'll have view-only access to this board."
+    },
+    "remove": "Remove",
+    "role": {
+      "edit": "Edit",
+      "view": "View"
+    },
+    "signin_panel": {
+      "description": "Sign in to your Dim0 account to accept this invitation.",
+      "submit": "Sign in",
+      "title": "You've been invited to a board"
+    },
+    "switch_role_other_many": "Switch role to see the other links for this board.",
+    "switch_role_other_one": "Switch role to see the other link for this board.",
+    "title_prefix": "Share",
+    "toast": {
+      "added": "Added to board as {{role}}.",
+      "already_disabled": "Sharing was already disabled.",
+      "copied": "Link copied to clipboard.",
+      "disabled_links": "Disabled {{count}} link(s).",
+      "kicked_sessions": " ({{count}} live session(s) closed)",
+      "removed": "Removed from board."
+    },
+    "untitled_board": "Untitled board",
+    "warning": "Sharing this board also shares every sub-board and nested note inside it. Move anything private out before inviting."
   },
   "sidebar": {
     "account": {
@@ -185,5 +579,44 @@
     },
     "toggle": "Toggle theme",
     "toggle_label": "Theme and mode"
+  },
+  "widgets": {
+    "image": {
+      "open_aria": "Open image",
+      "open_in_new_tab": "Open in new tab",
+      "photo_alt": "web photo",
+      "title": "Images",
+      "view_more": "View {{count}} more"
+    },
+    "trading": {
+      "after_hours": "After hours",
+      "disclaimer": "Disclaimer",
+      "high": "High",
+      "low": "Low",
+      "open": "Open",
+      "prev_close": "Prev close",
+      "price": "Price • {{value}}",
+      "time": "Time • {{value}}",
+      "today": "today",
+      "updated": "Updated • {{time}}"
+    },
+    "weather": {
+      "clear_sky": "Clear sky",
+      "fog": "Fog",
+      "heavy_rain": "Heavy rain",
+      "heavy_snow": "Heavy snow",
+      "light_drizzle": "Light drizzle",
+      "light_rain": "Light rain",
+      "light_snow": "Light snow",
+      "mainly_clear": "Mainly clear",
+      "moderate_rain": "Moderate rain",
+      "moderate_snow": "Moderate snow",
+      "overcast": "Overcast",
+      "partly_cloudy": "Partly cloudy",
+      "rain_showers": "Rain showers",
+      "rime_fog": "Depositing rime fog",
+      "thunderstorm": "Thunderstorm",
+      "unknown": "Unknown"
+    }
   }
 }

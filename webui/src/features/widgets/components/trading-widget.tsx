@@ -1,4 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { getLanguage } from '@/i18n'
 import { InfoIcon, TimeClockIcon, TrendingDownIcon, TrendingUpIcon } from '@/components/icons'
 import {
   AreaChart,
@@ -11,12 +13,15 @@ import {
   CartesianGrid,
   type TooltipContentProps,
 } from 'recharts'
+import type { TFunction } from 'i18next'
 import type { TradingData, Point, TimeRange } from '../utils/trading'
 
 const ranges: TimeRange[] = ['1d', '5d', '1mo', '6mo', 'ytd', '1y', '5y', 'max']
 
+const intlLocale = () => (getLanguage() === 'ru' ? 'ru-RU' : 'en-US')
+
 const formatNumber = (n: number) =>
-  new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(n)
+  new Intl.NumberFormat(intlLocale(), { maximumFractionDigits: 2 }).format(n)
 
 const formatDelta = (n: number, pct: number) => {
   const pos = n >= 0
@@ -30,20 +35,21 @@ const formatDelta = (n: number, pct: number) => {
 }
 
 const formatTick = (t: number, rangeLabel: string) => {
+  const locale = intlLocale()
   const d = new Date(t * 1000)
-  if (rangeLabel === '1d') return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  if (rangeLabel === '1d') return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
   if (rangeLabel === '5d' || rangeLabel === '1mo')
-    return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
+    return d.toLocaleDateString(locale, { month: 'short', day: 'numeric' })
   if (rangeLabel === '6mo' || rangeLabel === 'ytd' || rangeLabel === '1y')
-    return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
-  return d.toLocaleDateString([], { month: 'short', year: '2-digit' })
+    return d.toLocaleDateString(locale, { month: 'short', day: 'numeric' })
+  return d.toLocaleDateString(locale, { month: 'short', year: '2-digit' })
 }
 
 // Correct type for Tooltip `content` in Recharts v3
 type CustomTooltipProps = TooltipContentProps<number, string>
 
 const makeCustomTooltip =
-  (rangeLabel: string) =>
+  (rangeLabel: string, t: TFunction) =>
   ({ active, payload }: CustomTooltipProps) => {
     if (!active || !payload || payload.length === 0) return null
 
@@ -51,15 +57,16 @@ const makeCustomTooltip =
     const p = payload[0].payload as Point
     const d = new Date(p.t * 1000)
 
+    const locale = intlLocale()
     const label =
       rangeLabel === '1d'
-        ? d.toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-        : d.toLocaleString()
+        ? d.toLocaleString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        : d.toLocaleString(locale)
 
     return (
       <div className='rounded-lg border bg-background/95 px-3 py-2 shadow-sm text-xs'>
-        <div className='text-muted-foreground'>Price • {p.v.toFixed(2)}</div>
-        <div className='text-muted-foreground'>Time • {label}</div>
+        <div className='text-muted-foreground'>{t('widgets.trading.price', { value: p.v.toFixed(2) })}</div>
+        <div className='text-muted-foreground'>{t('widgets.trading.time', { value: label })}</div>
       </div>
     )
   }
@@ -74,6 +81,7 @@ export default function TradingWidget({
   /** If provided, widget becomes controlled for range and calls this on change */
   onRangeChange?: (r: TimeRange) => void
 }) {
+  const { t } = useTranslation()
   // Uncontrolled fallback so the widget still works standalone for demos
   const [internalRange, setInternalRange] = useState<TimeRange>(rangeLabel)
   const currentRange = useMemo<TimeRange>(
@@ -103,19 +111,19 @@ export default function TradingWidget({
           </div>
           <div className='text-xs md:text-sm'>
             {formatDelta(snapshot.change, snapshot.changePct)}{' '}
-            <span className='text-muted-foreground'>today</span>
+            <span className='text-muted-foreground'>{t('widgets.trading.today')}</span>
           </div>
           <div className='flex items-center gap-1 text-xs text-muted-foreground'>
             <TimeClockIcon className='w-3 h-3' />
-            <span>Updated • {snapshot.asOf}</span>
+            <span>{t('widgets.trading.updated', { time: snapshot.asOf })}</span>
             <span className='mx-1'>•</span>
             <button className='inline-flex items-center gap-1 hover:underline'>
               <InfoIcon className='w-3 h-3' />
-              Disclaimer
+              {t('widgets.trading.disclaimer')}
             </button>
           </div>
           <div className='text-xs font-mono tabular-nums flex items-center gap-2 text-muted-foreground'>
-            <span>After hours</span>
+            <span>{t('widgets.trading.after_hours')}</span>
             <span className='font-medium'>
               {formatNumber(snapshot.afterHoursPrice ?? snapshot.price)} {snapshot.currency}
             </span>
@@ -176,7 +184,7 @@ export default function TradingWidget({
               />
               <YAxis dataKey='v' hide domain={['dataMin', 'dataMax']} />
               <Tooltip
-                content={makeCustomTooltip(currentRange)}
+                content={makeCustomTooltip(currentRange, t)}
                 cursor={{ stroke: 'currentColor', strokeOpacity: 0.4, strokeDasharray: '3 3' }}
                 wrapperStyle={{ outline: 'none' }}
               />
@@ -200,23 +208,23 @@ export default function TradingWidget({
 
       <div className='mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs'>
         <div className='space-y-1'>
-          <div className='text-muted-foreground'>Open</div>
+          <div className='text-muted-foreground'>{t('widgets.trading.open')}</div>
           <div className='font-medium font-mono tabular-nums'>{points[0]?.v?.toFixed(2)}</div>
         </div>
         <div className='space-y-1'>
-          <div className='text-muted-foreground'>High</div>
+          <div className='text-muted-foreground'>{t('widgets.trading.high')}</div>
           <div className='font-medium font-mono tabular-nums'>
             {Math.max(...points.map((p) => p.v)).toFixed(2)}
           </div>
         </div>
         <div className='space-y-1'>
-          <div className='text-muted-foreground'>Low</div>
+          <div className='text-muted-foreground'>{t('widgets.trading.low')}</div>
           <div className='font-medium font-mono tabular-nums'>
             {Math.min(...points.map((p) => p.v)).toFixed(2)}
           </div>
         </div>
         <div className='space-y-1'>
-          <div className='text-muted-foreground'>Prev close</div>
+          <div className='text-muted-foreground'>{t('widgets.trading.prev_close')}</div>
           <div className='font-medium font-mono tabular-nums'>{snapshot.prevClose.toFixed(2)}</div>
         </div>
       </div>

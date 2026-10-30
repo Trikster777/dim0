@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ExternalLinkIcon } from '@/components/icons'
 
@@ -16,12 +17,15 @@ export default function ImageSearchStrip({
   images,
   rowHeight = 160,
   preloadMax = 24,
-  title = 'Images',
+  title,
 }: Props) {
+  const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [open, setOpen] = useState(false)
   const [ratios, setRatios] = useState<Map<string, number>>(new Map()) // url -> aspect ratio (w/h)
   const [brokenUrls, setBrokenUrls] = useState<Set<string>>(new Set())
+
+  const resolvedTitle = title ?? t('widgets.image.title')
 
   // helper: mark an URL as broken (used by preload + <img onError>)
   const markBroken = (url: string) => {
@@ -124,12 +128,12 @@ export default function ImageSearchStrip({
                   type='button'
                   onClick={() => openNewTab(url)}
                   className='absolute inset-0'
-                  aria-label={'Open image'}
-                  title='Open in new tab'
+                  aria-label={t('widgets.image.open_aria')}
+                  title={t('widgets.image.open_in_new_tab')}
                 />
                 <img
                   src={url}
-                  alt={'web photo'}
+                  alt={t('widgets.image.photo_alt')}
                   referrerPolicy='no-referrer'
                   className='h-full w-full object-cover'
                   onError={() => markBroken(url)} // <-- strip-level safeguard
@@ -146,7 +150,7 @@ export default function ImageSearchStrip({
                         <button
                           type='button'
                           className='absolute inset-0 bg-background/60 backdrop-blur-[1px] text-foreground text-sm font-medium'
-                          title={`View ${hiddenCount} more`}
+                          title={t('widgets.image.view_more', { count: hiddenCount })}
                         >
                           <span className='absolute inset-0 flex items-center justify-center'>
                             + {hiddenCount}
@@ -156,7 +160,7 @@ export default function ImageSearchStrip({
                     />
                     <DialogContent className='max-w-5xl'>
                       <DialogHeader>
-                        <DialogTitle className='text-base'>{title}</DialogTitle>
+                        <DialogTitle className='text-base'>{resolvedTitle}</DialogTitle>
                       </DialogHeader>
                       <ImagesGrid images={safePhotos} onOpen={openNewTab} />
                     </DialogContent>
@@ -178,6 +182,7 @@ function ImagesGrid({
   images: string[]
   onOpen: (url: string) => void
 }) {
+  const { t } = useTranslation()
   return (
     <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2'>
       {images.map((url, i) => (
@@ -189,12 +194,12 @@ function ImagesGrid({
             type='button'
             onClick={() => onOpen(url)}
             className='absolute inset-0'
-            aria-label={'Open image'}
-            title='Open in new tab'
+            aria-label={t('widgets.image.open_aria')}
+            title={t('widgets.image.open_in_new_tab')}
           />
           <img
             src={url}
-            alt={'web photo'}
+            alt={t('widgets.image.photo_alt')}
             className='h-40 w-full object-cover'
             referrerPolicy='no-referrer'
           />

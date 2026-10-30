@@ -7,6 +7,7 @@
  * Returns data formatted for the WeatherWidget component.
  */
 
+import { getLanguage } from '@/i18n'
 import type { WeatherWidgetProps } from '../components/weather-widget'
 
 /**
@@ -74,6 +75,8 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherWidgetPro
       }
     }
 
+    const locale = getLanguage() === 'ru' ? 'ru-RU' : 'en-US'
+
     // Normalize daily data (next 5 days)
     const dailyTimes: string[] = weatherData.daily?.time ?? []
     const dailyMax: number[] = weatherData.daily?.temperature_2m_max ?? []
@@ -81,7 +84,7 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherWidgetPro
     const dailyCodes: number[] = weatherData.daily?.weathercode ?? []
 
     const daily = dailyTimes.slice(0, 5).map((t: string, i: number) => ({
-      dow: new Date(t).toLocaleDateString([], { weekday: 'short' }),
+      dow: new Date(t).toLocaleDateString(locale, { weekday: 'short' }),
       high: dailyMax[i],
       low: dailyMin[i],
       icon: mapWeatherCode(dailyCodes[i]),
@@ -90,7 +93,7 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherWidgetPro
     // Return widget data
     return {
       location: `${name}, ${country}`,
-      asOf: new Date().toLocaleString(),
+      asOf: new Date().toLocaleString(locale),
       unit: 'C',
       current: {
         temp: weatherData.current_weather?.temperature ?? 0,
@@ -122,25 +125,25 @@ function mapWeatherCode(code?: number): WeatherWidgetProps['current']['kind'] {
 }
 
 /**
- * Convert weather codes to human-readable descriptions
+ * Map weather codes to locale keys; the widget resolves them with `t()`.
  */
 function describeWeather(code?: number): string {
   const map: Record<number, string> = {
-    0: 'Clear sky',
-    1: 'Mainly clear',
-    2: 'Partly cloudy',
-    3: 'Overcast',
-    45: 'Fog',
-    48: 'Depositing rime fog',
-    51: 'Light drizzle',
-    61: 'Light rain',
-    63: 'Moderate rain',
-    65: 'Heavy rain',
-    71: 'Light snow',
-    73: 'Moderate snow',
-    75: 'Heavy snow',
-    80: 'Rain showers',
-    95: 'Thunderstorm',
+    0: 'widgets.weather.clear_sky',
+    1: 'widgets.weather.mainly_clear',
+    2: 'widgets.weather.partly_cloudy',
+    3: 'widgets.weather.overcast',
+    45: 'widgets.weather.fog',
+    48: 'widgets.weather.rime_fog',
+    51: 'widgets.weather.light_drizzle',
+    61: 'widgets.weather.light_rain',
+    63: 'widgets.weather.moderate_rain',
+    65: 'widgets.weather.heavy_rain',
+    71: 'widgets.weather.light_snow',
+    73: 'widgets.weather.moderate_snow',
+    75: 'widgets.weather.heavy_snow',
+    80: 'widgets.weather.rain_showers',
+    95: 'widgets.weather.thunderstorm',
   }
-  return map[code ?? 0] ?? 'Unknown'
+  return map[code ?? 0] ?? 'widgets.weather.unknown'
 }

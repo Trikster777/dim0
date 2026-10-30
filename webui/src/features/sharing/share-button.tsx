@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { ShareIcon } from "@/components/icons"
 import { useBoardAppStore } from "@/features/board/harness/store/board-app-store"
@@ -16,6 +17,7 @@ import { ShareDialog } from "./share-dialog"
  * subtle shadow).
  */
 export function ShareButton() {
+  const { t } = useTranslation()
   const boardId = useBoardAppStore((s) => s.boardId)
   const boardRole = useBoardAppStore((s) => s.boardRole)
   const boardLabel = useBoardAppStore((s) => s.boardLabel)
@@ -31,7 +33,7 @@ export function ShareButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Share this board"
+        aria-label={t("share.button.aria_label")}
         data-coachmark="share"
         className={
           "flex items-center gap-1.5 rounded-md px-1.5 py-1 " +
@@ -40,7 +42,7 @@ export function ShareButton() {
         }
       >
         <ShareIcon className="size-3.5 shrink-0" />
-        Share
+        {t("share.button.label")}
       </button>
       <ShareDialog
         boardId={boardId}
