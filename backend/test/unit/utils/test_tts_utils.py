@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import time
 
 import pytest
 
@@ -276,6 +277,52 @@ def test_split_paragraph_break_is_a_boundary():
 
     assert all("\n" not in chunk for chunk in chunks)
     assert _without_spaces(" ".join(chunks)) == _without_spaces(text)
+
+
+# ---------------------------------------------------------------------------
+# Linearity of the chunker
+# ---------------------------------------------------------------------------
+
+
+def test_split_of_a_pathological_text_is_linear_in_time():
+    """A pathological text is chunked in seconds, not in minutes.
+
+    The text is one long run of ampersands: after the preparation it holds
+    208 007 characters and 16 000 CDATA markers. A chunker that walks the
+    whole marker list on every terminator and rescans the rest of the text on
+    every cut needs tens of seconds on it and blocks the event loop of the
+    whole backend, so the time is a part of the contract.
+    """
+    text = "&" * 16_000 + " привет"
+
+    prepared = prepare_tts_text(text)
+    assert len(prepared) > 200_000
+
+    started = time.perf_counter()
+    chunks = split_text_for_tts(prepared)
+    elapsed = time.perf_counter() - started
+
+    assert len(chunks) > 1
+    assert elapsed < 5, f"the chunker took {elapsed:.2f} s — it is quadratic again"
+
+
+def test_split_of_a_twice_longer_pathological_text_stays_linear():
+    """Doubling the pathological text does not quadruple the time.
+
+    A quadratic chunker needs about two minutes here, a linear one needs
+    about twice as long as the shorter text — the assertion keeps the linear
+    growth from the first test honest.
+    """
+    text = "&" * 32_000 + " привет"
+
+    prepared = prepare_tts_text(text)
+
+    started = time.perf_counter()
+    chunks = split_text_for_tts(prepared)
+    elapsed = time.perf_counter() - started
+
+    assert len(chunks) > 1
+    assert elapsed < 10, f"the chunker took {elapsed:.2f} s — it is quadratic again"
 
 
 # ---------------------------------------------------------------------------

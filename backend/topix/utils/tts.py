@@ -2,6 +2,9 @@
 
 import re
 
+from bisect import bisect_left
+from collections import deque
+
 # Latin to Cyrillic table covering all 52 latin letters. The ru model of the
 # TTS service has no extended alphabet, so a single latin letter breaks the
 # synthesis — the backend has to remove latin on its own.
@@ -105,14 +108,74 @@ def _cdata_spans(text: str) -> list[tuple[int, int]]:
     return [(match.start(), match.end()) for match in _CDATA_MARKER_RE.finditer(text)]
 
 
-def _protected_spans(text: str) -> list[tuple[int, int]]:
-    """Collect the index ranges a chunk border must not fall into.
+def _cdata_inner_positions(text: str) -> bytearray:
+    """Mark the positions that lie strictly inside a CDATA marker.
+
+    A terminator inside a marker is markup, not the end of a sentence. The
+    mask is built once per text, so the check on every terminator is a single
+    lookup instead of a walk through the whole list of markers.
+    """
+    mask = bytearray(len(text))
+    for start, end in _cdata_spans(text):
+        if end - start > 1:
+            mask[start + 1 : end] = b"\x01" * (end - start - 1)
+    return mask
+
+
+def _holds(starts: list[int], ranges: list[tuple[int, int]], position: int) -> bool:
+    """Tell whether the position lies strictly inside one of the sorted ranges.
+
+    The ranges do not overlap, so the only candidate is the last one that
+    starts before the position.
+    """
+    index = bisect_left(starts, position) - 1
+    if index < 0:
+        return False
+    return position < ranges[index][1]
+
+
+class _ProtectedRanges:
+    """The ranges a chunk border must not fall into, prepared for fast lookups.
 
     Two kinds of ranges are protected: the known abbreviations (a cut inside
     «и т.д.» would pull it apart) and our own CDATA markers (a cut inside
     «<![CDATA[&]]>» would send invalid XML to the service).
+
+    The ranges are read once per piece of text and kept sorted, so the chunker
+    looks a position up with a binary search instead of walking the whole list
+    on every cut.
     """
-    return _abbreviation_spans(text) + _cdata_spans(text)
+
+    def __init__(self, text: str, offset: int = 0) -> None:
+        """Read the ranges of the text; ``offset`` shifts them into the frame of a larger text."""
+        self._abbreviations = [(start + offset, end + offset) for start, end in _abbreviation_spans(text)]
+        self._markers = [(start + offset, end + offset) for start, end in _cdata_spans(text)]
+        self._abbreviation_starts = [start for start, _ in self._abbreviations]
+        self._marker_starts = [start for start, _ in self._markers]
+
+    def holds(self, position: int) -> bool:
+        """Tell whether the position lies strictly inside a protected range."""
+        return _holds(self._abbreviation_starts, self._abbreviations, position) or _holds(self._marker_starts, self._markers, position)
+
+    def holder(self, position: int, after: int) -> int | None:
+        """Find the protected range that holds the position, if any.
+
+        Only a range that begins after ``after`` counts — a range that starts
+        at the very beginning of the rest cannot be moved in front of. The
+        abbreviations come first: they decide which range the cut moves in
+        front of.
+        """
+        for starts, ranges in (
+            (self._abbreviation_starts, self._abbreviations),
+            (self._marker_starts, self._markers),
+        ):
+            index = bisect_left(starts, position) - 1
+            if index < 0:
+                continue
+            start, end = ranges[index]
+            if after < start and position < end:
+                return start
+        return None
 
 
 def _split_sentences(text: str) -> list[str]:
@@ -123,7 +186,7 @@ def _split_sentences(text: str) -> list[str]:
     """
     sentences: list[str] = []
     abbreviation_dots = _abbreviation_dot_positions(text)
-    markers = _cdata_spans(text)
+    marker_positions = _cdata_inner_positions(text)
     start = 0
     index = 0
     length = len(text)
@@ -143,7 +206,7 @@ def _split_sentences(text: str) -> list[str]:
                 index += 1
                 continue
             # The «!» of «<![CDATA[» is markup, not the end of a sentence.
-            if any(start_of < index < end_of for start_of, end_of in markers):
+            if marker_positions[index]:
                 index += 1
                 continue
             piece = text[start : index + 1].strip()
@@ -158,14 +221,15 @@ def _split_sentences(text: str) -> list[str]:
     return sentences
 
 
-def _choose_cut(rest: str, limit: int) -> tuple[int, int]:
+def _choose_cut(text: str, start: int, limit: int, ranges: _ProtectedRanges) -> tuple[int, int]:
     """Pick the place where a too long piece is cut.
 
-    Soft boundaries are preferred; a word is cut only when there is no boundary
-    left. The cut never falls inside a known abbreviation or inside a CDATA
-    marker.
+    The offsets are relative to the beginning of the rest that starts at
+    ``start``. Soft boundaries are preferred; a word is cut only when there is
+    no boundary left. The cut never falls inside a known abbreviation or
+    inside a CDATA marker.
     """
-    window = rest[:limit]
+    window = text[start : start + limit]
     cut = -1
     separator_length = 0
     for separator in SOFT_SPLIT_SEPARATORS:
@@ -176,42 +240,54 @@ def _choose_cut(rest: str, limit: int) -> tuple[int, int]:
     if cut > 0:
         return cut, separator_length
 
-    spans = _protected_spans(rest)
     space = window.rfind(" ")
     # A space inside an abbreviation must not become a chunk border.
-    while space > 0 and any(start < space < end for start, end in spans):
+    while space > 0 and ranges.holds(start + space):
         space = window.rfind(" ", 0, space)
     if space > 0:
         return space, 1
 
     # The word is cut in half, so the cut may land inside an abbreviation or
     # inside a CDATA marker: move it in front of the protected range instead.
-    cut = limit
-    for start, end in spans:
-        if 0 < start < cut < end:
-            cut = start
-            break
-    return cut, 0
+    holder = ranges.holder(start + limit, start)
+    if holder is not None:
+        return holder - start, 0
+    return limit, 0
 
 
 def _split_long_text(text: str, limit: int) -> list[str]:
     """Cut a too long piece into parts of at most ``limit`` characters.
 
-    Soft boundaries (comma, semicolon, colon, dash) are preferred; a word is cut
-    only when there is no boundary left.
+    Soft boundaries (comma, semicolon, colon, dash) are preferred; a word is
+    cut only when there is no boundary left. The protected ranges are read
+    once for the whole piece, so the cost of the cut stays linear in the
+    length of the text.
     """
     if limit <= 0 or len(text) <= limit:
         return [text] if text else []
 
     parts: list[str] = []
-    rest = text
-    while len(rest) > limit:
-        cut, separator_length = _choose_cut(rest, limit)
-        parts.append(rest[: cut + separator_length].strip())
-        rest = rest[cut + separator_length :].strip()
+    ranges = _ProtectedRanges(text)
+    start = 0
+    end = len(text)
+    while end - start > limit:
+        cut, separator_length = _choose_cut(text, start, limit, ranges)
+        border = start + cut + separator_length
+        parts.append(text[start:border].strip())
+        start = border
+        while start < end and text[start].isspace():
+            start += 1
+        while end > start and text[end - 1].isspace():
+            end -= 1
+        if ranges.holds(start):
+            # The rest begins inside a protected range: the ranges of the
+            # remaining text are read again, because the text around the
+            # border is not the one they were read from.
+            ranges = _ProtectedRanges(text[start:end], offset=start)
 
-    if rest:
-        parts.append(rest)
+    tail = text[start:end]
+    if tail:
+        parts.append(tail)
     return [part for part in parts if part]
 
 
@@ -231,9 +307,9 @@ def split_text_for_tts(text: str) -> list[str]:
 
     chunks: list[str] = []
     current = ""
-    pending = list(pieces)
+    pending = deque(pieces)
     while pending:
-        piece = pending.pop(0)
+        piece = pending.popleft()
         candidate = f"{current} {piece}".strip() if current else piece
         if len(candidate) <= MAX_CHUNK_CHARS:
             current = candidate
@@ -252,7 +328,7 @@ def split_text_for_tts(text: str) -> list[str]:
             chunks.append(current)
             current = ""
             if tail:
-                pending = _split_long_text(tail, MAX_CHUNK_CHARS) + pending
+                pending = deque(_split_long_text(tail, MAX_CHUNK_CHARS)) + pending
             continue
         chunks.append(current)
         current = piece

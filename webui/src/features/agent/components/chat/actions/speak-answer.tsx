@@ -298,7 +298,14 @@ const loadVoices = async () => {
       writeStoredVoice("")
       settingsStore.set({ ...settingsStore.get(), voice: "" })
     }
-  } catch {
+  } catch (error) {
+    if (statusOf(error) === 503) {
+      // The module is off, exactly as with POST /tts: one clear toast, the
+      // voice list is hidden and the button stays frozen until a reload.
+      markModuleDisabled()
+      voicesStore.set({ requested: true, voices: [], failed: false })
+      return
+    }
     voicesStore.set({ requested: true, voices: [], failed: true })
     toast(i18n.t("tts.voicesUnavailable"))
   }
@@ -447,20 +454,22 @@ export const SpeakAnswer = ({ answer, compact = false }: { answer: string, compa
       </Tooltip>
       {!compact && (
         <>
-          <select
-            className="text-xs text-muted-foreground bg-transparent border border-border rounded-md px-1 py-0.5 max-w-28"
-            aria-label={t("tts.voice")}
-            title={voices.failed ? t("tts.voicesUnavailable") : t("tts.voice")}
-            value={settings.voice}
-            onMouseDown={() => void loadVoices()}
-            onFocus={() => void loadVoices()}
-            onChange={handleVoiceChange}
-          >
-            <option value="">{t("tts.voice")}</option>
-            {voices.voices.map((voice) => (
-              <option key={voice} value={voice}>{voice}</option>
-            ))}
-          </select>
+          {!moduleDisabled && (
+            <select
+              className="text-xs text-muted-foreground bg-transparent border border-border rounded-md px-1 py-0.5 max-w-28"
+              aria-label={t("tts.voice")}
+              title={voices.failed ? t("tts.voicesUnavailable") : t("tts.voice")}
+              value={settings.voice}
+              onMouseDown={() => void loadVoices()}
+              onFocus={() => void loadVoices()}
+              onChange={handleVoiceChange}
+            >
+              <option value="">{t("tts.voice")}</option>
+              {voices.voices.map((voice) => (
+                <option key={voice} value={voice}>{voice}</option>
+              ))}
+            </select>
+          )}
           <label className="flex flex-row items-center gap-1 text-xs text-muted-foreground cursor-pointer">
             <input
               type="checkbox"

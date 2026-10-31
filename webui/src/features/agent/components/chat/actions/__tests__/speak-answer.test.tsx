@@ -192,7 +192,8 @@ describe("SpeakAnswer", () => {
   })
 
   it("hides the voice list and shows one toast when the voices are unavailable", async () => {
-    state.apiFetch.mockRejectedValue(new ApiRequestError(503, "/tts/voices"))
+    // Not a 503: the module is on, the list itself did not come.
+    state.apiFetch.mockRejectedValue(new ApiRequestError(502, "/tts/voices"))
     render(<SpeakAnswer answer="Привет" />)
 
     await act(async () => {
@@ -203,6 +204,29 @@ describe("SpeakAnswer", () => {
     expect(toast).toHaveBeenCalledWith("The voice list is unavailable")
     const options = Array.from(screen.getByRole<HTMLSelectElement>("combobox").options)
     expect(options).toHaveLength(1)
+  })
+
+  it("latches the module off when the voice list answers 503", async () => {
+    state.apiFetch.mockRejectedValue(new ApiRequestError(503, "/tts/voices"))
+    render(<SpeakAnswer answer="Привет" />)
+
+    await act(async () => {
+      fireEvent.mouseDown(screen.getByRole("combobox"))
+    })
+
+    // One clear toast — the module is off, not the list.
+    expect(toast).toHaveBeenCalledTimes(1)
+    expect(toast).toHaveBeenCalledWith("Speech is disabled")
+
+    // The voice list is gone and the button is frozen until a reload.
+    expect(screen.queryByRole("combobox")).toBe(null)
+    const frozen = screen.getByRole("button", { name: "Speech is disabled" })
+    expect(frozen.hasAttribute("disabled")).toBe(true)
+
+    await act(async () => {
+      fireEvent.click(frozen)
+    })
+    expect(state.apiFetch).toHaveBeenCalledTimes(1)
   })
 
   it("remembers the picked voice and sends it to the backend", async () => {
