@@ -15,6 +15,10 @@ from topix.utils.tts import (
 )
 
 CDATA_MARKER_RE = re.compile(r"<!\[CDATA\[.*?\]\]>")
+# A whole section: the opening, one special character and the closing. The
+# loose pattern above would swallow a broken marker together with the next
+# one, this one matches only a section that is complete.
+CDATA_SECTION_RE = re.compile(r"<!\[CDATA\[(?:&|<|>)]]>")
 
 # Every abbreviation of the owner's list. The second item holds the spellings
 # that mean the abbreviation was cut apart: «т.е.» → «т. е.» when the inner dot
@@ -91,6 +95,16 @@ def _data_payload(wav: bytes) -> bytes:
 def _without_spaces(text: str) -> str:
     """Drop whitespace so chunk joins can be compared against the source."""
     return "".join(text.split())
+
+
+def _broken_cdata_fragments(text: str) -> list[str]:
+    """Return the parts of the text that lie outside of a whole CDATA section.
+
+    A section is the only place where «<», «>» and «&» may appear, so a marker
+    cut in two always leaves a fragment of itself behind.
+    """
+    rest = CDATA_SECTION_RE.sub("", text)
+    return [fragment for fragment in ("<", ">", "&", "]]>", "CDATA[") if fragment in rest]
 
 
 def _abbreviation_chunk_span(text: str, chunks: list[str], abbreviation: str) -> set[int]:
@@ -334,6 +348,50 @@ def test_prepare_tts_text_result_has_no_latin_letters_outside_markers():
     stripped = CDATA_MARKER_RE.sub("", result)
 
     assert not _has_latin(stripped)
+
+
+# ---------------------------------------------------------------------------
+# CDATA markers and the chunker
+# ---------------------------------------------------------------------------
+
+
+def test_split_never_breaks_a_cdata_marker():
+    """A CDATA marker stays whole inside one chunk.
+
+    The «!» of «<![CDATA[» looks like the end of a sentence: a chunker that
+    does not know about the markers cuts them in two, and the service answers
+    400 to a half section — the client gets a 502 instead of the audio.
+    """
+    text = ("Разговор про R&D и отчёт по продажам. " * 14) + "В коде A<B и C>D."
+
+    prepared = prepare_tts_text(text)
+    chunks = split_text_for_tts(prepared)
+
+    # Three chunks or more — the case where every chunk leaves on its own.
+    assert len(chunks) >= 3
+    for chunk in chunks:
+        assert _broken_cdata_fragments(chunk) == [], chunk
+        assert chunk.count("<![CDATA[") == len(CDATA_SECTION_RE.findall(chunk))
+    # Nothing of the text was lost on the way.
+    assert _without_spaces(" ".join(chunks)) == _without_spaces(prepared)
+
+
+def test_split_never_breaks_a_cdata_marker_of_an_overlong_sentence():
+    """A CDATA marker survives the hard cut of a sentence longer than the limit.
+
+    A sentence without spaces can only be cut in the middle of a word, and the
+    middle of a word may be the middle of a marker.
+    """
+    text = "Р" * 240 + "&" + "Д" * 240 + "."
+
+    prepared = prepare_tts_text(text)
+    chunks = split_text_for_tts(prepared)
+
+    assert len(chunks) >= 2
+    for chunk in chunks:
+        assert _broken_cdata_fragments(chunk) == [], chunk
+        assert chunk.count("<![CDATA[") == len(CDATA_SECTION_RE.findall(chunk))
+    assert _without_spaces(" ".join(chunks)) == _without_spaces(prepared)
 
 
 # ---------------------------------------------------------------------------

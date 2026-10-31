@@ -60,6 +60,11 @@ SENTENCE_TERMINATORS = ".!?…"
 # edge case — everywhere else the text is cut strictly on sentence boundaries.
 SOFT_SPLIT_SEPARATORS = (", ", "; ", ": ", " — ", " – ", " - ")
 
+# Our own CDATA markers must survive the chunker as whole pieces: the «!» of
+# «<![CDATA[» looks like the end of a sentence, and a chunk border inside a
+# marker would send invalid XML to the service (400 → 502 to the client).
+_CDATA_MARKER_RE = re.compile(r"<!\[CDATA\[.*?\]\]>")
+
 # Abbreviations whose dots must not be treated as sentence boundaries.
 # Every dot inside a matched abbreviation is excluded from the boundaries, so
 # «т.е.» and «и т.д.» stay whole instead of being cut into «т.» + «е.».
@@ -91,10 +96,34 @@ def _abbreviation_spans(text: str) -> list[tuple[int, int]]:
     return [(match.start(), match.end()) for match in _ABBREVIATION_RE.finditer(text)]
 
 
+def _cdata_spans(text: str) -> list[tuple[int, int]]:
+    """Collect the index ranges the CDATA markers occupy in the text.
+
+    A marker is a piece of XML markup and not a word: a chunk border inside
+    it would send a half section to the service, which answers 400.
+    """
+    return [(match.start(), match.end()) for match in _CDATA_MARKER_RE.finditer(text)]
+
+
+def _protected_spans(text: str) -> list[tuple[int, int]]:
+    """Collect the index ranges a chunk border must not fall into.
+
+    Two kinds of ranges are protected: the known abbreviations (a cut inside
+    «и т.д.» would pull it apart) and our own CDATA markers (a cut inside
+    «<![CDATA[&]]>» would send invalid XML to the service).
+    """
+    return _abbreviation_spans(text) + _cdata_spans(text)
+
+
 def _split_sentences(text: str) -> list[str]:
-    """Split text into sentences on ``.`` ``!`` ``?`` ``…`` and blank lines only."""
+    """Split text into sentences on ``.`` ``!`` ``?`` ``…`` and blank lines only.
+
+    A terminator inside a known abbreviation or inside a CDATA marker never
+    ends a sentence, so neither of them is ever cut in two.
+    """
     sentences: list[str] = []
     abbreviation_dots = _abbreviation_dot_positions(text)
+    markers = _cdata_spans(text)
     start = 0
     index = 0
     length = len(text)
@@ -113,7 +142,11 @@ def _split_sentences(text: str) -> list[str]:
             if char == "." and index in abbreviation_dots:
                 index += 1
                 continue
-            piece = text[start: index + 1].strip()
+            # The «!» of «<![CDATA[» is markup, not the end of a sentence.
+            if any(start_of < index < end_of for start_of, end_of in markers):
+                index += 1
+                continue
+            piece = text[start : index + 1].strip()
             if piece:
                 sentences.append(piece)
             start = index + 1
@@ -129,7 +162,8 @@ def _choose_cut(rest: str, limit: int) -> tuple[int, int]:
     """Pick the place where a too long piece is cut.
 
     Soft boundaries are preferred; a word is cut only when there is no boundary
-    left. The cut never falls inside a known abbreviation.
+    left. The cut never falls inside a known abbreviation or inside a CDATA
+    marker.
     """
     window = rest[:limit]
     cut = -1
@@ -142,7 +176,7 @@ def _choose_cut(rest: str, limit: int) -> tuple[int, int]:
     if cut > 0:
         return cut, separator_length
 
-    spans = _abbreviation_spans(rest)
+    spans = _protected_spans(rest)
     space = window.rfind(" ")
     # A space inside an abbreviation must not become a chunk border.
     while space > 0 and any(start < space < end for start, end in spans):
@@ -150,8 +184,8 @@ def _choose_cut(rest: str, limit: int) -> tuple[int, int]:
     if space > 0:
         return space, 1
 
-    # The word is cut in half, so the cut may land inside an abbreviation:
-    # move it in front of the abbreviation instead.
+    # The word is cut in half, so the cut may land inside an abbreviation or
+    # inside a CDATA marker: move it in front of the protected range instead.
     cut = limit
     for start, end in spans:
         if 0 < start < cut < end:
@@ -185,7 +219,8 @@ def split_text_for_tts(text: str) -> list[str]:
     """Split text into chunks of at most 250 characters, cut on sentence boundaries.
 
     Short sentences are merged with the following one; a single sentence longer
-    than the limit is cut on soft boundaries as a compromise.
+    than the limit is cut on soft boundaries as a compromise. A CDATA marker is
+    never cut in two: every chunk leaves for the service with whole sections.
     """
     if not text or not text.strip():
         return []

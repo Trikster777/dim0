@@ -13,7 +13,7 @@ window.STATE =
   "skillDir": "C:/Users/Андрей/.qoder/skills/autopilot",
   "baseCommit": "dc508e1e",
   "startedAt": "2026-10-31T13:34:32+03:00",
-  "updatedAt": "2026-10-31T17:11:06+03:00",
+  "updatedAt": "2026-10-31T18:07:34+03:00",
   "finishedAt": null,
   "stages": [
     {
@@ -62,8 +62,8 @@ window.STATE =
   ],
   "requirements": {
     "total": 97,
-    "done": 0,
-    "inTicket": 93,
+    "done": 57,
+    "inTicket": 36,
     "inSpec": 0,
     "placeholder": 0,
     "deferred": 4,
@@ -162,10 +162,19 @@ window.STATE =
       ],
       "review": "да — фундамент",
       "model": "сильная",
-      "status": "in-progress",
+      "status": "repair",
       "retries": 0,
-      "repairs": 0,
-      "startedAt": "2026-10-31T17:11:06+03:00"
+      "repairs": 1,
+      "startedAt": "2026-10-31T17:11:06+03:00",
+      "finishedAt": "2026-10-31T18:00:28+03:00",
+      "tests": {
+        "passed": 837,
+        "failed": 0
+      },
+      "commit": "af8b07a8",
+      "repairFindings": [
+        "каждый чанк, уходящий в сервис, должен содержать целые CDATA-секции"
+      ]
     },
     {
       "id": "02",
@@ -219,9 +228,10 @@ window.STATE =
       ],
       "review": "нет",
       "model": "обычная",
-      "status": "pending",
+      "status": "in-progress",
       "retries": 0,
-      "repairs": 0
+      "repairs": 0,
+      "startedAt": "2026-10-31T18:00:28+03:00"
     },
     {
       "id": "03",
@@ -256,11 +266,16 @@ window.STATE =
       "repairs": 0
     }
   ],
-  "tests": null,
+  "tests": {
+    "passed": 837,
+    "failed": 0
+  },
   "debt": {
     "placeholders": [],
     "assumptions": [],
-    "emptyEnv": []
+    "emptyEnv": [
+      "TTS_ENABLED"
+    ]
   },
   "additions": [],
   "coverage": {
@@ -276,7 +291,10 @@ window.STATE =
       "R93.2 (v5_1_ru латиницу умеет) — оставлено: проверенный факт живой проверки владельца"
     ]
   },
-  "concerns": [],
+  "concerns": [
+    "backend/test/unit/api/router/test_tts_router.py:223 — CDATA-маркер проверяется только на одном чанке; нужен кейс «спецсимвол + >=3 чанка» с проверкой закодированного тела",
+    "backend/test/unit/api/router/test_tts_router.py:352 — test_post_tts_fails_whole_when_a_chunk_fails падает на первом чанке; сценарий «второй чанк упал -> 502 без частичного файла» не поставлен"
+  ],
   "blind": null,
   "beats": [
     "2026-10-31T13:34:32+03:00",
@@ -299,9 +317,12 @@ window.STATE =
     "2026-10-31T17:04:01+03:00",
     "2026-10-31T17:10:12+03:00",
     "2026-10-31T17:10:13+03:00",
-    "2026-10-31T17:11:06+03:00"
+    "2026-10-31T17:11:06+03:00",
+    "2026-10-31T18:00:28+03:00",
+    "2026-10-31T18:00:29+03:00",
+    "2026-10-31T18:07:34+03:00"
   ],
-  "rev": 27,
+  "rev": 33,
   "waiting": null,
   "waits": [
     {
@@ -454,6 +475,55 @@ window.STATE =
         "01"
       ],
       "act": "start"
+    },
+    {
+      "t": "2026-10-31T18:00:28+03:00",
+      "k": "ticket",
+      "ids": [
+        "01"
+      ],
+      "act": "done",
+      "tests": {
+        "passed": 837,
+        "failed": 0
+      }
+    },
+    {
+      "t": "2026-10-31T18:00:28+03:00",
+      "k": "ticket",
+      "ids": [
+        "01"
+      ],
+      "act": "review"
+    },
+    {
+      "t": "2026-10-31T18:00:28+03:00",
+      "k": "ticket",
+      "ids": [
+        "02"
+      ],
+      "act": "start"
+    },
+    {
+      "t": "2026-10-31T18:00:29+03:00",
+      "k": "add",
+      "key": "debt.emptyEnv",
+      "n": 1
+    },
+    {
+      "t": "2026-10-31T18:07:34+03:00",
+      "k": "ticket",
+      "ids": [
+        "01"
+      ],
+      "act": "repair",
+      "note": "каждый чанк, уходящий в сервис, должен содержать целые CDATA-секции"
+    },
+    {
+      "t": "2026-10-31T18:07:34+03:00",
+      "k": "add",
+      "key": "concerns",
+      "n": 2
     }
   ],
   "reqList": [
@@ -465,22 +535,22 @@ window.STATE =
     {
       "id": "R02",
       "text": "«Silero TTS — отдельный сервис, общающийся с Dim0 по HTTP»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R03",
       "text": "«НЕ менять ядро Dim0 сверх необходимого: никаких правок в бизнес-логике агента, чата, холста»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R04",
       "text": "«TTS-сервис — отдельный контейнер, общается с Dim0 по HTTP»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R05",
       "text": "«Фронтенд НЕ обращается к TTS-сервису напрямую — только к своему бэкенду Dim0»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R06",
@@ -490,122 +560,122 @@ window.STATE =
     {
       "id": "R07",
       "text": "«Выключатель модуля — переменная окружения TTS_ENABLED (по умолчанию false)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R08",
       "text": "«Пробежаться по фактам из раздела «[V2] Факты по репозиторию» и убедиться, что они соответствуют текущему состоянию кода»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R09",
       "text": "«Проверить, тянется ли выбранный образ из Docker Hub (docker pull), какой у него порт и точный путь эндпоинта (не полагаться на память и README вслепую)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R10",
       "text": "«Проверить, какие русские спикеры реально доступны у выбранного образа (у twirapp — GET /speakers)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R11",
       "text": "«Показать мне результаты аудита и 2–3 варианта образа с плюсами/минусами — прежде чем писать код»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R12",
       "text": "«По умолчанию, если я не ответил: образ, который тянется с Docker Hub, поддерживает русского спикера и отдаёт wav; TTS_SERVICE_URL — на его порт»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R13",
       "text": "«сервис silero-tts описать ОДИН раз через YAML-anchor (как x-postgres: &postgres-base)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R14",
       "text": "«порт наружу не публиковать (только внутренняя сеть Docker); для отладки — рядом закомментированная строка»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R15",
       "text": "«volume для кэша моделей, чтобы не качать модель при каждом старте»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R16",
       "text": "«healthcheck — если у образа есть подходящий HTTP-эндпоинт»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R17",
       "text": "«В каждом из пяти backend-<stage> сервисов добавить: TTS_ENABLED=${TTS_ENABLED:-false}»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R18",
       "text": "«TTS_SERVICE_URL=http://silero-tts:<порт>»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R19",
       "text": "«TTS_VOICE=${TTS_VOICE:-xenia}»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R20",
       "text": "«TTS_FORMAT=${TTS_FORMAT:-wav}»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R21",
       "text": "«TTS_STREAMING=${TTS_STREAMING:-false}»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R22",
       "text": "«depends_on: silero-tts (condition: service_started, БЕЗ healthcheck-ожидания)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R23",
       "text": "«В .env.sample (НЕ .env.example — такого файла в проекте нет) добавить эти же переменные с комментариями»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R24",
       "text": "«Новый роутер backend/topix/api/router/tts.py, подключить в backend/topix/api/app.py одной строкой рядом с остальными include_router — существующие роутеры не трогать»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R25",
       "text": "«Эндпоинт: POST /tts — Вход: { \"text\": str, \"voice\": str | null } (voice по умолчанию из env)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R26",
       "text": "«Выход: аудиофайл, Content-Type: audio/wav (бинарный, не base64 — base64 раздувает поток на треть и портит стриминг)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R27",
       "text": "«TTS_ENABLED != true → 503 с нейтральным (английским) detail»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R28",
       "text": "«валидация текста: непустой, лимит длины (учесть ограничение GET-образов, см. выше); превышение → 413»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R29",
       "text": "«проксирование в TTS_SERVICE_URL через httpx.AsyncClient с таймаутом (~15 с на чанк)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R30",
       "text": "«ошибка TTS-сервиса → 502 с нейтральным detail, без внутренних деталей»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R31",
@@ -616,7 +686,7 @@ window.STATE =
     {
       "id": "R32",
       "text": "«Никаких API-ключей в коде — только env»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R33",
@@ -626,42 +696,42 @@ window.STATE =
     {
       "id": "R34",
       "text": "«Утилита split_text_for_tts(text: str) -> list[str] (место — по конвенции проекта, рядом с другими утилитами; уточни в backend/topix/utils/)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R35",
       "text": "«резать ТОЛЬКО по границам предложений: . ! ? … \\n\\n»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R36",
       "text": "«НЕ резать по запятым/словам/символам; не ломать сокращения («т.е.», «и т.д.»)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R37",
       "text": "«короткие предложения (< 50 символов) склеивать со следующим»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R38",
       "text": "«максимум ~250 символов на чанк»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R39",
       "text": "«предложение длиннее — резать по запятой/точке с запятой/двоеточию/тире (крайний случай) с комментарием в коде, что это компромисс»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R40",
       "text": "«покрыть pytest: пустой текст, одно длинное предложение, много коротких, текст с числами, текст с эмодзи, текст с сокращениями»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R41",
       "text": "«/tts: если чанков 1–2 — синтезировать целиком»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R42",
@@ -729,12 +799,12 @@ window.STATE =
     {
       "id": "R54",
       "text": "«pytest для split_text_for_tts — обязательно»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R55",
       "text": "«pytest для /tts (мок TTS-сервиса через httpx.MockTransport): 503 при TTS_ENABLED=false, 413 при слишком длинном тексте, 502 при ошибке TTS-сервиса»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R56",
@@ -809,12 +879,12 @@ window.STATE =
     {
       "id": "R70",
       "text": "«Не переводить на бэкенде то, что уже уходит в UI: TTS-ошибки локализуются на фронте по коду ответа (правило из I18N.md)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R71",
       "text": "«Не забыть, что compose-профилей пять: правка только одного backend-local оставит dev/test/staging/prod без TTS»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R72",
@@ -849,12 +919,12 @@ window.STATE =
     {
       "id": "R78i",
       "text": "(подразумевается) Эндпоинт POST /tts защищён так же, как остальные эндпоинты Dim0 — не открыт анонимно",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R79i",
       "text": "(подразумевается) Длинный ответ агента озвучивается целиком, а не обрезается",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R80i",
@@ -864,42 +934,42 @@ window.STATE =
     {
       "id": "R81",
       "text": "Модель голоса — v5_6_ru (https://models.silero.ai/models/tts/ru/v5_6_ru.pt, 147 664 410 Б, Last-Modified 2026-10-15), на поколение новее v5_5_ru (2026-04-16)",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R82",
       "text": "SILERO_SETTINGS в compose задаёт язык, ссылку на модель и список спикеров",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R83",
       "text": "TTS_MODEL_URL в .env.sample — переопределяемая ссылка на модель",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R84",
       "text": "Подготовка текста в бэкенде перед проксированием — два шага строго по порядку: (1) транслитерация латиницы в кириллицу своей полной таблицей на 52 буквы; (2) экранирование XML-спецсимволов &, <, > → CDATA-секция на каждый символ (<![CDATA[…",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R85",
       "text": "Формат аудио: WAV, 48 кГц, моно, 16 бит, RIFF-заголовок",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R86",
       "text": "Потребление памяти контейнера — 700–900 МБ RSS (197 МБ torch, 430 МБ после загрузки модели)",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R87",
       "text": "Модель скачивается при первом старте контейнера (147 МБ) в /usr/app/models → volume обязателен",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R88",
       "text": "Стриминга в v1 нет: TTS_STREAMING=false по умолчанию, StreamingResponse не используется",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R89",
@@ -909,7 +979,7 @@ window.STATE =
     {
       "id": "R90",
       "text": "Контракт TTS-сервиса: POST /process, form-urlencoded voice=<speaker>&input_text=<текст> → audio/wav; порт внутри сети 9898",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R91",
@@ -924,27 +994,27 @@ window.STATE =
     {
       "id": "R93",
       "text": "Docker Desktop установлен, демон поднят — docker info отвечает",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R94",
       "text": "Контейнерный смоук выполнен: pull образа (digest, размер, дата, мультиархность), GET / → {\"status\":\"work\"}, GET /voices → plain text по строке на голос, POST /process → audio/wav с проверкой RIFF / 48 кГц / моно / 16 бит",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R95",
       "text": "Сквозная проверка бэкенд → TTS в compose: docker compose --profile local up -d, TTS_ENABLED=true, POST /tts с текстом, содержащим & и <, → WAV; GET /tts/voices → массив из пяти голосов",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R96",
       "text": "Экранирование XML подтверждено на живом сервисе: сырые & и < → 400 «Invalid XML format»; named-сущности (&amp;) → тоже 400 (нормализатор разрушает); по-символьный CDATA → 200 + WAV",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R97",
       "text": "Латиница в ответе агента не ломает озвучку: после подготовки текста в нём не остаётся ни одной латинской буквы — сервис получает только кириллицу",
-      "status": "in-ticket"
+      "status": "done"
     }
   ],
   "gates": {

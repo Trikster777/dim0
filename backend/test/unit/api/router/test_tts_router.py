@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import urllib.parse
 
 import httpx
@@ -13,6 +14,11 @@ from topix.api.router.tts import router
 from topix.api.utils.security import get_current_user_uid
 
 SERVICE_URL = "http://silero-tts:9898"
+
+# A whole CDATA section: the opening, one special character and the closing.
+CDATA_SECTION_RE = re.compile(r"<!\[CDATA\[(?:&|<|>)]]>")
+# The same section in the form-urlencoded body of the outgoing request.
+ENCODED_CDATA_PREFIX = "%3C%21%5BCDATA%5B"
 
 
 def _wav_bytes(pcm: bytes = b"\x01\x02" * 32) -> bytes:
@@ -99,6 +105,16 @@ def _sent_voice(request: httpx.Request) -> str:
 def _has_latin(text: str) -> bool:
     """Tell whether the text still contains a latin letter."""
     return any(char.isascii() and char.isalpha() for char in text)
+
+
+def _broken_cdata_fragments(text: str) -> list[str]:
+    """Return the parts of the text that lie outside of a whole CDATA section.
+
+    A section is the only place where «<», «>» and «&» may appear, so a marker
+    cut in two always leaves a fragment of itself behind.
+    """
+    rest = CDATA_SECTION_RE.sub("", text)
+    return [fragment for fragment in ("<", ">", "&", "]]>", "CDATA[") if fragment in rest]
 
 
 # ---------------------------------------------------------------------------
@@ -251,6 +267,51 @@ def test_post_tts_transliterates_latin_before_sending(monkeypatch):
     assert not _has_latin(sent)
 
 
+def test_post_tts_keeps_cdata_markers_whole_in_every_chunk(monkeypatch):
+    """Every chunk that leaves for the service holds whole CDATA sections.
+
+    A marker cut in two by the chunker sends invalid XML to the service: it
+    answers 400 and the client gets a 502 instead of the audio. The check is
+    done on the encoded body of the outgoing request, like the check of the
+    ampersand in the form-urlencoded body.
+    """
+    monkeypatch.setenv("TTS_ENABLED", "true")
+    monkeypatch.setenv("TTS_SERVICE_URL", SERVICE_URL)
+    requests = _mock_service(monkeypatch, _ok_wav)
+
+    sentence = "Разговор про R&D и отчёт по продажам. "
+    text = sentence * 14 + "В коде A<B и C>D."
+
+    client, _ = _build_client()
+    response = client.post("/tts", json={"text": text})
+
+    assert response.status_code == 200
+    # Three chunks or more — every chunk leaves for the service on its own.
+    assert len(requests) >= 3
+
+    sent_all = ""
+    for request in requests:
+        body = request.content.decode("utf-8")
+        sent = _sent_text(request)
+        sent_all += sent
+
+        # The encoded body carries every section of the chunk as one piece.
+        for section in CDATA_SECTION_RE.findall(sent):
+            assert urllib.parse.quote_plus(section) in body
+        # A section cut right after «<!» would leave its head alone on the wire.
+        for match in re.finditer(re.escape("%3C%21"), body):
+            head = body[match.start() : match.start() + len(ENCODED_CDATA_PREFIX)]
+            assert head == ENCODED_CDATA_PREFIX, body
+
+        # The parsed body holds no broken section.
+        assert _broken_cdata_fragments(sent) == [], sent
+
+    # All three kinds of sections really went to the service.
+    assert "<![CDATA[&]]>" in sent_all
+    assert "<![CDATA[<]]>" in sent_all
+    assert "<![CDATA[>]]>" in sent_all
+
+
 def test_post_tts_passes_the_requested_voice(monkeypatch):
     """The voice of the request reaches the service."""
     monkeypatch.setenv("TTS_ENABLED", "true")
@@ -341,15 +402,21 @@ def test_post_tts_joins_more_than_two_chunks_into_one_wav(monkeypatch):
 
 
 def test_post_tts_fails_whole_when_a_chunk_fails(monkeypatch):
-    """A failing chunk aborts the whole request, no partial file is returned."""
+    """A failing chunk aborts the whole request, no partial file is returned.
+
+    The first chunk is synthesized normally and the second one fails, so the
+    scenario of a broken middle of the answer is really covered.
+    """
     monkeypatch.setenv("TTS_ENABLED", "true")
     monkeypatch.setenv("TTS_SERVICE_URL", SERVICE_URL)
     sentence = "слово " * 28 + "."
     text = f"{sentence} {sentence} {sentence}"
+    sent_chunks: list[str] = []
 
     def _failing(request: httpx.Request) -> httpx.Response:
-        """Fail on the second chunk only."""
-        if len(_sent_text(request)) == 0:
+        """Answer the first chunk and fail on the second one."""
+        sent_chunks.append(_sent_text(request))
+        if len(sent_chunks) == 1:
             return _ok_wav(request)
         raise httpx.ConnectError("connection refused", request=request)
 
@@ -359,7 +426,12 @@ def test_post_tts_fails_whole_when_a_chunk_fails(monkeypatch):
     response = client.post("/tts", json={"text": text})
 
     assert response.status_code == 502
-    assert len(requests) >= 1
+    # The first chunk was synthesized, the second one failed.
+    assert len(sent_chunks) == 2
+    assert len(requests) == 2
+    # No partial file is returned: the answer is an error, not a piece of audio.
+    assert not response.headers["content-type"].startswith("audio/wav")
+    assert response.content[:4] != b"RIFF"
 
 
 # ---------------------------------------------------------------------------
