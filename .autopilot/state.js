@@ -13,7 +13,7 @@ window.STATE =
   "skillDir": "C:/Users/Андрей/.qoder/skills/autopilot",
   "baseCommit": "dc508e1e",
   "startedAt": "2026-10-31T13:34:32+03:00",
-  "updatedAt": "2026-10-31T18:44:50+03:00",
+  "updatedAt": "2026-10-31T19:22:40+03:00",
   "finishedAt": null,
   "stages": [
     {
@@ -62,8 +62,8 @@ window.STATE =
   ],
   "requirements": {
     "total": 97,
-    "done": 57,
-    "inTicket": 36,
+    "done": 80,
+    "inTicket": 13,
     "inSpec": 0,
     "placeholder": 0,
     "deferred": 4,
@@ -228,10 +228,16 @@ window.STATE =
       ],
       "review": "нет",
       "model": "обычная",
-      "status": "in-progress",
+      "status": "done",
       "retries": 1,
       "repairs": 0,
-      "startedAt": "2026-10-31T18:00:28+03:00"
+      "startedAt": "2026-10-31T18:00:28+03:00",
+      "finishedAt": "2026-10-31T19:16:37+03:00",
+      "tests": {
+        "passed": 1743,
+        "failed": 0
+      },
+      "commit": "ffcc3032"
     },
     {
       "id": "03",
@@ -261,13 +267,14 @@ window.STATE =
       ],
       "review": "нет",
       "model": "обычная",
-      "status": "pending",
+      "status": "in-progress",
       "retries": 0,
-      "repairs": 0
+      "repairs": 0,
+      "startedAt": "2026-10-31T19:18:45+03:00"
     }
   ],
   "tests": {
-    "passed": 840,
+    "passed": 1743,
     "failed": 0
   },
   "debt": {
@@ -294,7 +301,8 @@ window.STATE =
   "concerns": [
     "backend/test/unit/api/router/test_tts_router.py:223 — CDATA-маркер проверяется только на одном чанке; нужен кейс «спецсимвол + >=3 чанка» с проверкой закодированного тела",
     "backend/test/unit/api/router/test_tts_router.py:352 — test_post_tts_fails_whole_when_a_chunk_fails падает на первом чанке; сценарий «второй чанк упал -> 502 без частичного файла» не поставлен",
-    "backend/topix/utils/tts.py:146 — ремонт тикета 01 ввёл квадратичный скан: _split_sentences проверяет any(start_of < index < end_of for start_of, end_of in markers) на каждом терминаторе. Замер: 500 маркеров 0.016 c, 1000 — 0.061 c, 2000 — 0.252 c, 4000 — 1.009 c (x4 на удвоение). POST /tts с 10 000 амперсандов блокирует event loop на 9.78 c (лимит MAX_TEXT_LENGTH = 50 000 -> минуты на запрос, повторяемо любым авторизованным клиентом). Условие: разбиение текста на чанки остаётся линейным на максимально допустимом входе; приём — тот же приём, что уже есть в файле для сокращений (предрассчитанные множества позиций)."
+    "backend/topix/utils/tts.py:146 — ремонт тикета 01 ввёл квадратичный скан: _split_sentences проверяет any(start_of < index < end_of for start_of, end_of in markers) на каждом терминаторе. Замер: 500 маркеров 0.016 c, 1000 — 0.061 c, 2000 — 0.252 c, 4000 — 1.009 c (x4 на удвоение). POST /tts с 10 000 амперсандов блокирует event loop на 9.78 c (лимит MAX_TEXT_LENGTH = 50 000 -> минуты на запрос, повторяемо любым авторизованным клиентом). Условие: разбиение текста на чанки остаётся линейным на максимально допустимом входе; приём — тот же приём, что уже есть в файле для сокращений (предрассчитанные множества позиций).",
+    "backend/topix/utils/tts.py:146 — уточнение к предыдущей находке (31.10.2026, после сборки T02): замер на реальном допустимом запросе — raw 16 007 символов ('&'*16000 + ' привет') проходит проверку has_speakable_content (одна буква есть, значит 400 и 413 его не отсекают), prepared 208 007 символов -> split_text_for_tts жжёт 28,43 c CPU на одном запросе. Лимит роутера 50 000 символов -> экстраполяция ~4,6 мин блокировки event loop. Это уже не «медленно», а отказ в обслуживании одним авторизованным запросом: лечится линейным чанкером."
   ],
   "blind": null,
   "beats": [
@@ -323,9 +331,12 @@ window.STATE =
     "2026-10-31T18:00:29+03:00",
     "2026-10-31T18:07:34+03:00",
     "2026-10-31T18:32:53+03:00",
-    "2026-10-31T18:44:50+03:00"
+    "2026-10-31T18:44:50+03:00",
+    "2026-10-31T19:16:37+03:00",
+    "2026-10-31T19:18:45+03:00",
+    "2026-10-31T19:22:40+03:00"
   ],
-  "rev": 37,
+  "rev": 40,
   "waiting": null,
   "waits": [
     {
@@ -561,13 +572,39 @@ window.STATE =
         "02"
       ],
       "act": "start"
+    },
+    {
+      "t": "2026-10-31T19:16:37+03:00",
+      "k": "ticket",
+      "ids": [
+        "02"
+      ],
+      "act": "done",
+      "tests": {
+        "passed": 1743,
+        "failed": 0
+      }
+    },
+    {
+      "t": "2026-10-31T19:18:45+03:00",
+      "k": "ticket",
+      "ids": [
+        "03"
+      ],
+      "act": "start"
+    },
+    {
+      "t": "2026-10-31T19:22:40+03:00",
+      "k": "add",
+      "key": "concerns",
+      "n": 1
     }
   ],
   "reqList": [
     {
       "id": "R01",
       "text": "«Кнопка «Озвучить» у сообщений агента, озвучка ответа на русском»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R02",
@@ -592,7 +629,7 @@ window.STATE =
     {
       "id": "R06",
       "text": "«Все новые UI-строки — через t(), ключи с префиксом tts. в en.json и ru.json»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R07",
@@ -728,7 +765,7 @@ window.STATE =
     {
       "id": "R33",
       "text": "«backend отдаёт нейтральный английский detail и код ответа (503/413/502), а фронтенд локализует по коду ответа через t('tts.')»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R34",
@@ -785,27 +822,27 @@ window.STATE =
     {
       "id": "R44",
       "text": "«В webui/src/features/agent/components/chat/actions/ добавить компонент (например speak-answer.tsx) и подключить его в response-actions.tsx рядом с CopyAnswer. Взять за образец copy-answer.tsx»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R45",
       "text": "«Состояния кнопки: idle / loading / playing (иконка «стоп», клик — остановка) / error (кратко, tooltip с локализованным текстом ошибки)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R46",
       "text": "«POST /tts с текстом ответа (текст — тот же, что копирует CopyAnswer)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R47",
       "text": "«503 → toast с t('tts.disabled') и больше не пытаться (запомнить выключенное состояние в компоненте)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R48",
       "text": "«бинарный ответ → new Audio(URL.createObjectURL(blob)) либо Web Audio»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R49",
@@ -816,22 +853,22 @@ window.STATE =
     {
       "id": "R50",
       "text": "«Кнопка только у сообщений агента (обеспечивается компонентом AssistantMessage)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R51",
       "text": "«Отмена: новое сообщение пользователя или клик «стоп» → AbortController отменяет запрос, воспроизведение останавливается, URL.revokeObjectURL вызывается»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R52",
       "text": "«Строки — через t(): tts.play, tts.stop, tts.loading, tts.error, tts.disabled. Добавить в en.json И ru.json»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R53",
       "text": "«Настройки (опционально): выпадающий список голосов (xenia, kseniya, aidar, baya, eugene — только те, что есть у выбранного образа) и чекбокс «Автоозвучивать ответы агента» (по умолчанию off). Хранить в localStorage под ключами dim0.tts.vo…",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R54",
@@ -846,22 +883,22 @@ window.STATE =
     {
       "id": "R56",
       "text": "«npm run check-all (tsc + eslint) — зелёный»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R57",
       "text": "«npm run i18n:check — зелёный (новые ключи tts. есть в обоих словарях)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R58",
       "text": "«npx vitest run — зелёный (169 файлов / 1722 теста на текущем main; после правок цифра не должна уменьшиться)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R59",
       "text": "«npx playwright test e2e/i18n-ru.spec.ts — зелёный (существующий русский смоук)»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R60",
@@ -901,17 +938,17 @@ window.STATE =
     {
       "id": "R67",
       "text": "«Не переписывать существующие роутеры и компоненты — только добавлять новое»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R68",
       "text": "«Не хардкодить URL, порты, голоса — только env / настройки»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R69",
       "text": "«Не тащить новые фронтенд-зависимости: Web Audio API и нативный fetch. Если нужна библиотека для потокового аудио — сначала спроси меня»",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R70",
@@ -966,7 +1003,7 @@ window.STATE =
     {
       "id": "R80i",
       "text": "(подразумевается) Кнопка «Озвучить» есть у каждого сообщения агента в ленте, а не только у последнего",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R81",
@@ -1011,7 +1048,7 @@ window.STATE =
     {
       "id": "R89",
       "text": "Поведение кнопки при TTS_ENABLED=false: кнопка остаётся видимой; первый 503 → один локализованный тост t('tts.disabled'); после этого кнопка уходит в неактивное состояние с подсказкой t('tts.disabled') до перезагрузки страницы",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R90",
@@ -1021,12 +1058,12 @@ window.STATE =
     {
       "id": "R91",
       "text": "Эндпоинт GET /tts/voices — список доступных голосов: проксирует GET {TTS_SERVICE_URL}/voices, парсит plain text (по голосу в строке, не JSON), нормализует в JSON {\"voices\": [\"…\"]}, кэширует ~300 с; сервис недоступен или список пуст → 503 с…",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R92",
       "text": "Чекбокс «Автоозвучивать ответы агента» в UI у сообщения агента: по умолчанию off, состояние в localStorage под ключом dim0.tts.autoSpeak",
-      "status": "in-ticket"
+      "status": "done"
     },
     {
       "id": "R93",
