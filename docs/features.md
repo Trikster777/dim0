@@ -37,3 +37,7 @@ Non-agent widgets (weather, stock/trading charts). A newsletter/subscription "ne
 ## Accounts, billing, self-host
 
 Email + Google sign-in, email verification, password reset. Three tiers `free | basic | plus` (JWT `plan` claim), Stripe-backed, flag-gated (`BILLING_ENABLED`, default off → self-host unlocks `plus`). MIT-licensed, self-hostable via Docker (needs at least one LLM provider key; see `.env.sample`). Entries: `webui/src/features/signin/`, `user-settings/`, `backend/topix/api/router/{users,billing,subscriptions}.py`.
+
+## Voice answers (TTS)
+
+A **Speak** button ("Озвучить") next to every agent answer: one click reads the answer aloud. Beside it the user picks a **voice** — the list is served by the synthesis service and is not hardcoded — and can tick an **auto-speak** checkbox to have new answers read out on their own (off by default). Synthesis is local (a separate Silero TTS container), so the text never leaves the machine; the backend returns one **WAV file (48 kHz, mono, 16 bit)** that the browser plays as is. The module is **off by default** and is switched on with an environment variable (`TTS_ENABLED`); while it is off the button stays visible and explains itself. Entries: `webui/src/features/agent/components/chat/actions/speak-answer.tsx`, `backend/topix/api/router/tts.py`, `backend/topix/utils/tts.py`.

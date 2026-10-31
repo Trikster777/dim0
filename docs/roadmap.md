@@ -11,6 +11,12 @@ In-flight work, phased plans, and durable engineering follow-ups. Sourced from c
 - **react-flow → canvas-harness:** the board migrated to the in-house engine; `@xyflow/react` and legacy converters (`utils/graph.ts`, deprecated `types/note.ts` fields) linger.
 - **Legacy WS client → v2 offline-first sync:** `use-ws-collab.ts` (and its duplicated normalize/enrich/dedupe helpers) is retired once every synced board is `v2`; then the transient `BoardMeta.syncEngine` field and the `dim0SyncV2` localStorage override go away.
 
+## In-flight: TTS module (voice answers)
+
+- **Built, off by default.** The speak button on agent answers — voice picker and auto-speak checkbox included — is implemented end to end: backend `POST /tts` + `GET /tts/voices`, a local `silero-tts` container in every compose profile, and the `speak-answer.tsx` component. The module ships **disabled** (`TTS_ENABLED=false` in `.env.sample` and in all five `backend-<stage>` services); while it is off the button stays visible and explains itself instead of vanishing.
+- **Not in the first version:** no **streaming** (the synthesis service returns a finished WAV; the backend glues the chunks into one 48 kHz / mono / 16-bit file), no **voice cloning**, no **SSML** (plain text is sent, the service wraps it in `<speak>` itself).
+- **To switch it on:** set `TTS_ENABLED=true` in the root `.env` and restart the backend container.
+
 ## Collaboration phases (not built)
 
 - **Phase 3 multi-worker:** `RoomRegistry` is single-worker v1; multi-worker needs Redis room-pinning + per-peer outbox queues (sends currently block the room under `room.lock`). Soft edit-locks are also Phase 3.
