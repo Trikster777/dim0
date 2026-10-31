@@ -11,9 +11,9 @@ window.STATE =
   "memoryFile": "AGENTS.md",
   "memoryOwner": "user",
   "skillDir": "C:/Users/Андрей/.qoder/skills/autopilot",
-  "baseCommit": "a83dca9a",
+  "baseCommit": "dc508e1e",
   "startedAt": "2026-10-31T13:34:32+03:00",
-  "updatedAt": "2026-10-31T17:04:01+03:00",
+  "updatedAt": "2026-10-31T17:11:06+03:00",
   "finishedAt": null,
   "stages": [
     {
@@ -42,11 +42,14 @@ window.STATE =
     },
     {
       "id": "plan",
-      "status": "pending"
+      "status": "done",
+      "startedAt": "2026-10-31T17:11:06+03:00",
+      "finishedAt": "2026-10-31T17:11:06+03:00"
     },
     {
       "id": "build",
-      "status": "pending"
+      "status": "active",
+      "startedAt": "2026-10-31T17:11:06+03:00"
     },
     {
       "id": "review",
@@ -159,9 +162,10 @@ window.STATE =
       ],
       "review": "да — фундамент",
       "model": "сильная",
-      "status": "pending",
+      "status": "in-progress",
       "retries": 0,
-      "repairs": 0
+      "repairs": 0,
+      "startedAt": "2026-10-31T17:11:06+03:00"
     },
     {
       "id": "02",
@@ -292,9 +296,12 @@ window.STATE =
     "2026-10-31T16:59:51+03:00",
     "2026-10-31T17:01:31+03:00",
     "2026-10-31T17:03:59+03:00",
-    "2026-10-31T17:04:01+03:00"
+    "2026-10-31T17:04:01+03:00",
+    "2026-10-31T17:10:12+03:00",
+    "2026-10-31T17:10:13+03:00",
+    "2026-10-31T17:11:06+03:00"
   ],
-  "rev": 22,
+  "rev": 27,
   "waiting": null,
   "waits": [
     {
@@ -421,6 +428,32 @@ window.STATE =
       "g": "G3",
       "ok": true,
       "problems": 0
+    },
+    {
+      "t": "2026-10-31T17:10:13+03:00",
+      "k": "tickets",
+      "n": 3
+    },
+    {
+      "t": "2026-10-31T17:10:13+03:00",
+      "k": "gate",
+      "g": "G3",
+      "ok": true,
+      "problems": 0
+    },
+    {
+      "t": "2026-10-31T17:11:06+03:00",
+      "k": "stage",
+      "id": "build",
+      "act": "start"
+    },
+    {
+      "t": "2026-10-31T17:11:06+03:00",
+      "k": "ticket",
+      "ids": [
+        "01"
+      ],
+      "act": "start"
     }
   ],
   "reqList": [
@@ -930,7 +963,7 @@ window.STATE =
     },
     "G3": {
       "ok": true,
-      "at": "2026-10-31T17:04:01+03:00",
+      "at": "2026-10-31T17:10:13+03:00",
       "problems": 0
     }
   },

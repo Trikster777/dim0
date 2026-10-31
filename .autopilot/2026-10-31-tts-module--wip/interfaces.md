@@ -304,6 +304,41 @@ cd webui  && npx vitest run src/features/agent/components/chat/actions/__tests__
 
 | Тикет | Что появилось | Границы, которые занял |
 |---|---|---|
-| — | — | — |
+| 01 — Проксирующий бэкенд и контейнер `silero-tts` | `backend/topix/utils/tts.py`: `split_text_for_tts`, `prepare_tts_text` (единственная точка входа: транслитерация → CDATA), `transliterate_latin`, `has_speakable_content`, `assemble_wav`. `backend/topix/api/router/tts.py`: `POST /tts` (503 выключен / 400 пусто или нечего озвучивать / 413 > 50 000 / 502 сбой сервиса / 200 `audio/wav` одним файлом), `GET /tts/voices` → `{"voices": [...]}`, кэш списка голосов 300 с. Оба под `Depends(get_current_user_uid)`. `backend/topix/api/app.py` — две строки (`tts` в импорте + `include_router`). `build/docker-compose.yml` — якорь `x-silero-tts` и сервис `silero-tts` (профили из пяти, два volume, healthcheck, порт не опубликован) + `TTS_*` и `depends_on` map-формы во всех пяти `backend-<stage>`. `.env.sample` — шесть переменных `TTS_*` с комментариями. Тесты: `backend/test/unit/utils/test_tts_utils.py` и `backend/test/unit/api/router/test_tts_router.py`, сервис мокается только `httpx.MockTransport` | §1, §2, §8 |
 
 _(заполняется по мере закрытия задач)_
+
+### Фактические сигнатуры после тикета 01
+
+```python
+# backend/topix/utils/tts.py
+def split_text_for_tts(text: str) -> list[str]: ...        # чанки ≤ 250 символов
+def prepare_tts_text(text: str) -> str: ...                # ЕДИНСТВЕННАЯ точка входа
+def transliterate_latin(text: str) -> str: ...             # внутренний шаг 1
+def has_speakable_content(text: str) -> bool: ...         # есть ли буква или цифра
+def assemble_wav(chunks: list[bytes]) -> bytes: ...        # один WAV из PCM-кусков
+
+# backend/topix/api/router/tts.py
+router = APIRouter(prefix="/tts", tags=["tts"], dependencies=[Depends(get_current_user_uid)])
+class TtsRequest(BaseModel): text: str; voice: str | None = None
+def create_client() -> httpx.AsyncClient: ...              # шов для MockTransport
+POST /tts          -> 200 audio/wav | 400 | 413 | 502 | 503
+GET  /tts/voices   -> {"voices": [...]} | 503
+```
+
+**Порт и модель по факту:** `navatusein/silero-tts-service:latest`, внутренний порт **9898**,
+модель `v5_6_ru`, спикеры `aidar`, `baya`, `kseniya`, `xenia`, `eugene`.
+
+**Уточнение к правилу 13 (compose).** `depends_on` у `backend-<stage>` переведён в map-форму
+**целиком**, а не только для `silero-tts`: в одной карте нельзя смешать список и условие, а
+`condition: service_started` требует map-формы (R22). Для `postgres`/`qdrant`/`redis` map-форма
+с `condition: service_started` семантически совпадает со списком, поэтому поведение не изменилось;
+`depends_on` у `webui-*` оставлен списком.
+
+**Живая проверка R95 (31.10.2026).** Наш бэкенд против живого контейнера `silero-tts` —
+**14/14**: обычный текст → 200 `audio/wav` (48 кГц, моно, 16 бит); текст с `&`, `<`, `>` → 200
+(по-символьный CDATA доезжает); латиница (`R&D`, `workflow`, `PowerShell`) → 200 (своя
+транслитерация); длинный текст → 200 одним файлом (чанки склеены); пустой текст → 400; текст без
+букв и цифр → 400; > 50 000 символов → 413; без токена → 401; `GET /tts/voices` → 200 и ровно
+пять голосов; `TTS_ENABLED=false` → 503.
+
