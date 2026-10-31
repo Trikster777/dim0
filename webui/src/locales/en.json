@@ -1511,6 +1511,19 @@
     "toggle": "Toggle theme",
     "toggle_label": "Theme and mode"
   },
+  "tts": {
+    "autoSpeak": "Speak agent answers automatically",
+    "disabled": "Speech is disabled",
+    "empty": "There is nothing to speak",
+    "error": "Could not speak the answer",
+    "loading": "Synthesizing…",
+    "play": "Speak",
+    "stop": "Stop",
+    "too_long": "The answer is too long to speak",
+    "unavailable": "The speech service is unavailable",
+    "voice": "Voice",
+    "voicesUnavailable": "The voice list is unavailable"
+  },
   "widgets": {
     "image": {
       "open_aria": "Open image",

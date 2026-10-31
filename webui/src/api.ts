@@ -52,6 +52,33 @@ export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 
 
 /**
+ * How the response body is read. `"blob"` keeps binary payloads (audio)
+ * byte-exact, `"json"` always parses JSON. Omitting the option keeps the
+ * legacy behavior: JSON when the server says so, plain text otherwise.
+ */
+export type ApiResponseType = "blob" | "json"
+
+
+/**
+ * Error of a request that asked for an explicit response type. Carries the
+ * HTTP status and the endpoint so the caller can localize the failure by
+ * code. The raw server body is not kept on purpose — the backend speaks
+ * neutral English and that text must never reach the interface.
+ */
+export class ApiRequestError extends Error {
+  readonly status: number
+  readonly endpoint: string
+
+  constructor(status: number, endpoint: string) {
+    super(`${status} ${endpoint}`)
+    this.name = "ApiRequestError"
+    this.status = status
+    this.endpoint = endpoint
+  }
+}
+
+
+/**
  * Options for the apiFetch function.
  */
 export type ApiOptions<TBody = unknown> = {
@@ -62,6 +89,12 @@ export type ApiOptions<TBody = unknown> = {
   body?: TBody extends FormData ? FormData : TBody
   signal?: AbortSignal
   noAuth?: boolean
+  /**
+   * Read the response body in the given format instead of the legacy
+   * JSON-or-text guess. Needed for binary payloads (audio), which the text
+   * reader would corrupt.
+   */
+  responseType?: ApiResponseType
 }
 
 
@@ -237,8 +270,19 @@ export async function apiFetch<TResponse = unknown, TBody = unknown>(
   }
 
   if (!res.ok) {
+    if (opts.responseType) {
+      throw new ApiRequestError(res.status, url.pathname)
+    }
     const text = await res.text()
     throw new Error(`${res.status} ${res.statusText} - ${text}`)
+  }
+
+  if (opts.responseType === "blob") {
+    return (await res.blob()) as TResponse
+  }
+
+  if (opts.responseType === "json") {
+    return (await res.json()) as TResponse
   }
 
   const ct = res.headers.get("content-type") || ""

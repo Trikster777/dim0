@@ -19,6 +19,13 @@ describe("apiErrorKey", () => {
     expect(apiErrorKey(401)).toBe("errors.unauthorized")
     expect(apiErrorKey(401, "/users/signin")).toBe("errors.bad_credentials")
   })
+
+  it("maps the TTS statuses onto tts.* keys", () => {
+    expect(apiErrorKey(400, "/tts")).toBe("tts.empty")
+    expect(apiErrorKey(413, "/tts")).toBe("tts.too_long")
+    expect(apiErrorKey(502, "/tts")).toBe("tts.unavailable")
+    expect(apiErrorKey(503, "/tts")).toBe("tts.disabled")
+  })
 })
 
 
@@ -47,5 +54,12 @@ describe("localizeApiError", () => {
   it("falls back to the caller's key when the error carries no text", () => {
     expect(localizeApiError(new Error("   "), "errors.server"))
       .toBe("The server ran into a problem. Try again.")
+  })
+
+  it("localizes a TTS failure by its status code", () => {
+    expect(localizeApiError({ status: 503, endpoint: "/tts" }, "tts.error"))
+      .toBe("Speech is disabled")
+    expect(localizeApiError({ status: 400, endpoint: "/tts" }, "tts.error"))
+      .toBe("There is nothing to speak")
   })
 })

@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { useChat } from "@/features/agent/hooks/chat-context"
 import { CopyAnswer } from "./copy-answer"
+import { SpeakAnswer } from "./speak-answer"
 import { SaveAsNote } from "./save-as-note"
 import { useListChats } from "@/features/agent/api/list-chats"
 import { useAppStore } from "@/store"
@@ -40,6 +41,7 @@ export const ResponseActions = ({
       )}
     >
       <CopyAnswer answer={message} compact={compact} />
+      <SpeakAnswer answer={message} compact={compact} />
       {/* SaveAsNote self-routes: backend board-picker online, in-browser
           transform on local boards. */}
       <SaveAsNote message={message} type="notify" saveAsIs={saveAsIs} boardId={attachedBoardId} compact={compact} />

@@ -13,7 +13,7 @@ window.STATE =
   "skillDir": "C:/Users/Андрей/.qoder/skills/autopilot",
   "baseCommit": "dc508e1e",
   "startedAt": "2026-10-31T13:34:32+03:00",
-  "updatedAt": "2026-10-31T18:07:34+03:00",
+  "updatedAt": "2026-10-31T18:44:50+03:00",
   "finishedAt": null,
   "stages": [
     {
@@ -162,16 +162,16 @@ window.STATE =
       ],
       "review": "да — фундамент",
       "model": "сильная",
-      "status": "repair",
+      "status": "done",
       "retries": 0,
       "repairs": 1,
       "startedAt": "2026-10-31T17:11:06+03:00",
-      "finishedAt": "2026-10-31T18:00:28+03:00",
+      "finishedAt": "2026-10-31T18:32:53+03:00",
       "tests": {
-        "passed": 837,
+        "passed": 840,
         "failed": 0
       },
-      "commit": "af8b07a8",
+      "commit": "50101839",
       "repairFindings": [
         "каждый чанк, уходящий в сервис, должен содержать целые CDATA-секции"
       ]
@@ -229,7 +229,7 @@ window.STATE =
       "review": "нет",
       "model": "обычная",
       "status": "in-progress",
-      "retries": 0,
+      "retries": 1,
       "repairs": 0,
       "startedAt": "2026-10-31T18:00:28+03:00"
     },
@@ -267,7 +267,7 @@ window.STATE =
     }
   ],
   "tests": {
-    "passed": 837,
+    "passed": 840,
     "failed": 0
   },
   "debt": {
@@ -293,7 +293,8 @@ window.STATE =
   },
   "concerns": [
     "backend/test/unit/api/router/test_tts_router.py:223 — CDATA-маркер проверяется только на одном чанке; нужен кейс «спецсимвол + >=3 чанка» с проверкой закодированного тела",
-    "backend/test/unit/api/router/test_tts_router.py:352 — test_post_tts_fails_whole_when_a_chunk_fails падает на первом чанке; сценарий «второй чанк упал -> 502 без частичного файла» не поставлен"
+    "backend/test/unit/api/router/test_tts_router.py:352 — test_post_tts_fails_whole_when_a_chunk_fails падает на первом чанке; сценарий «второй чанк упал -> 502 без частичного файла» не поставлен",
+    "backend/topix/utils/tts.py:146 — ремонт тикета 01 ввёл квадратичный скан: _split_sentences проверяет any(start_of < index < end_of for start_of, end_of in markers) на каждом терминаторе. Замер: 500 маркеров 0.016 c, 1000 — 0.061 c, 2000 — 0.252 c, 4000 — 1.009 c (x4 на удвоение). POST /tts с 10 000 амперсандов блокирует event loop на 9.78 c (лимит MAX_TEXT_LENGTH = 50 000 -> минуты на запрос, повторяемо любым авторизованным клиентом). Условие: разбиение текста на чанки остаётся линейным на максимально допустимом входе; приём — тот же приём, что уже есть в файле для сокращений (предрассчитанные множества позиций)."
   ],
   "blind": null,
   "beats": [
@@ -320,9 +321,11 @@ window.STATE =
     "2026-10-31T17:11:06+03:00",
     "2026-10-31T18:00:28+03:00",
     "2026-10-31T18:00:29+03:00",
-    "2026-10-31T18:07:34+03:00"
+    "2026-10-31T18:07:34+03:00",
+    "2026-10-31T18:32:53+03:00",
+    "2026-10-31T18:44:50+03:00"
   ],
-  "rev": 33,
+  "rev": 37,
   "waiting": null,
   "waits": [
     {
@@ -524,6 +527,40 @@ window.STATE =
       "k": "add",
       "key": "concerns",
       "n": 2
+    },
+    {
+      "t": "2026-10-31T18:32:53+03:00",
+      "k": "add",
+      "key": "concerns",
+      "n": 1
+    },
+    {
+      "t": "2026-10-31T18:32:53+03:00",
+      "k": "ticket",
+      "ids": [
+        "01"
+      ],
+      "act": "done",
+      "tests": {
+        "passed": 840,
+        "failed": 0
+      }
+    },
+    {
+      "t": "2026-10-31T18:44:50+03:00",
+      "k": "ticket",
+      "ids": [
+        "02"
+      ],
+      "act": "retry"
+    },
+    {
+      "t": "2026-10-31T18:44:50+03:00",
+      "k": "ticket",
+      "ids": [
+        "02"
+      ],
+      "act": "start"
     }
   ],
   "reqList": [

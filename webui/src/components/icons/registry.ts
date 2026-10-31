@@ -89,6 +89,7 @@ import {
   SignOutIcon,
   SlidersIcon,
   SparkleIcon,
+  SpeakerHighIcon as SpeakerHighGlyphIcon,
   SpinnerGapIcon,
   SpinnerIcon,
   SquareIcon as SquareGlyphIcon,
@@ -96,6 +97,7 @@ import {
   StackIcon,
   StethoscopeIcon as StethoscopeGlyphIcon,
   StopCircleIcon,
+  StopIcon as StopGlyphIcon,
   SunIcon as SunGlyphIcon,
   ShapesIcon as ShapesGlyphIcon,
   TagIcon as TagGlyphIcon,
@@ -242,6 +244,8 @@ export const ShareIcon = createPhosphorIcon(ShareNetworkIcon)
 export const SidebarMenuIcon = createPhosphorIcon(DotsThreeOutlineVerticalIcon)
 export const SparklesFeatureIcon = createPhosphorIcon(SparkleIcon)
 export const SparklesIcon = createPhosphorIcon(SparkleIcon)
+export const SpeakerHighIcon = createPhosphorIcon(SpeakerHighGlyphIcon)
+export const StopIcon = createPhosphorIcon(StopGlyphIcon)
 export const ShapesMenuIcon = createPhosphorIcon(ShapesGlyphIcon)
 export const SquareShapeIcon = createPhosphorIcon(SquareGlyphIcon)
 export const StockWidgetIcon = createPhosphorIcon(ChartLineIcon)
