@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ok 1 e2e\i18n-ru.spec.ts:10:1 › Russian interface: main screen, chats entry, back to English (5.8s)
+
+  1 passed (6.9s)

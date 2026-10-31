@@ -2,9 +2,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { SelectionContextIcon } from "@/components/icons"
 import { useChatStore } from "@/features/agent/store/chat-store"
 import { clsx } from "clsx"
+import { useTranslation } from "react-i18next"
 
 
 export const MessageBoardContextChoiceMenu = () => {
+  const { t } = useTranslation()
   const enabled = useChatStore((state) => state.enableMessageBoardContextSelection)
   const setEnabled = useChatStore((state) => state.setEnableMessageBoardContextSelection)
 
@@ -13,8 +15,8 @@ export const MessageBoardContextChoiceMenu = () => {
   }
 
   const tooltipText = enabled
-    ? "Disable selected nodes context"
-    : "Enable selected nodes context"
+    ? t("agent.settings.disable_board_context")
+    : t("agent.settings.enable_board_context")
 
   const buttonClass = clsx(
     "transition-all shrink-0 my-icon p-2 rounded-lg hover:bg-accent dark:bg-input/30 dark:hover:bg-accent/50 border border-transparent hover:border-border transition-colors",
@@ -28,7 +30,7 @@ export const MessageBoardContextChoiceMenu = () => {
           <button
             className={buttonClass}
             onClick={handleToggle}
-            aria-label="Toggle selected nodes context"
+            aria-label={t("agent.settings.toggle_board_context")}
           >
             <SelectionContextIcon className="size-4 shrink-0" strokeWidth={2} />
           </button>

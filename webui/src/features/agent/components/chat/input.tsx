@@ -1,5 +1,7 @@
 import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import clsx from 'clsx'
+import { Trans, useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { useChatStore } from '../../store/chat-store'
 import { SendMessageError } from '../../api/send-message'
 import { useChatSubmit } from '../../hooks/use-chat-submit'
@@ -45,34 +47,36 @@ export interface InputBarProps {
 /**
  * Formats a Retry-After duration into a short user-facing hint.
  */
-const formatRetryAfter = (retryAfter?: number) => {
+const formatRetryAfter = (t: TFunction, retryAfter?: number) => {
   if (!retryAfter || retryAfter <= 0) return null
-  if (retryAfter < 60) return `Try again in ${retryAfter}s.`
+  if (retryAfter < 60) return t("agent.input.retry_seconds", { count: retryAfter })
   const minutes = Math.ceil(retryAfter / 60)
-  return `Try again in ${minutes} min.`
+  return t("agent.input.retry_minutes", { count: minutes })
 }
 
 /**
  * Builds a friendlier quota description for long-lived limit toasts.
  */
 const buildLimitDescription = ({
+  t,
   userPlan,
   retryAfter,
 }: {
+  t: TFunction
   userPlan: BillingPlan
   retryAfter?: number
 }) => {
   const resetHint = retryAfter && retryAfter >= 60 * 60 * 8
-    ? "It should reset automatically tomorrow."
+    ? t("agent.input.reset_tomorrow")
     : retryAfter && retryAfter >= 60 * 60
-      ? "It should reset automatically later today."
-      : formatRetryAfter(retryAfter) ?? "It should reset automatically soon."
+      ? t("agent.input.reset_today")
+      : formatRetryAfter(t, retryAfter) ?? t("agent.input.reset_soon")
 
   if (userPlan === "free") {
-    return `Your free plan includes a limited number of AI requests. ${resetHint} Upgrade to Plus for unlimited requests and frontier models.`
+    return t("agent.input.limit_free", { reset: resetHint })
   }
 
-  return `You've used your plan's AI requests for now. ${resetHint} Upgrade for more headroom.`
+  return t("agent.input.limit_paid", { reset: resetHint })
 }
 
 
@@ -91,6 +95,7 @@ type ComposerBoardLimitDialogProps = {
  * arrival. Split out so only the home composer pays for `useLocalBoards`.
  */
 const ComposerBoardLimitDialog = ({ open, onOpenChange, prompt, onPromptCarried }: ComposerBoardLimitDialogProps) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const userPlan = useAppStore((s) => s.userPlan)
   const setPendingPrompt = usePendingPromptStore((s) => s.setPending)
@@ -105,7 +110,7 @@ const ComposerBoardLimitDialog = ({ open, onOpenChange, prompt, onPromptCarried 
     try {
       const meta = await createBoard('Untitled board')
       if (!meta) {
-        toast.error("Couldn't create a board. Please try again.")
+        toast.error(t("agent.input.create_board_failed"))
         return
       }
       const trimmed = prompt.trim()
@@ -144,6 +149,7 @@ export const InputBar = ({
   enableSelectionContext = false,
   autoCreateBoard = false,
 }: InputBarProps) => {
+  const { t } = useTranslation()
   const { local } = useChat()
   const chatId = useActiveChatId()
   const boardId = useBoardAppStore((s) => s.boardId)
@@ -176,10 +182,10 @@ export const InputBar = ({
   // not on title/content changes. Cheap.
   const hasActiveSurface = useBoardAppStore((s) => Boolean(s.activeNodeSurface))
   const placeholder = showBoardLimitGate
-    ? "You've reached your plan's board limit"
+    ? t("agent.input.placeholder_limit")
     : autoCreateBoard
-      ? 'Start a new board with a question…'
-      : 'Ask anything...'
+      ? t("agent.input.placeholder_new_board")
+      : t("agent.input.placeholder_ask")
 
   const proceedSend = async (text: string, forceNewChat = false) => {
     const trimmed = text.trim()
@@ -215,11 +221,11 @@ export const InputBar = ({
       if (autoCreateBoard) setInput(trimmed)
       if (error instanceof SendMessageError && error.status === 429) {
         setLimitDialogCopy({
-          title: "You’ve reached your AI request limit for now.",
-          description: buildLimitDescription({ userPlan, retryAfter: error.retryAfter }),
+          title: t("agent.input.limit_title"),
+          description: buildLimitDescription({ t, userPlan, retryAfter: error.retryAfter }),
         })
       } else {
-        const message = error instanceof Error ? error.message : "Could not send message."
+        const message = error instanceof Error ? error.message : t("agent.input.send_failed")
         toast.error(message)
       }
       // Surfaced above (toast / dialog); don't rethrow — every caller is a
@@ -360,7 +366,7 @@ export const InputBar = ({
           {inboxBody}
 
           <p className="p-1.5 sm:p-2 text-center text-[11px] text-muted-foreground/80 bg-auto">
-            AI can make mistakes. Verify important details carefully.
+            {t("agent.input.disclaimer")}
           </p>
         </div>
       </div>
@@ -369,14 +375,14 @@ export const InputBar = ({
       <Dialog open={showDRDialog} onOpenChange={setShowDRDialog}>
         <DialogContent className="sm:max-w-[560px]">
           <DialogHeader>
-            <DialogTitle>Start a Deep Research in a new chat?</DialogTitle>
+            <DialogTitle>{t("agent.input.dr_title")}</DialogTitle>
             <DialogDescription>
-              Deep Research runs longer, may use more tools, and will be created in a <strong>separate chat</strong>. Edit your prompt below before starting.
+              <Trans i18nKey="agent.input.dr_description" components={{ strong: <strong /> }} />
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid w-full gap-2 py-2">
-            <Label htmlFor="dr-prompt">Your prompt</Label>
+            <Label htmlFor="dr-prompt">{t("agent.input.dr_prompt_label")}</Label>
             <TextareaAutosize
               id="dr-prompt"
               value={input}
@@ -384,17 +390,17 @@ export const InputBar = ({
               minRows={4}
               maxRows={18}
               className="w-full resize-none rounded-md border border-border/50 shadow-sm bg-background px-3 py-2 text-base outline-none"
-              placeholder="Refine your prompt here..."
+              placeholder={t("agent.input.dr_placeholder")}
               autoFocus
             />
           </div>
 
           <DialogFooter className="gap-2 sm:gap-3">
             <Button variant="ghost" onClick={() => setShowDRDialog(false)} disabled={isSubmitting}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button onClick={confirmDeepResearch} disabled={isSubmitting || !input.trim()}>
-              {isSubmitting ? 'Starting…' : 'Start Deep Research'}
+              {isSubmitting ? t("agent.input.starting") : t("agent.input.start")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -425,7 +431,7 @@ export const InputBar = ({
 
           <DialogFooter className="gap-2 sm:gap-3">
             <Button variant="ghost" onClick={() => setLimitDialogCopy(null)}>
-              Close
+              {t("common.close")}
             </Button>
             <Button
               onClick={() => {
@@ -433,7 +439,7 @@ export const InputBar = ({
                 void navigate({ to: SettingsBillingUrl })
               }}
             >
-              Upgrade
+              {t("agent.input.upgrade")}
             </Button>
           </DialogFooter>
         </DialogContent>

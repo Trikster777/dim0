@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { create } from "zustand"
+import { i18n } from "@/i18n"
 import type { BoardMeta } from "@/features/board/model"
 import { newLocalBoard } from "@/features/board/persist/local/board-registry"
 import type { BoardRegistry } from "@/features/board/persist/local/board-registry"
@@ -64,7 +65,7 @@ export function useLocalBoards() {
     async (title: string): Promise<BoardMeta | null> => {
       const registry = registryRef.current
       if (!registry) return null
-      const meta = newLocalBoard(title.trim() || "Untitled board", Date.now())
+      const meta = newLocalBoard(title.trim() || i18n.t("board.default_title"), Date.now())
       await registry.createBoard(meta)
       bump()
       return meta
@@ -86,7 +87,7 @@ export function useLocalBoards() {
     async (id: string, title: string): Promise<void> => {
       const registry = registryRef.current
       if (!registry) return
-      await registry.renameBoard(id, title.trim() || "Untitled board")
+      await registry.renameBoard(id, title.trim() || i18n.t("board.default_title"))
       bump()
     },
     [bump],

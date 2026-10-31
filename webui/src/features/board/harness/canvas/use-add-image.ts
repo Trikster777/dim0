@@ -1,4 +1,5 @@
 import { useCallback } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import type { CanvasStore } from "@canvas-harness/core"
 import { uploadImage } from "@/features/board/api/upload-image"
@@ -60,6 +61,7 @@ export const useHarnessAddImage = (
   boardId: string | null,
   rootId: string | null,
 ) => {
+  const { t } = useTranslation()
   return useCallback(
     async (file: File, options: AddImageOptions = {}): Promise<boolean> => {
       if (!boardId) return false
@@ -92,10 +94,10 @@ export const useHarnessAddImage = (
         return true
       } catch (err) {
         console.error("[useHarnessAddImage] failed", err)
-        toast.error(`Failed to add "${file.name}"`)
+        toast.error(t("harness.toast.image_add_failed", { name: file.name }))
         return false
       }
     },
-    [store, boardId, rootId],
+    [store, boardId, rootId, t],
   )
 }

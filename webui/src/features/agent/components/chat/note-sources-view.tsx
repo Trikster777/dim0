@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import { ChevronDownIcon, NoteIcon } from "@/components/icons"
 import { centerNoteSearch } from "@/features/board/utils/center-note"
@@ -14,9 +15,12 @@ import type { NoteSource } from "../../utils/note-sources"
  * grounded the answer, kept separate so a row click always navigates.
  */
 const NoteSourceItem = ({ source }: { source: NoteSource }) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const setViewMode = useBoardAppStore((s) => s.setViewMode)
   const [open, setOpen] = useState(false)
+
+  const noteLabel = source.label || t("agent.note_tool.untitled_note")
 
   const locate = (): void => {
     // Surface the board first — the chat can be open over files/list view, where
@@ -32,17 +36,17 @@ const NoteSourceItem = ({ source }: { source: NoteSource }) => {
         <button
           type="button"
           onClick={locate}
-          title="Find on board"
-          aria-label={`Find "${source.label || "Untitled note"}" on board`}
+          title={t("agent.sources.find_on_board")}
+          aria-label={t("agent.sources.find_note_aria", { label: noteLabel })}
           className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-left hover:text-secondary-foreground"
         >
           <NoteIcon className="size-3.5 shrink-0 text-primary" strokeWidth={2} />
-          <span className="truncate text-primary">{source.label || "Untitled note"}</span>
+          <span className="truncate text-primary">{noteLabel}</span>
         </button>
         {source.snippets.length > 0 && (
           <button
             type="button"
-            aria-label={open ? "Hide snippets" : "Show snippets"}
+            aria-label={open ? t("agent.sources.hide_snippets") : t("agent.sources.show_snippets")}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-secondary-foreground"
@@ -70,13 +74,14 @@ const NoteSourceItem = ({ source }: { source: NoteSource }) => {
  * keyed by node id. Clicking a row jumps to the node on the board.
  */
 export const NoteSourcesView = ({ sources }: { sources: NoteSource[] }) => {
+  const { t } = useTranslation()
   if (sources.length === 0) return null
 
   return (
     <div className="mt-2 min-w-0 space-y-1">
       <div className="ml-1 flex items-center gap-1 text-xs font-mono text-muted-foreground">
         <NoteIcon className="size-4 shrink-0 text-primary" strokeWidth={2} />
-        <span className="text-primary">Notes</span>
+        <span className="text-primary">{t("agent.sources.notes")}</span>
       </div>
       {sources.map((s) => (
         <NoteSourceItem key={s.noteId} source={s} />

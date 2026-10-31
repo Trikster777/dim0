@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { motion, useReducedMotion } from "motion/react"
 import { CheckCircleStatusIcon, ChevronDownIcon } from "@/components/icons"
 import { ThinkingDots } from "@/components/animations/thinking-indicator"
@@ -21,6 +22,7 @@ import { StepsPopoverContent } from "./steps-popover-content"
  * cache bleed from other chats is discarded on switch.
  */
 export const ProgressLine = () => {
+  const { t } = useTranslation()
   const { chatId, local } = useChat()
   const reduceMotion = useReducedMotion()
   const messages = useChatMessages()
@@ -70,8 +72,8 @@ export const ProgressLine = () => {
   )
 
   const summaryText = useMemo(
-    () => toolSteps.map((s) => getToolTitle(s.name)).join(", "),
-    [toolSteps]
+    () => toolSteps.map((s) => t(getToolTitle(s.name))).join(", "),
+    [toolSteps, t]
   )
 
   const [popoverOpen, setPopoverOpen] = useState(false)
@@ -97,7 +99,7 @@ export const ProgressLine = () => {
             <Icon className='size-3.5 text-wiki-link' strokeWidth={2} />
           </motion.span>
           <span className='truncate font-mono text-xs text-muted-foreground'>
-            {getToolTitle(activeTool.name)}
+            {t(getToolTitle(activeTool.name))}
           </span>
           <ThinkingDots />
         </div>
@@ -126,7 +128,7 @@ export const ProgressLine = () => {
       <div className='w-full px-3 pt-3'>
         <div className='inline-flex items-center gap-1.5 rounded-full bg-secondary/40 px-3 py-1.5'>
           <span className='inline-flex items-center gap-1 font-mono text-xs font-medium text-muted-foreground'>
-            Thinking
+            {t("board.flow.thinking")}
             <ThinkingDots />
           </span>
         </div>
@@ -135,7 +137,6 @@ export const ProgressLine = () => {
   }
 
   if (toolSteps.length > 0) {
-    const stepNoun = toolSteps.length === 1 ? "step" : "steps"
     return (
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverAnchor asChild>
@@ -144,7 +145,7 @@ export const ProgressLine = () => {
               <CheckCircleStatusIcon className='size-4 text-secondary-foreground/70 shrink-0' weight='fill' />
               <span className='min-w-0 truncate font-mono text-xs text-muted-foreground'>
                 <span className='text-foreground font-medium'>
-                  {toolSteps.length} {stepNoun}
+                  {t("board.flow.steps_count", { count: toolSteps.length })}
                 </span>
                 {summaryText ? ` · ${summaryText}` : null}
               </span>
@@ -157,9 +158,9 @@ export const ProgressLine = () => {
                     popoverOpen ? "text-foreground" : "text-muted-foreground/70 hover:text-foreground"
                   )}
                   aria-expanded={popoverOpen}
-                  aria-label={popoverOpen ? "Hide steps" : "Show steps"}
+                  aria-label={popoverOpen ? t("board.flow.hide_steps") : t("board.flow.show_steps")}
                 >
-                  steps
+                  {t("board.flow.steps")}
                   <ChevronDownIcon
                     className={cn("size-3 transition-transform", popoverOpen && "rotate-180")}
                     strokeWidth={2}

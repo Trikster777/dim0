@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { LocalBoardUrl } from "@/routes"
 import { isTauri } from "@/platform"
 import { useQueryClient } from "@tanstack/react-query"
@@ -705,6 +706,7 @@ function HarnessCanvasInner({
  * panel is up (you can still pan / pick a slide on the canvas).
  */
 function SlidesSheet() {
+  const { t } = useTranslation()
   const open = useBoardAppStore((s) => s.slidesPanelOpen)
   const setOpen = useBoardAppStore((s) => s.setSlidesPanelOpen)
   return (
@@ -716,7 +718,7 @@ function SlidesSheet() {
         className="w-[360px] max-w-[92vw] border-l border-border bg-sidebar p-0 text-sidebar-foreground"
       >
         <SheetHeader className="sr-only">
-          <SheetTitle>Slides</SheetTitle>
+          <SheetTitle>{t("harness.slides.title")}</SheetTitle>
         </SheetHeader>
         <SlidesPanel />
       </SheetContent>

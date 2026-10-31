@@ -1,5 +1,6 @@
 import { type ReactElement, useMemo } from "react"
 import type { Arrowhead, PathStyle, Style as CanvasStyle } from "@canvas-harness/core"
+import { useTranslation } from "react-i18next"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -63,19 +64,19 @@ type SettingKey =
 
 
 const SETTING_TITLES: Record<SettingKey, string> = {
-  strokeColor: "Border color",
-  backgroundColor: "Background",
-  textColor: "Text color",
-  strokeWidth: "Stroke width",
-  strokeStyle: "Stroke style",
-  roughness: "Sloppiness",
-  roundness: "Roundness",
-  textAlign: "Text align",
-  fontFamily: "Font family",
-  fontSize: "Font size",
-  pathStyle: "Path style",
-  sourceArrowhead: "Source arrowhead",
-  targetArrowhead: "Target arrowhead",
+  strokeColor: "harness.style.border_color",
+  backgroundColor: "harness.style.background",
+  textColor: "harness.style.text_color",
+  strokeWidth: "harness.style.stroke_width",
+  strokeStyle: "harness.style.stroke_style",
+  roughness: "harness.style.sloppiness",
+  roundness: "harness.style.roundness",
+  textAlign: "harness.style.text_align",
+  fontFamily: "harness.style.font_family",
+  fontSize: "harness.style.font_size",
+  pathStyle: "harness.style.path_style",
+  sourceArrowhead: "harness.style.source_arrowhead",
+  targetArrowhead: "harness.style.target_arrowhead",
 }
 
 
@@ -220,6 +221,7 @@ export function StylePanel({
   onStyleChange,
   className,
 }: StylePanelProps): ReactElement {
+  const { t } = useTranslation()
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === "dark"
   const s = style
@@ -272,7 +274,7 @@ export function StylePanel({
 
   const settingContent: Record<SettingKey, React.ReactNode> = {
     strokeColor: (
-      <Section title="Border color">
+      <Section title={t("harness.style.border_color")}>
         <ColorGrid
           value={s.strokeColor}
           onPick={(v) => onStyleChange({ strokeColor: v ?? TRANSPARENT_HEX })}
@@ -282,7 +284,7 @@ export function StylePanel({
       </Section>
     ),
     backgroundColor: (
-      <Section title="Background color">
+      <Section title={t("harness.style.background_color")}>
         <ColorGrid
           value={s.backgroundColor ?? null}
           onPick={(v) => onStyleChange({ backgroundColor: v ?? TRANSPARENT_HEX })}
@@ -292,7 +294,7 @@ export function StylePanel({
       </Section>
     ),
     textColor: (
-      <Section title="Text color">
+      <Section title={t("harness.style.text_color")}>
         <ColorGrid
           value={s.textColor}
           onPick={(v) => onStyleChange({ textColor: v ?? undefined })}
@@ -301,7 +303,7 @@ export function StylePanel({
       </Section>
     ),
     strokeWidth: (
-      <Section title="Stroke width">
+      <Section title={t("harness.style.stroke_width")}>
         <ToggleGroup
           type="single"
           value={String(s.strokeWidth ?? 2)}
@@ -321,7 +323,7 @@ export function StylePanel({
       </Section>
     ),
     strokeStyle: (
-      <Section title="Stroke style">
+      <Section title={t("harness.style.stroke_style")}>
         <ToggleGroup
           type="single"
           value={s.strokeStyle ?? "solid"}
@@ -350,7 +352,7 @@ export function StylePanel({
       </Section>
     ),
     roughness: (
-      <Section title="Sloppiness">
+      <Section title={t("harness.style.sloppiness")}>
         <ToggleGroup
           type="single"
           value={String(s.roughness ?? 0)}
@@ -370,7 +372,7 @@ export function StylePanel({
       </Section>
     ),
     roundness: (
-      <Section title="Roundness">
+      <Section title={t("harness.style.roundness")}>
         <ToggleGroup
           type="single"
           value={String((s.roundness ?? 0) >= 1 ? 3 : 0)}
@@ -393,7 +395,7 @@ export function StylePanel({
       </Section>
     ),
     textAlign: (
-      <Section title="Text align">
+      <Section title={t("harness.style.text_align")}>
         <ToggleGroup
           type="single"
           value={s.textAlign ?? "left"}
@@ -422,7 +424,7 @@ export function StylePanel({
       </Section>
     ),
     fontFamily: (
-      <Section title="Font family">
+      <Section title={t("harness.style.font_family")}>
         <ToggleGroup
           type="single"
           value={s.fontFamily ?? "sans-serif"}
@@ -463,7 +465,7 @@ export function StylePanel({
       </Section>
     ),
     fontSize: (
-      <Section title="Font size">
+      <Section title={t("harness.style.font_size")}>
         <ToggleGroup
           type="single"
           value={s.fontSize ?? "M"}
@@ -483,7 +485,7 @@ export function StylePanel({
       </Section>
     ),
     pathStyle: (
-      <Section title="Path style">
+      <Section title={t("harness.style.path_style")}>
         <ToggleGroup
           type="single"
           value={s.pathStyle ?? "bezier"}
@@ -503,7 +505,7 @@ export function StylePanel({
       </Section>
     ),
     sourceArrowhead: (
-      <Section title="Source arrowhead">
+      <Section title={t("harness.style.source_arrowhead")}>
         <ToggleGroup
           type="single"
           value={s.sourceArrowhead ?? "none"}
@@ -523,7 +525,7 @@ export function StylePanel({
       </Section>
     ),
     targetArrowhead: (
-      <Section title="Target arrowhead">
+      <Section title={t("harness.style.target_arrowhead")}>
         <ToggleGroup
           type="single"
           value={s.targetArrowhead ?? "arrow-filled"}
@@ -558,7 +560,7 @@ export function StylePanel({
               <Popover key={key}>
                 <PopoverTrigger asChild>
                   <div>
-                    <RailButton title={SETTING_TITLES[key]} indicator={settingIndicator[key]} />
+                    <RailButton title={t(SETTING_TITLES[key])} indicator={settingIndicator[key]} />
                   </div>
                 </PopoverTrigger>
                 <PopoverContent

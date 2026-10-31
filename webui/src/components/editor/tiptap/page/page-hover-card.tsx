@@ -1,4 +1,5 @@
 import { NotepadIcon } from "@phosphor-icons/react"
+import { useTranslation } from "react-i18next"
 import { IconPropertyView } from "@/components/icons/icon-property-view"
 import {
   HoverCard,
@@ -26,6 +27,7 @@ interface Props {
  * extra fetch — the chip's NodeView already subscribes/refreshes.
  */
 export function PageHoverCard({ cached, fallbackTitle, children }: Props) {
+  const { t } = useTranslation()
   const isLoading = cached === undefined
   const isDeleted = cached === null
   const liveTitle = cached?.title?.trim()
@@ -56,15 +58,15 @@ export function PageHoverCard({ cached, fallbackTitle, children }: Props) {
           )}
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium truncate">
-              {isDeleted ? `${title} (deleted)` : title}
+              {isDeleted ? `${title} ${t("editor.page.deleted_suffix")}` : title}
             </p>
             {isDeleted ? (
               <p className="mt-1 text-xs italic text-muted-foreground">
-                No longer accessible.
+                {t("editor.page.no_longer_accessible")}
               </p>
             ) : isLoading ? (
               <p className="mt-1 text-xs italic text-muted-foreground">
-                Loading…
+                {t("common.loading")}
               </p>
             ) : snippet ? (
               <p className="mt-1 text-xs text-muted-foreground line-clamp-3">
@@ -72,7 +74,7 @@ export function PageHoverCard({ cached, fallbackTitle, children }: Props) {
               </p>
             ) : (
               <p className="mt-1 text-xs italic text-muted-foreground">
-                Empty page
+                {t("editor.page.empty_page")}
               </p>
             )}
           </div>

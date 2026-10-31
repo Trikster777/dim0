@@ -1,4 +1,5 @@
 import { useEditorState } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import type { Editor } from "@tiptap/react"
 import { undoDepth, redoDepth } from "@tiptap/pm/history"
 import {
@@ -70,24 +71,26 @@ function TBtn({
 }
 
 const STYLES = [
-  { label: "Paragraph", key: "paragraph", action: (e: Editor) => e.chain().focus().setParagraph().run() },
-  { label: "Heading 1", key: "h1", action: (e: Editor) => e.chain().focus().toggleHeading({ level: 1 }).run() },
-  { label: "Heading 2", key: "h2", action: (e: Editor) => e.chain().focus().toggleHeading({ level: 2 }).run() },
-  { label: "Heading 3", key: "h3", action: (e: Editor) => e.chain().focus().toggleHeading({ level: 3 }).run() },
-  { label: "Code block", key: "code", action: (e: Editor) => e.chain().focus().toggleCodeBlock().run() },
-  { label: "Quote", key: "quote", action: (e: Editor) => e.chain().focus().toggleBlockquote().run() },
+  { label: "editor.style.paragraph", key: "paragraph", action: (e: Editor) => e.chain().focus().setParagraph().run() },
+  { label: "editor.style.h1", key: "h1", action: (e: Editor) => e.chain().focus().toggleHeading({ level: 1 }).run() },
+  { label: "editor.style.h2", key: "h2", action: (e: Editor) => e.chain().focus().toggleHeading({ level: 2 }).run() },
+  { label: "editor.style.h3", key: "h3", action: (e: Editor) => e.chain().focus().toggleHeading({ level: 3 }).run() },
+  { label: "editor.style.code", key: "code", action: (e: Editor) => e.chain().focus().toggleCodeBlock().run() },
+  { label: "editor.style.quote", key: "quote", action: (e: Editor) => e.chain().focus().toggleBlockquote().run() },
 ] as const
 
+/** Locale key of the block style at the cursor. */
 function currentStyle(editor: Editor): string {
-  if (editor.isActive("heading", { level: 1 })) return "Heading 1"
-  if (editor.isActive("heading", { level: 2 })) return "Heading 2"
-  if (editor.isActive("heading", { level: 3 })) return "Heading 3"
-  if (editor.isActive("codeBlock")) return "Code block"
-  if (editor.isActive("blockquote")) return "Quote"
-  return "Paragraph"
+  if (editor.isActive("heading", { level: 1 })) return "editor.style.h1"
+  if (editor.isActive("heading", { level: 2 })) return "editor.style.h2"
+  if (editor.isActive("heading", { level: 3 })) return "editor.style.h3"
+  if (editor.isActive("codeBlock")) return "editor.style.code"
+  if (editor.isActive("blockquote")) return "editor.style.quote"
+  return "editor.style.paragraph"
 }
 
 export function Toolbar({ editor }: Props) {
+  const { t } = useTranslation()
   const s = useEditorState({
     editor,
     selector: (ctx) => ({
@@ -114,14 +117,14 @@ export function Toolbar({ editor }: Props) {
     >
       {/* ── undo / redo ──────────────────────────────────────── */}
       <TBtn
-        tooltip="Undo (Ctrl+Z)"
+        tooltip={t("editor.toolbar.undo")}
         disabled={!s.canUndo}
         onClick={() => editor.commands.undo()}
       >
         <ArrowCounterClockwise size={16} />
       </TBtn>
       <TBtn
-        tooltip="Redo (Ctrl+Y)"
+        tooltip={t("editor.toolbar.redo")}
         disabled={!s.canRedo}
         onClick={() => editor.commands.redo()}
       >
@@ -137,7 +140,7 @@ export function Toolbar({ editor }: Props) {
             type="button"
             className="flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            <span className="font-sans">{s.style}</span>
+            <span className="font-sans">{t(s.style)}</span>
             <CaretDown size={12} weight="bold" />
           </button>
         </DropdownMenuTrigger>
@@ -148,7 +151,7 @@ export function Toolbar({ editor }: Props) {
               onSelect={() => st.action(editor)}
               className={cn(s.style === st.label && "bg-secondary text-secondary-foreground")}
             >
-              {st.label}
+              {t(st.label)}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -158,28 +161,28 @@ export function Toolbar({ editor }: Props) {
 
       {/* ── marks ────────────────────────────────────────────── */}
       <TBtn
-        tooltip="Bold (Ctrl+B)"
+        tooltip={t("editor.toolbar.bold")}
         active={s.isBold}
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
         <TextB size={16} weight="bold" />
       </TBtn>
       <TBtn
-        tooltip="Italic (Ctrl+I)"
+        tooltip={t("editor.toolbar.italic")}
         active={s.isItalic}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
         <TextItalic size={16} />
       </TBtn>
       <TBtn
-        tooltip="Underline (Ctrl+U)"
+        tooltip={t("editor.toolbar.underline")}
         active={s.isUnderline}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
       >
         <TextUnderline size={16} />
       </TBtn>
       <TBtn
-        tooltip="Strikethrough"
+        tooltip={t("editor.toolbar.strike")}
         active={s.isStrike}
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
@@ -190,27 +193,27 @@ export function Toolbar({ editor }: Props) {
 
       {/* ── inline elements ───────────────────────────────────── */}
       <TBtn
-        tooltip="Highlight"
+        tooltip={t("editor.toolbar.highlight")}
         active={s.isHighlight}
         onClick={() => editor.chain().focus().toggleHighlight().run()}
       >
         <NotePencilIcon size={16} />
       </TBtn>
       <TBtn
-        tooltip="Code (Ctrl+E)"
+        tooltip={t("editor.toolbar.code")}
         active={s.isCode}
         onClick={() => editor.chain().focus().toggleCode().run()}
       >
         <Code size={16} />
       </TBtn>
       <TBtn
-        tooltip="Link"
+        tooltip={t("editor.toolbar.link")}
         active={s.isLink}
         onClick={() => {
           if (editor.isActive("link")) {
             editor.chain().focus().unsetLink().run()
           } else {
-            const url = window.prompt("URL")
+            const url = window.prompt(t("editor.toolbar.url"))
             if (url) editor.chain().focus().setLink({ href: url }).run()
           }
         }}
@@ -222,21 +225,21 @@ export function Toolbar({ editor }: Props) {
 
       {/* ── lists ────────────────────────────────────────────── */}
       <TBtn
-        tooltip="Bullet list"
+        tooltip={t("editor.toolbar.bullet_list")}
         active={s.isBulletList}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       >
         <ListBullets size={16} />
       </TBtn>
       <TBtn
-        tooltip="Numbered list"
+        tooltip={t("editor.toolbar.numbered_list")}
         active={s.isOrderedList}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       >
         <ListNumbers size={16} />
       </TBtn>
       <TBtn
-        tooltip="Blockquote"
+        tooltip={t("editor.toolbar.blockquote")}
         active={s.isBlockquote}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
       >

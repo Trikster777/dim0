@@ -3,10 +3,11 @@ import { SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton, SidebarMenuSu
 import { ChatNewIcon, DeleteIcon } from "@/components/icons"
 import { useDeleteChat } from "@/features/agent/api/delete-chat"
 import { trimText } from "@/lib/common"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu"
 import { useNavigate, useParams, useRouterState, useSearch } from "@tanstack/react-router"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+import { useTranslation } from "react-i18next"
 
 /**
  * New chat item — top-level routes to home (where the composer auto-creates
@@ -19,6 +20,7 @@ export function NewChatItem({
   isSubMenuItem?: boolean
   initialBoardId?: string
 }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const searchBoardId = useSearch({
@@ -47,7 +49,7 @@ export function NewChatItem({
           className='text-xs text-muted-foreground font-medium truncate cursor-pointer'
           isActive={isActive}
         >
-          <span>New Chat</span>
+          <span>{t('sidebar.chat.new_chat')}</span>
         </SidebarMenuSubButton>
       </SidebarMenuSubItem>
     )
@@ -60,7 +62,7 @@ export function NewChatItem({
         isActive={isActive}
       >
         <ChatNewIcon className='text-xs shrink-0 text-sidebar-icon-4' weight={isActive ? 'fill' : undefined} strokeWidth={2} />
-        <span>New Chat</span>
+        <span>{t('sidebar.chat.new_chat')}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
@@ -71,6 +73,7 @@ export function NewChatItem({
  * A chat item component
  */
 export function ChatMenuItem({ chatId, label }: { chatId: string, label?: string }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const chatParams = useParams({ from: "/chats/$id", shouldThrow: false })
   // `strict: false` so this also matches surface routes
@@ -96,7 +99,7 @@ export function ChatMenuItem({ chatId, label }: { chatId: string, label?: string
     }
   }
 
-  const fullChatLabel = label || UNTITLED_LABEL
+  const fullChatLabel = label || untitledLabel()
   const chatLabel = trimText(fullChatLabel, 100)
 
   return (
@@ -125,7 +128,7 @@ export function ChatMenuItem({ chatId, label }: { chatId: string, label?: string
             className='text-xs flex flex-row items-center'
           >
             <DeleteIcon className="size-4 mr-2" strokeWidth={2} />
-            <span>Delete Chat</span>
+            <span>{t('sidebar.chat.delete')}</span>
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>

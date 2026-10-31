@@ -1,11 +1,13 @@
 import { DashboardIcon } from "@/components/icons"
 import { SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
 import { useNavigate, useRouterState } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 
 /**
  * Subscriptions menu item component
  */
 export function SubscriptionsMenuItem() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
 
@@ -23,7 +25,7 @@ export function SubscriptionsMenuItem() {
         isActive={isActive}
       >
         <DashboardIcon className="shrink-0 size-4 text-sidebar-icon-3" strokeWidth={2} />
-        <span>Newsfeed</span>
+        <span>{t('sidebar.nav.newsfeed')}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )

@@ -18,6 +18,8 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { type CanvasStore, type Node, type NodeId } from "@canvas-harness/core"
 import { useCanvasStore } from "@canvas-harness/react"
+import type { TFunction } from "i18next"
+import { useTranslation } from "react-i18next"
 import { ChevronRightIcon, DragGripIcon, PresentationIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
 import { useHarnessAddFrame } from "../canvas/use-add-frame"
@@ -49,11 +51,11 @@ const useFrames = (store: CanvasStore): Node[] => {
  * the Note properties when present, otherwise fall back to position
  * (1-based) so newly-created slides read naturally.
  */
-const labelFor = (frame: Node, index: number): string => {
+const labelFor = (frame: Node, index: number, t: TFunction): string => {
   const data = frame.data as Partial<NoteNodeData> | undefined
   const explicit = data?.properties?.slideName?.text
   if (typeof explicit === "string" && explicit.trim().length > 0) return explicit
-  return `Slide ${index + 1}`
+  return t("harness.slides.slide_number", { number: index + 1 })
 }
 
 
@@ -70,6 +72,7 @@ const rowButtonClass =
  * presenting.
  */
 export function SlidesPanel() {
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const wrapRef = useHarnessWrapRef()
   const boardId = useBoardAppStore((s) => s.boardId)
@@ -129,16 +132,16 @@ export function SlidesPanel() {
           <button
             type="button"
             onClick={() => setSlidesPanelOpen(false)}
-            aria-label="Close slides panel"
+            aria-label={t("harness.slides.close_aria")}
             className="rounded-md p-1 transition hover:bg-secondary"
           >
             <ChevronRightIcon className="size-4 text-muted-foreground" />
           </button>
-          Slides
+          {t("harness.slides.title")}
         </div>
         <div className="flex items-center gap-2">
           <button type="button" className={rowButtonClass} onClick={handleAddSlide}>
-            Add Slide
+            {t("harness.slides.add_slide")}
           </button>
           <button
             type="button"
@@ -147,7 +150,7 @@ export function SlidesPanel() {
             disabled={frames.length === 0}
           >
             <PresentationIcon className="mr-1 inline-block size-4" />
-            Present
+            {t("harness.slides.present")}
           </button>
         </div>
       </div>
@@ -160,14 +163,14 @@ export function SlidesPanel() {
                 <SortableSlideRow
                   key={frame.id as unknown as string}
                   id={frame.id as unknown as string}
-                  label={labelFor(frame, i)}
+                  label={labelFor(frame, i, t)}
                   active={(frame.id as unknown as string) === activeSlideId}
                   onClick={handleRowClick}
                 />
               ))}
               {frames.length === 0 && (
                 <div className="px-2 py-6 text-sm text-muted-foreground">
-                  No slides yet. Click "Add Slide" to create one.
+                  {t("harness.slides.empty")}
                 </div>
               )}
             </div>
@@ -188,6 +191,7 @@ type SortableSlideRowProps = {
 
 
 function SortableSlideRow({ id, label, active, onClick }: SortableSlideRowProps) {
+  const { t } = useTranslation()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
   })
@@ -208,7 +212,7 @@ function SortableSlideRow({ id, label, active, onClick }: SortableSlideRowProps)
     >
       <button
         type="button"
-        aria-label="Drag to reorder"
+        aria-label={t("harness.slides.drag_to_reorder")}
         className="cursor-grab rounded-md p-1 text-muted-foreground/50 transition hover:text-muted-foreground active:cursor-grabbing"
         {...attributes}
         {...listeners}

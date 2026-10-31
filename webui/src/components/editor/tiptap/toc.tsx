@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, type RefObject } from "react"
 import type { Editor } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 // ── types ────────────────────────────────────────────────────────────────────
@@ -125,6 +126,7 @@ interface Props {
 }
 
 export function TocPanel({ editor, scrollRef }: Props) {
+  const { t } = useTranslation()
   const [hovered, setHovered] = useState(false)
   const { headings, blocks } = useTocData(editor)
   const activeIndex = useActiveHeading(editor, headings.length, scrollRef)
@@ -177,7 +179,7 @@ export function TocPanel({ editor, scrollRef }: Props) {
         )}
       >
         <p className="shrink-0 px-3 pb-1 pt-2.5 font-sans text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          On this page
+          {t("editor.toc.on_this_page")}
         </p>
         <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin pb-2">
           {headings.map((h, i) => (

@@ -1,4 +1,5 @@
 import { useCallback } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import type { CanvasStore, Node } from "@canvas-harness/core"
 import type { CanvasCreateDragEvent } from "@canvas-harness/react"
@@ -50,12 +51,12 @@ const isShapeTool = (tool: string): boolean => SHAPE_TOOLS.has(tool)
 
 
 /** Friendly labels for limit toasts, keyed by dim0 node type. */
-const CREATE_LABELS: Record<string, string> = {
-  "mini-app": "mini-app",
-  applet: "applet",
-  "code-sandbox": "code sandbox",
-  folder: "sub-board",
-  document: "document",
+const CREATE_LABEL_KEYS: Record<string, string> = {
+  "mini-app": "harness.limit_types.mini_app",
+  applet: "harness.limit_types.applet",
+  "code-sandbox": "harness.limit_types.code_sandbox",
+  folder: "harness.limit_types.sub_board",
+  document: "harness.limit_types.document",
 }
 
 
@@ -127,6 +128,7 @@ export const useCreateHandlers = (
   handleCreateDrag: (e: CanvasCreateDragEvent) => void
 } => {
   const userPlan = useAppStore((s) => s.userPlan)
+  const { t } = useTranslation()
   const currentFolderDepth = useBoardAppStore((s) => s.currentFolderDepth)
 
   // Enforce per-board node limits + folder nesting depth at materialization
@@ -134,21 +136,21 @@ export const useCreateHandlers = (
   const guardCreate = useCallback(
     (type: string): boolean => {
       if (type === "folder" && !canCreateSubBoard(currentFolderDepth)) {
-        toast.error(`Maximum nesting depth reached (${MAX_BOARD_DEPTH + 1} levels).`)
+        toast.error(t("harness.toast.max_depth", { count: MAX_BOARD_DEPTH + 1 }))
         return false
       }
       const count = store.getAllNodes().filter((n) => n.type === type).length
       if (isNodeTypeAtLimit(type, userPlan, count)) {
-        const label = CREATE_LABELS[type] ?? type
+        const labelKey = CREATE_LABEL_KEYS[type]
+        const label = labelKey ? t(labelKey) : type
         toast.error(
-          `You've reached this board's ${label} limit (${nodeLimitFor(type, userPlan)}). ` +
-          `Upgrade for more.`,
+          t("harness.toast.node_limit", { type: label, limit: nodeLimitFor(type, userPlan) }),
         )
         return false
       }
       return true
     },
-    [store, userPlan, currentFolderDepth],
+    [store, userPlan, currentFolderDepth, t],
   )
 
   const handleCreateDrag = useCallback(

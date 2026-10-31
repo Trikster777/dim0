@@ -1,6 +1,7 @@
 import { act } from "react"
 import { createRoot, type Root } from "react-dom/client"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
+import { initI18n } from "@/i18n"
 
 
 const state = vi.hoisted(() => ({ status: "online" as "online" | "offline" }))
@@ -26,6 +27,10 @@ const badge = (): Element | null => container.querySelector("[role='status']")
 
 
 describe("ConnectionIndicator", () => {
+  beforeAll(async () => {
+    await initI18n()
+  })
+
   beforeEach(() => {
     container = document.createElement("div")
     document.body.appendChild(container)

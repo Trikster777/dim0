@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 import { AddIcon } from '@/components/icons'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
@@ -7,6 +8,7 @@ type Props = React.ComponentPropsWithoutRef<'button'>
 
 export const CreateSubscriptionCardTrigger = React.forwardRef<HTMLButtonElement, Props>(
   ({ className, children, ...props }, ref) => {
+    const { t } = useTranslation()
     return (
       <TooltipProvider>
         <Tooltip>
@@ -27,7 +29,7 @@ export const CreateSubscriptionCardTrigger = React.forwardRef<HTMLButtonElement,
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            Create New Topic
+            {t('newsfeed.subscription.create_new_topic')}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

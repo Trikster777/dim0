@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -27,17 +28,16 @@ type BoardLimitDialogProps = {
  * create an unlimited local-only board — so the wall is a choice, never a dead end.
  */
 export function BoardLimitDialog({ open, onOpenChange, planLimit, onCreateLocal }: BoardLimitDialogProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>You've reached your plan's board limit</DialogTitle>
+          <DialogTitle>{t("board.limit.title")}</DialogTitle>
           <DialogDescription className="text-sm leading-6 text-foreground/80">
-            Your plan includes {planLimit} synced boards, backed up and shareable across your
-            devices. Upgrade for unlimited synced boards, or create a local-only board that stays
-            on this device.
+            {t("board.limit.body", { limit: planLimit })}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-3">
@@ -48,7 +48,7 @@ export function BoardLimitDialog({ open, onOpenChange, planLimit, onCreateLocal 
               onCreateLocal()
             }}
           >
-            Create a local-only board
+            {t("board.limit.create_local")}
           </Button>
           <Button
             onClick={() => {
@@ -56,7 +56,7 @@ export function BoardLimitDialog({ open, onOpenChange, planLimit, onCreateLocal 
               void navigate({ to: SettingsBillingUrl })
             }}
           >
-            Upgrade
+            {t("board.limit.upgrade")}
           </Button>
         </DialogFooter>
       </DialogContent>

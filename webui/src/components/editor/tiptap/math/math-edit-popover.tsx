@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
+import { useTranslation } from "react-i18next"
 import type { Editor } from "@tiptap/react"
 import { registerMathEditorOpener, type MathEditOpts } from "./math-edit-trigger"
 
 
 export function MathEditPopover({ editor }: { editor: Editor }) {
+  const { t } = useTranslation()
   const [state, setState] = useState<MathEditOpts | null>(null)
   const [draft, setDraft] = useState("")
   const containerRef = useRef<HTMLDivElement>(null)
@@ -107,7 +109,7 @@ export function MathEditPopover({ editor }: { editor: Editor }) {
         }}
         rows={state.isInline ? 1 : 3}
         className="math-edit-textarea"
-        placeholder={state.isInline ? "Inline LaTeX, e.g. x^2" : "LaTeX, e.g. \\frac{a}{b}"}
+        placeholder={state.isInline ? t("editor.math.inline_placeholder") : t("editor.math.block_placeholder")}
         spellCheck={false}
       />
     </div>,

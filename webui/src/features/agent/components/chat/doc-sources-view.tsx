@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import { ChevronDownIcon, DocumentFileIcon } from "@/components/icons"
 import { REVEAL_SOURCE_EVENT } from "@/components/markdown/markdown-link"
@@ -16,10 +17,13 @@ import { docAnchorId, type DocSource } from "../../utils/doc-sources"
  * card is React-controlled and can't be revealed via a DOM `open` attribute.
  */
 const DocSourceItem = ({ source, anchorId }: { source: DocSource; anchorId: string }) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const setViewMode = useBoardAppStore((s) => s.setViewMode)
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+
+  const docTitle = source.docTitle || t("agent.sources.document")
 
   useEffect(() => {
     const el = ref.current
@@ -43,20 +47,20 @@ const DocSourceItem = ({ source, anchorId }: { source: DocSource; anchorId: stri
         <button
           type="button"
           onClick={locate}
-          title="Find on board"
-          aria-label={`Find "${source.docTitle || "Document"}" on board`}
+          title={t("agent.sources.find_on_board")}
+          aria-label={t("agent.sources.find_document_aria", { title: docTitle })}
           className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-left hover:text-secondary-foreground"
         >
           <DocumentFileIcon className="size-3.5 shrink-0 text-primary" strokeWidth={2} />
-          <span className="truncate text-primary">{source.docTitle || "Document"}</span>
+          <span className="truncate text-primary">{docTitle}</span>
         </button>
         <span className="shrink-0 text-muted-foreground">
-          {source.passages.length} passage{source.passages.length === 1 ? "" : "s"}
+          {t("agent.sources.passages", { count: source.passages.length })}
         </span>
         {source.passages.length > 0 && (
           <button
             type="button"
-            aria-label={open ? "Hide passages" : "Show passages"}
+            aria-label={open ? t("agent.sources.hide_passages") : t("agent.sources.show_passages")}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-secondary-foreground"
@@ -85,13 +89,14 @@ const DocSourceItem = ({ source, anchorId }: { source: DocSource; anchorId: stri
  * the doc node on the board; the chevron expands its grounding passages.
  */
 export const DocSourcesView = ({ sources, messageId }: { sources: DocSource[]; messageId: string }) => {
+  const { t } = useTranslation()
   if (sources.length === 0) return null
 
   return (
     <div className="mt-2 min-w-0 space-y-1">
       <div className="ml-1 flex items-center gap-1 text-xs font-mono text-muted-foreground">
         <DocumentFileIcon className="size-4 shrink-0 text-primary" strokeWidth={2} />
-        <span className="text-primary">Documents</span>
+        <span className="text-primary">{t("agent.sources.documents")}</span>
       </div>
       {sources.map((s) => (
         <DocSourceItem key={s.docId} source={s} anchorId={docAnchorId(messageId, s.docId)} />

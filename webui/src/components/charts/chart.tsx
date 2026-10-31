@@ -18,6 +18,7 @@
 // file just defers to it.
 
 import { Suspense, lazy } from "react"
+import { useTranslation } from "react-i18next"
 
 import type { ChartProps } from "./chart-types"
 
@@ -30,6 +31,8 @@ const ChartImpl = lazy(() =>
 
 
 export function ChartElement(props: ChartProps) {
+  const { t } = useTranslation()
+
   // Fallback reserves the chart's eventual height so the page doesn't
   // jump when recharts mounts. `width: 100%` matches the
   // ResponsiveContainer inside chart-impl. height defaults to 200 to
@@ -40,7 +43,7 @@ export function ChartElement(props: ChartProps) {
         width: "100%",
         height: props.height ?? 200,
       }}
-      aria-label="Loading chart"
+      aria-label={t("charts.chart.loading")}
     />
   )
   return (

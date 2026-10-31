@@ -1,5 +1,8 @@
 import { type ReactNode } from "react"
+import { useTranslation } from "react-i18next"
+import type { TFunction } from "i18next"
 import { cn } from "@/lib/utils"
+import { i18n } from "@/i18n"
 
 
 export type NodeFooterStatus = "idle" | "pending" | "saving" | "saved" | "error"
@@ -16,12 +19,12 @@ export type NodeFooterProps = {
 }
 
 
-const STATUS_LABEL: Record<NodeFooterStatus, string> = {
+const STATUS_LABEL_KEY: Record<NodeFooterStatus, string> = {
   idle: "",
-  pending: "Edited",
-  saving: "Saving…",
-  saved: "Saved",
-  error: "Save failed",
+  pending: "harness.footer.edited",
+  saving: "harness.footer.saving",
+  saved: "harness.footer.saved",
+  error: "harness.footer.save_failed",
 }
 
 
@@ -39,7 +42,9 @@ const STATUS_CLASS: Record<NodeFooterStatus, string> = {
  * status pill on the right, free-form children on the left.
  */
 export function NodeFooter({ status, updatedAt, children, className }: NodeFooterProps) {
-  const label = status ? STATUS_LABEL[status] : ""
+  const { t } = useTranslation()
+  const labelKey = status ? STATUS_LABEL_KEY[status] : ""
+  const label = labelKey ? t(labelKey) : ""
 
   return (
     <div
@@ -50,7 +55,7 @@ export function NodeFooter({ status, updatedAt, children, className }: NodeFoote
     >
       <div className="flex min-w-0 items-center gap-2 truncate">{children}</div>
       <div className="flex items-center gap-2">
-        {updatedAt ? <span className="truncate">{formatRelative(updatedAt)}</span> : null}
+        {updatedAt ? <span className="truncate">{formatRelative(updatedAt, t)}</span> : null}
         {label && status ? <span className={STATUS_CLASS[status]}>{label}</span> : null}
       </div>
     </div>
@@ -59,12 +64,16 @@ export function NodeFooter({ status, updatedAt, children, className }: NodeFoote
 
 
 /** Tiny relative-time helper. Avoids pulling in date-fns for one call site. */
-const formatRelative = (iso: string): string => {
-  const t = new Date(iso).getTime()
-  if (Number.isNaN(t)) return ""
-  const diff = Date.now() - t
-  if (diff < 60_000) return "just now"
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`
-  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`
-  return new Date(t).toLocaleDateString()
+const formatRelative = (iso: string, t: TFunction): string => {
+  const time = new Date(iso).getTime()
+  if (Number.isNaN(time)) return ""
+  const diff = Date.now() - time
+  if (diff < 60_000) return t("harness.footer.just_now")
+  if (diff < 3_600_000) {
+    return t("harness.footer.minutes_ago", { count: Math.floor(diff / 60_000) })
+  }
+  if (diff < 86_400_000) {
+    return t("harness.footer.hours_ago", { count: Math.floor(diff / 3_600_000) })
+  }
+  return new Date(time).toLocaleDateString(i18n.language || undefined)
 }

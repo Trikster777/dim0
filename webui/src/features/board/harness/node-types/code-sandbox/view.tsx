@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { type NodeId } from "@canvas-harness/core"
 import { useCanvasStore, useNode } from "@canvas-harness/react"
 import { removeNodeSubtree } from "@/features/board/harness/graph/subtree"
@@ -20,7 +21,7 @@ export type CodeSandboxViewProps = {
 }
 
 
-const PLACEHOLDER = "// Write code here"
+const PLACEHOLDER_KEY = "harness.node.code_preview_placeholder"
 
 
 /**
@@ -32,6 +33,7 @@ const PLACEHOLDER = "// Write code here"
  */
 export function CodeSandboxView({ id }: CodeSandboxViewProps) {
   const node = useNode(id)
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const openNodeSurface = useBoardAppStore((s) => s.openNodeSurface)
   const canEdit = useBoardAppStore((s) => s.canEdit)
@@ -43,7 +45,7 @@ export function CodeSandboxView({ id }: CodeSandboxViewProps) {
   const language = data.properties?.programmingLanguage?.text || DEFAULT_CODE_LANGUAGE
 
   const code = node?.content ?? ""
-  const display = code || PLACEHOLDER
+  const display = code || t(PLACEHOLDER_KEY)
   const [previewHtml, setPreviewHtml] = useState<string | null>(null)
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export function CodeSandboxView({ id }: CodeSandboxViewProps) {
           "pointer-events-auto",
           canEdit ? "cursor-pointer" : "cursor-default",
         )}
-        title={canEdit ? "Open code" : "Code preview"}
+        title={canEdit ? t("harness.node.open_code") : t("harness.node.code_preview")}
       >
         {previewHtml != null ? (
           <div
@@ -110,7 +112,7 @@ export function CodeSandboxView({ id }: CodeSandboxViewProps) {
         <NodeTitleCaption
           nodeId={id}
           label={label}
-          placeholder="Untitled code"
+          placeholder={t("harness.surface.untitled_code")}
           textClassName="text-center text-sm font-handwriting text-foreground"
         />
       </div>

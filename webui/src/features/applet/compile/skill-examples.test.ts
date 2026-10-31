@@ -13,9 +13,11 @@ import { compileApplet, validateApplet } from "./index"
 /** Extract fenced code blocks whose body is a full `<Widget>` applet. */
 function appletExamples(md: string): string[] {
   const blocks: string[] = []
+  // Git checks this file out with CRLF on Windows; the fence pattern needs a bare \n.
   const fence = /```(?:jsx|tsx|js|ts)?\n([\s\S]*?)```/g
   let m: RegExpExecArray | null
-  while ((m = fence.exec(md)) !== null) {
+  const text = md.replace(/\r\n/g, "\n")
+  while ((m = fence.exec(text)) !== null) {
     const code = m[1].trim()
     // Complete worked examples only — skip illustrative snippets that elide with "…".
     if (code.startsWith("<Widget") && !code.includes("…")) blocks.push(code)

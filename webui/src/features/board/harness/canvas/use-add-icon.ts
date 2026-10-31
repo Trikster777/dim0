@@ -1,4 +1,5 @@
 import { useCallback } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import type { CanvasStore, NodeId } from "@canvas-harness/core"
 import { createDefaultNote } from "@/features/board/types/note"
@@ -55,12 +56,13 @@ export const useHarnessAddIcon = (
   boardId: string | null,
   rootId: string | null,
 ) => {
+  const { t } = useTranslation()
   return useCallback(
     async (iconName: string, options: AddIconOptions = {}): Promise<boolean> => {
       if (!boardId) return false
       const svg = await fetchIconSvg(iconName)
       if (!svg) {
-        toast.error(`Couldn't load "${iconName}"`)
+        toast.error(t("harness.toast.icon_load_failed", { name: iconName }))
         return false
       }
       const note = createDefaultNote({ boardId, nodeType: "icon" })
@@ -105,6 +107,6 @@ export const useHarnessAddIcon = (
       store.setSelection([withSrc.id as NodeId])
       return true
     },
-    [store, boardId, rootId],
+    [store, boardId, rootId, t],
   )
 }

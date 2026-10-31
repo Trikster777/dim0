@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { WifiSlashIcon } from "@/components/icons"
 import { useConnectionStatus } from "./connection-state"
 
@@ -10,6 +11,7 @@ import { useConnectionStatus } from "./connection-state"
  * detector (authed sessions only) reports otherwise.
  */
 export const ConnectionIndicator = () => {
+  const { t } = useTranslation()
   const status = useConnectionStatus()
   if (status !== "offline") return null
 
@@ -17,11 +19,11 @@ export const ConnectionIndicator = () => {
     <span
       role="status"
       aria-live="polite"
-      title="You're offline — changes sync once the connection returns"
+      title={t("offline.indicator.title")}
       className="inline-flex items-center gap-1.5 rounded-full bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive"
     >
       <WifiSlashIcon className="size-4" strokeWidth={2} />
-      <span className="hidden sm:inline">Offline</span>
+      <span className="hidden sm:inline">{t("offline.indicator.label")}</span>
     </span>
   )
 }

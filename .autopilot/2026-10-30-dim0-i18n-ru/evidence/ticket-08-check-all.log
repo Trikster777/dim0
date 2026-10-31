@@ -1,0 +1,12 @@
+
+> webui@0.3.101 check-all
+> npm run type-check && npm run lint
+
+
+> webui@0.3.101 type-check
+> tsc -p tsconfig.app.json --noEmit
+
+
+> webui@0.3.101 lint
+> eslint .
+

@@ -12,6 +12,7 @@ import {
   type EditorAdapter,
   type EditorAdapterFactory,
 } from "@canvas-harness/core"
+import { i18n } from "@/i18n"
 
 
 /**
@@ -179,7 +180,7 @@ export const createHarnessTextareaEditor: EditorAdapterFactory = ({
     }
     if (meta && !e.shiftKey && (e.key === "k" || e.key === "K")) {
       e.preventDefault()
-      const url = window.prompt("URL") ?? ""
+      const url = window.prompt(i18n.t("harness.editor.url_prompt")) ?? ""
       applyTransform(insertLink(ta.value, ta.selectionStart, ta.selectionEnd, url))
       return
     }

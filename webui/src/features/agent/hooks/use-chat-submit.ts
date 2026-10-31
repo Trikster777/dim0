@@ -1,4 +1,5 @@
 import { useCallback } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import { useBoardAppStore } from "@/features/board/harness/store/board-app-store"
 import { useLocalSubmitPrompt } from "@/features/agent/local/use-local-submit-prompt"
@@ -22,6 +23,7 @@ type SubmitOptions = {
  * options (board creation, deep research) are ignored in local mode.
  */
 export const useChatSubmit = () => {
+  const { t } = useTranslation()
   const { local, syncTranscript } = useChat()
   const boardId = useBoardAppStore((s) => s.boardId) ?? ""
   const boardRole = useBoardAppStore((s) => s.boardRole)
@@ -36,7 +38,7 @@ export const useChatSubmit = () => {
       // role) so an owner is never wrongly blocked mid-resolve. Local boards are
       // role "owner", so this only ever blocks genuine viewers.
       if (boardRole === "viewer") {
-        toast.error("You have view-only access to this board — ask an editor to run the assistant.")
+        toast.error(t("agent.input.view_only"))
         return
       }
       if (local) {
@@ -48,6 +50,6 @@ export const useChatSubmit = () => {
       }
       await backendSubmit(text, options)
     },
-    [local, boardRole, localSubmit, backendSubmit],
+    [local, boardRole, localSubmit, backendSubmit, t],
   )
 }

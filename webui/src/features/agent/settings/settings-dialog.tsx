@@ -1,4 +1,5 @@
 import { useState, type ComponentType } from "react"
+import { useTranslation } from "react-i18next"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
   CodeInterpreterIcon,
@@ -26,11 +27,11 @@ import { isKeylessSearchEngine, type ServiceKind } from "@/features/agent/engine
 type SectionId = "general" | "models" | "search" | "code" | "documents"
 
 const NAV: { id: SectionId; label: string; icon: ComponentType<{ className?: string }> }[] = [
-  { id: "general", label: "General", icon: ToolsMenuIcon },
-  { id: "models", label: "Model providers", icon: SparklesIcon },
-  { id: "search", label: "Web search", icon: GlobeIcon },
-  { id: "code", label: "Code interpreter", icon: CodeInterpreterIcon },
-  { id: "documents", label: "Documents", icon: DocumentFileIcon },
+  { id: "general", label: "agent.settings.nav_general", icon: ToolsMenuIcon },
+  { id: "models", label: "agent.settings.nav_models", icon: SparklesIcon },
+  { id: "search", label: "agent.settings.nav_search", icon: GlobeIcon },
+  { id: "code", label: "agent.settings.nav_code", icon: CodeInterpreterIcon },
+  { id: "documents", label: "agent.settings.nav_documents", icon: DocumentFileIcon },
 ]
 
 const SEARCH_ENGINES: { id: SearchEngine; label: string; placeholder: string }[] = [
@@ -38,7 +39,7 @@ const SEARCH_ENGINES: { id: SearchEngine; label: string; placeholder: string }[]
   { id: "tavily", label: "Tavily", placeholder: "tvly-…" },
   { id: "linkup", label: "Linkup", placeholder: "lk-…" },
   { id: "exa", label: "Exa", placeholder: "exa-…" },
-  { id: "parallel", label: "Parallel (keyless)", placeholder: "" },
+  { id: "parallel", label: "agent.settings.parallel_keyless", placeholder: "" },
 ]
 
 const fieldClass =
@@ -62,6 +63,7 @@ const NAV_KIND: Partial<Record<SectionId, ServiceKind>> = {
  * key section. The provider sections hold BYOK keys. "Our keys first."
  */
 export function SettingsDialog({ trigger }: { trigger: React.ReactNode }) {
+  const { t } = useTranslation()
   const [section, setSection] = useState<SectionId>("general")
   useModelCatalog() // public model list — populates the picker for everyone
   useListAvailableServices() // signed-in: search/code/tool availability
@@ -89,11 +91,11 @@ export function SettingsDialog({ trigger }: { trigger: React.ReactNode }) {
     <Dialog>
       <DialogTrigger render={trigger as React.ReactElement} />
       <DialogContent className="w-[min(760px,calc(100vw-2rem))] max-w-none overflow-hidden rounded-2xl p-0">
-        <DialogTitle className="sr-only">Agent settings</DialogTitle>
+        <DialogTitle className="sr-only">{t("agent.settings.agent_settings")}</DialogTitle>
         <div className="flex h-[min(560px,80vh)]">
           <nav className="flex w-44 shrink-0 flex-col border-r border-border bg-sidebar/60 p-2">
             <div className="px-2 pb-2 pt-1 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-              Settings
+              {t("agent.settings.title")}
             </div>
             {NAV.map(({ id, label, icon: Icon }) => {
               const kind = NAV_KIND[id]
@@ -110,7 +112,7 @@ export function SettingsDialog({ trigger }: { trigger: React.ReactNode }) {
                 )}
               >
                 <Icon className="size-4 shrink-0" />
-                <span className="truncate">{label}</span>
+                <span className="truncate">{t(label)}</span>
                 {kind && (
                   <span className="ml-auto shrink-0">
                     <StatusDot usable={resolutions[kind].mode !== "off"} />
@@ -137,6 +139,7 @@ export function SettingsDialog({ trigger }: { trigger: React.ReactNode }) {
 
 /** Forget every BYOK key stored on this device (the persistence safety valve). */
 function ForgetKeysButton() {
+  const { t } = useTranslation()
   const clear = useByokStore((s) => s.clear)
   const hasKeys = useByokStore(
     (s) =>
@@ -152,7 +155,7 @@ function ForgetKeysButton() {
       disabled={!hasKeys}
       className="mt-auto rounded-lg px-2.5 py-2 text-left text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-40"
     >
-      Forget keys on this device
+      {t("agent.settings.forget_keys")}
     </button>
   )
 }
@@ -160,10 +163,11 @@ function ForgetKeysButton() {
 
 /** Usable/not status dot — green when the service resolves, red otherwise. */
 function StatusDot({ usable }: { usable: boolean }) {
+  const { t } = useTranslation()
   return (
     <span
       className={cn("size-2 shrink-0 rounded-full", usable ? "bg-emerald-500" : "bg-red-500")}
-      aria-label={usable ? "usable" : "not set up"}
+      aria-label={usable ? t("agent.settings.status_usable") : t("agent.settings.status_not_setup")}
     />
   )
 }
@@ -181,6 +185,7 @@ function PaneTitle({ title, hint }: { title: string; hint?: string }) {
 
 /** General: the active model + a per-tool usable marker with a shortcut to keys. */
 function GeneralPane({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
+  const { t } = useTranslation()
   const signedIn = useIsSignedIn()
   const configured = useByokStore((s) => s.configured)
   const asConfig = useByokStore((s) => s.asConfig)
@@ -200,28 +205,28 @@ function GeneralPane({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
   )
 
   const tools: { kind: ServiceKind; label: string; icon: ComponentType<{ className?: string }>; section?: SectionId }[] = [
-    { kind: "search", label: "Web search", icon: GlobeIcon, section: "search" },
-    { kind: "code", label: "Code interpreter", icon: CodeInterpreterIcon, section: "code" },
-    { kind: "parse", label: "Documents", icon: DocumentFileIcon, section: "documents" },
-    { kind: "fetch", label: "Fetch", icon: LinkIcon },
+    { kind: "search", label: "agent.settings.web_search_label", icon: GlobeIcon, section: "search" },
+    { kind: "code", label: "agent.settings.code_label", icon: CodeInterpreterIcon, section: "code" },
+    { kind: "parse", label: "agent.settings.nav_documents", icon: DocumentFileIcon, section: "documents" },
+    { kind: "fetch", label: "agent.settings.fetch", icon: LinkIcon },
   ]
 
   const modelUsable = resolutions.llm.mode !== "off"
 
   return (
     <div>
-      <PaneTitle title="General" hint="We use our keys by default. Add your own under each service." />
+      <PaneTitle title={t("agent.settings.nav_general")} hint={t("agent.settings.general_hint")} />
 
       <div className="mb-1 flex items-center gap-2">
         <StatusDot usable={modelUsable} />
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Model</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("agent.settings.model")}</span>
       </div>
       <div className="rounded-lg border border-border">
         <ModelChoiceMenu display="row" />
       </div>
       {modelUsable ? (
         <p className="mb-5 mt-1.5 text-[11px] text-muted-foreground">
-          Auto picks a model per task. Signed-in models come from our catalog; a BYOK key adds your own.
+          {t("agent.settings.auto_hint")}
         </p>
       ) : (
         <button
@@ -229,11 +234,11 @@ function GeneralPane({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
           onClick={() => onNavigate("models")}
           className="mb-5 mt-1.5 text-[11px] font-medium text-secondary-foreground underline-offset-2 hover:underline"
         >
-          Set a model key →
+          {t("agent.settings.set_model_key")}
         </button>
       )}
 
-      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tools</div>
+      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("agent.settings.tools")}</div>
       <div className="divide-y divide-border/60 rounded-lg border border-border">
         {tools.map(({ kind, label, icon: Icon, section }) => {
           const mode = resolutions[kind].mode
@@ -242,24 +247,24 @@ function GeneralPane({ onNavigate }: { onNavigate: (s: SectionId) => void }) {
               <span className="flex items-center gap-2 text-sm">
                 <StatusDot usable={mode !== "off"} />
                 <Icon className="size-4 shrink-0 text-muted-foreground" />
-                {label}
+                {t(label)}
               </span>
               {mode === "keyless" ? (
-                <Chip tone="byok" label="No key needed" />
+                <Chip tone="byok" label={t("agent.settings.no_key_needed")} />
               ) : mode === "managed" ? (
-                <Chip tone="managed" label="Our keys" />
+                <Chip tone="managed" label={t("agent.settings.our_keys")} />
               ) : mode === "byok" ? (
-                <Chip tone="byok" label="Your key" />
+                <Chip tone="byok" label={t("agent.settings.your_key")} />
               ) : section ? (
                 <button
                   type="button"
                   onClick={() => onNavigate(section)}
                   className="text-xs font-medium text-secondary-foreground underline-offset-2 hover:underline"
                 >
-                  Set a key →
+                  {t("agent.settings.set_key")}
                 </button>
               ) : (
-                <span className="text-xs text-muted-foreground">Needs an account</span>
+                <span className="text-xs text-muted-foreground">{t("agent.settings.needs_account")}</span>
               )}
             </div>
           )
@@ -285,9 +290,10 @@ function Chip({ tone, label }: { tone: "managed" | "byok"; label: string }) {
 
 
 function ProvidersPane() {
+  const { t } = useTranslation()
   return (
     <div>
-      <PaneTitle title="Model providers" hint="Bring your own key — sent directly to the provider, never to our servers." />
+      <PaneTitle title={t("agent.settings.nav_models")} hint={t("agent.settings.providers_hint")} />
       <ByokKeyForm />
     </div>
   )
@@ -322,6 +328,7 @@ function TrustToolRow({ tool, title, description }: { tool: ConfirmToolName; tit
  * if none is picked the resolver takes the first available.
  */
 function SearchPane() {
+  const { t } = useTranslation()
   const signedIn = useIsSignedIn()
   const engine = useByokStore((s) => s.searchEngine)
   const keys = useByokStore((s) => s.search)
@@ -344,17 +351,17 @@ function SearchPane() {
 
   return (
     <div>
-      <PaneTitle title="Web search" hint="Pick a provider. Available ones use our keys; add your own key to enable another (relayed, never stored)." />
+      <PaneTitle title={t("agent.settings.nav_search")} hint={t("agent.settings.search_hint")} />
 
       <TrustToolRow
         tool="web_search"
-        title="Always allow web search"
-        description="Skip the confirmation prompt for web searches on this device."
+        title={t("agent.settings.always_allow_web_search")}
+        description={t("agent.settings.always_allow_web_search_desc")}
       />
       <TrustToolRow
         tool="fetch"
-        title="Always allow fetching web pages"
-        description="Skip the prompt when the assistant opens a URL. Only enable if you trust the pages your boards link to."
+        title={t("agent.settings.always_allow_fetch")}
+        description={t("agent.settings.always_allow_fetch_desc")}
       />
 
       <div className="mb-4 overflow-hidden rounded-lg border border-border">
@@ -373,11 +380,11 @@ function SearchPane() {
             >
               <span className={cn("flex items-center gap-2", !isUsable && !isActive && "text-muted-foreground")}>
                 <StatusDot usable={isUsable} />
-                {e.label}
+                {t(e.label)}
               </span>
               {isActive && (
                 <span className="text-[11px] font-medium text-secondary-foreground">
-                  {isUsable ? "Selected" : "Add key ↓"}
+                  {isUsable ? t("agent.settings.selected") : t("agent.settings.add_key")}
                 </span>
               )}
             </button>
@@ -387,12 +394,11 @@ function SearchPane() {
 
       {isKeylessSearchEngine(engine) ? (
         <p className="text-xs text-muted-foreground">
-          Free for light use, with rate limits. No search API key and no sign-in needed — this device calls
-          Parallel directly, so it also works on a local board. Model inference is configured separately.
+          {t("agent.settings.keyless_hint")}
         </p>
       ) : (
         <>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">Your {active.label} key</label>
+          <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("agent.settings.your_engine_key", { name: t(active.label) })}</label>
           <div className="flex gap-2">
             <input
               type="password"
@@ -411,6 +417,7 @@ function SearchPane() {
 
 
 function CodePane() {
+  const { t } = useTranslation()
   const signedIn = useIsSignedIn()
   const savedKey = useByokStore((s) => s.codeKey)
   const setCode = useByokStore((s) => s.setCode)
@@ -419,11 +426,11 @@ function CodePane() {
 
   return (
     <div>
-      <PaneTitle title="Code interpreter" hint="Runs in a Daytona sandbox. Add your Daytona key to run on your own account (relayed, never stored)." />
+      <PaneTitle title={t("agent.settings.nav_code")} hint={t("agent.settings.code_hint")} />
       <TrustToolRow
         tool="code_interpreter"
-        title="Always allow running code"
-        description="Skip the confirmation prompt before the assistant runs code. It runs in a sandbox, but only enable if you understand the risk."
+        title={t("agent.settings.always_allow_code")}
+        description={t("agent.settings.always_allow_code_desc")}
       />
       <div className="mb-2 flex items-center gap-2 text-xs font-medium">
         <StatusDot usable={usable} />
@@ -445,6 +452,7 @@ function CodePane() {
 
 
 function DocumentsPane() {
+  const { t } = useTranslation()
   const signedIn = useIsSignedIn()
   const savedKey = useByokStore((s) => s.parseKey)
   const setParse = useByokStore((s) => s.setParse)
@@ -453,7 +461,7 @@ function DocumentsPane() {
 
   return (
     <div>
-      <PaneTitle title="Documents" hint="PDFs are OCR'd to markdown by Mistral. Add your Mistral key to parse on your own account (relayed, never stored) — required to upload documents when signed out." />
+      <PaneTitle title={t("agent.settings.nav_documents")} hint={t("agent.settings.documents_hint")} />
       <div className="mb-2 flex items-center gap-2 text-xs font-medium">
         <StatusDot usable={usable} />
         Mistral
@@ -474,6 +482,7 @@ function DocumentsPane() {
 
 
 function SaveButton({ disabled, onClick }: { disabled: boolean; onClick: () => void }) {
+  const { t } = useTranslation()
   return (
     <button
       type="button"
@@ -481,7 +490,7 @@ function SaveButton({ disabled, onClick }: { disabled: boolean; onClick: () => v
       disabled={disabled}
       className="shrink-0 rounded-lg border border-border px-3 py-1.5 text-sm font-medium transition hover:bg-accent disabled:opacity-40"
     >
-      Save
+      {t("common.save")}
     </button>
   )
 }

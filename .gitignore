@@ -49,3 +49,4 @@ dev-docs/
 *.p8
 *.cer
 *.certSigningRequest
+.autopilot/serve.*

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { CancelPlainIcon, ExternalLinkIcon } from "@/components/icons"
 import { MarkdownView } from "@/components/markdown/markdown-view"
@@ -21,6 +22,7 @@ export interface AnswerCardProps {
  * per-message: closing the card keeps it closed until the next completion.
  */
 export const AnswerCard = ({ onOpenFullSheet }: AnswerCardProps) => {
+  const { t } = useTranslation()
   const { chatId, local } = useChat()
   const isStreaming = useChatStreaming()
   const messages = useChatMessages()
@@ -82,7 +84,7 @@ export const AnswerCard = ({ onOpenFullSheet }: AnswerCardProps) => {
             className='text-xs text-muted-foreground font-mono truncate'
             title={precedingUserPrompt ?? undefined}
           >
-            {precedingUserPrompt ? trimText(precedingUserPrompt, 60) : "Answer"}
+            {precedingUserPrompt ? trimText(precedingUserPrompt, 60) : t("board.flow.answer")}
           </span>
           <div className='flex items-center gap-0.5 shrink-0'>
             <Button
@@ -90,8 +92,8 @@ export const AnswerCard = ({ onOpenFullSheet }: AnswerCardProps) => {
               size='icon'
               onClick={onOpenFullSheet}
               className='size-7 text-muted-foreground hover:text-foreground'
-              title='Open full chat'
-              aria-label='Open full chat'
+              title={t("board.flow.open_chat")}
+              aria-label={t("board.flow.open_chat")}
             >
               <ExternalLinkIcon className='size-3.5' strokeWidth={2} />
             </Button>
@@ -100,8 +102,8 @@ export const AnswerCard = ({ onOpenFullSheet }: AnswerCardProps) => {
               size='icon'
               onClick={() => setDismissedMessageId(assistantMessage.id)}
               className='size-7 text-muted-foreground hover:text-foreground'
-              title='Dismiss'
-              aria-label='Dismiss'
+              title={t("board.flow.dismiss")}
+              aria-label={t("board.flow.dismiss")}
             >
               <CancelPlainIcon className='size-3.5' strokeWidth={2} />
             </Button>

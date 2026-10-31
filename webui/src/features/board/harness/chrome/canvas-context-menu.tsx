@@ -7,6 +7,8 @@ import {
 } from "react"
 import { toast } from "sonner"
 import type { CanvasStore, NodeId, Renderer } from "@canvas-harness/core"
+import { useTranslation } from "react-i18next"
+import { i18n } from "@/i18n"
 // NOTE: the export compositor is loaded lazily (below, inside the handlers) — it pulls
 // snapDOM (~50 KB) via the applet snapshot module, which must stay off the eagerly-loaded
 // board bundle. Do NOT add a static import of "../export/export-selection-image" here.
@@ -58,7 +60,10 @@ function makeExportProgress(): { onProgress: (done: number, total: number) => vo
   return {
     onProgress: (done, total) => {
       if (total < 1) return
-      const label = total > 1 ? `Rendering applets… ${done}/${total}` : "Rendering applet…"
+      const label =
+        total > 1
+          ? i18n.t("harness.context.rendering_applets", { done, total })
+          : i18n.t("harness.context.rendering_applet")
       id = toast.loading(label, { id })
     },
     done: () => {
@@ -155,6 +160,7 @@ const buildSelectedContextText = (
  * a zero-size trigger placed there.
  */
 export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContextMenuProps) {
+  const { t } = useTranslation()
   const boardId = useBoardAppStore((s) => s.boardId)
   // AI actions need an in-browser LLM on local boards; hide the section when no
   // model key is usable (parity with the floating island) instead of offering
@@ -229,7 +235,7 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
         await navigator.clipboard.write([
           new ClipboardItem({ "image/png": blob }),
         ])
-        toast.success("Copied to clipboard")
+        toast.success(t("harness.context.copied"))
       } catch {
         // Fall back to file download.
         const url = URL.createObjectURL(blob)
@@ -241,11 +247,11 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
       }
     } catch (err) {
       console.error("[context-menu] PNG export failed", err)
-      toast.error("Couldn't export selection")
+      toast.error(t("harness.context.export_failed"))
     } finally {
       progress.done()
     }
-  }, [store, exportTransparent, rendererRef])
+  }, [store, exportTransparent, rendererRef, t])
 
   const handleExportSvg = useCallback(async () => {
     const progress = makeExportProgress()
@@ -266,58 +272,62 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
       URL.revokeObjectURL(url)
     } catch (err) {
       console.error("[context-menu] SVG export failed", err)
-      toast.error("Couldn't export selection")
+      toast.error(t("harness.context.export_failed"))
     } finally {
       progress.done()
     }
-  }, [store, exportTransparent])
+  }, [store, exportTransparent, t])
 
   // ---- AI / Translate ---------------------------------------------------
   const handleAiAction = useCallback(
     async (actionKey: string) => {
       if (!boardId) {
-        toast.error("Select a board first.")
+        toast.error(t("harness.context.select_board_first"))
         return
       }
       const contextText = buildSelectedContextText(store)
       if (!contextText) {
-        toast.error("Select at least one node with content.")
+        toast.error(t("harness.context.select_nodes"))
         return
       }
       // Local board: run the in-browser transform instead of the backend /tools.
       if (isLocal) {
         const kind = LOCAL_TRANSFORM_BY_ACTION[actionKey]
         if (!kind) {
-          toast.error("Not available on local boards yet.")
+          toast.error(t("harness.context.local_unavailable"))
           return
         }
-        const id = toast(`${actionKey}…`, { duration: Infinity })
+        const actionLabel =
+          aiActions.find((a) => a.key === actionKey)?.label ?? actionKey
+        const id = toast(t("harness.context.action_progress", { action: actionLabel }), {
+          duration: Infinity,
+        })
         try {
           const { ok } = await runLocalTransform(kind, contextText)
           toast.dismiss(id)
-          if (ok) toast.success("Added to the board.")
-          else toast.error("Nothing was created.")
+          if (ok) toast.success(t("harness.context.added"))
+          else toast.error(t("harness.context.nothing_created"))
         } catch (error) {
           console.error("Local transform failed:", error)
           toast.dismiss(id)
-          toast.error("Failed — check your model key in settings.")
+          toast.error(t("harness.context.model_key_failed"))
         }
         return
       }
       await runAction({ boardId, contextText, actionKey })
     },
-    [boardId, store, runAction, isLocal, runLocalTransform],
+    [boardId, store, runAction, isLocal, runLocalTransform, aiActions, t],
   )
 
   const handleTranslate = useCallback(
     async (language: string) => {
       if (!boardId) {
-        toast.error("Select a board first.")
+        toast.error(t("harness.context.select_board_first"))
         return
       }
       const contextText = buildSelectedContextText(store, { skipPrefix: true })
       if (!contextText) {
-        toast.error("Select at least one node with content.")
+        toast.error(t("harness.context.select_nodes"))
         return
       }
       await runAction({
@@ -327,7 +337,7 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
         targetLanguage: language,
       })
     },
-    [boardId, store, runAction],
+    [boardId, store, runAction, t],
   )
 
   return (
@@ -359,29 +369,29 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
         // listener suppresses the native menu — so suppress it here too.
         onContextMenu={(e) => e.preventDefault()}
       >
-        <DropdownMenuLabel className="text-muted-foreground">Position</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-muted-foreground">{t("harness.context.position")}</DropdownMenuLabel>
         <DropdownMenuItem onSelect={() => handleSendBackward()}>
           <StackMinusIcon className="size-4" />
-          Send backward
+          {t("harness.context.send_backward")}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => handleSendForward()}>
           <StackPlusIcon className="size-4" />
-          Send forward
+          {t("harness.context.send_forward")}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => handleSendToBack()}>
           <StackMinusIcon className="size-4" />
-          Send to back
+          {t("harness.context.send_to_back")}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => handleSendToFront()}>
           <StackPlusIcon className="size-4" />
-          Send to front
+          {t("harness.context.send_to_front")}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-muted-foreground">Export</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-muted-foreground">{t("harness.context.export")}</DropdownMenuLabel>
         <DropdownMenuItem onSelect={() => void handleExportPng()}>
           <ClipboardIcon className="size-4" />
-          Copy selected as PNG
+          {t("harness.context.copy_png")}
         </DropdownMenuItem>
         <DropdownMenuCheckboxItem
           checked={exportTransparent}
@@ -389,11 +399,11 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
           // Toggling shouldn't dismiss the menu.
           onSelect={(e) => e.preventDefault()}
         >
-          Transparent background
+          {t("harness.context.transparent_background")}
         </DropdownMenuCheckboxItem>
         <DropdownMenuItem onSelect={() => void handleExportSvg()}>
           <ImagePlaceholderIcon className="size-4" />
-          Download as SVG
+          {t("harness.context.download_svg")}
         </DropdownMenuItem>
 
         {showAiSection && (
@@ -417,7 +427,7 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
                       <span>{action.label}</span>
                       {action.key === "drawify" && (
                         <span className="ml-auto rounded-sm border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
-                          Beta
+                          {t("harness.context.beta")}
                         </span>
                       )}
                     </DropdownMenuItem>
@@ -430,7 +440,7 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <ChatTranslateIcon className="size-4 text-secondary-foreground" />
-                  Translate
+                  {t("harness.context.translate")}
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="min-w-[190px]" onContextMenu={(e) => e.preventDefault()}>
                   {COMMON_LANGUAGES.map((language) => (
@@ -447,7 +457,7 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
                   >
                     <input
                       className="h-7 min-w-0 flex-1 rounded-sm border border-input bg-background px-2 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
-                      placeholder="Custom language…"
+                      placeholder={t("harness.context.custom_language")}
                       value={customLanguage}
                       onChange={(e) => setCustomLanguage(e.target.value)}
                       onPointerDown={(e) => e.stopPropagation()}
@@ -460,7 +470,7 @@ export function CanvasContextMenu({ wrapRef, store, rendererRef }: CanvasContext
                         closeMenu()
                       }}
                     >
-                      Go
+                      {t("harness.context.go")}
                     </button>
                   </div>
                 </DropdownMenuSubContent>

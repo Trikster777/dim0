@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { ArrowRevealIcon, EllipsisIcon } from "@/components/icons"
 import { isReasoningTextStep, isToolCallStep, type AgentResponse, type ReasoningTextStep, type ToolCallStep } from "../../types/stream"
 import { ReasoningStepRow } from "./reasoning-step-row"
@@ -40,12 +41,13 @@ const CollapsedToolBlockRow = ({
   isExpanded: boolean
   onClick: () => void
 }) => {
+  const { t } = useTranslation()
   return (
     <button
       type='button'
       className='relative w-full p-2 flex flex-row items-start justify-start gap-2 text-muted-foreground'
       onClick={onClick}
-      aria-label='Show repeated tool calls'
+      aria-label={t("agent.chat.show_repeated_tool_calls")}
     >
       <div className='absolute w-[1px] h-full top-0 left-[0.98rem] bg-border' />
       <div className='relative flex-shrink-0'>

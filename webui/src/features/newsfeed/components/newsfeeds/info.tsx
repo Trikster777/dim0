@@ -1,5 +1,6 @@
 // src/features/newsfeed/components/info.tsx
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -33,6 +34,7 @@ export function SubscriptionInfoPanel({
 }: {
   subscriptionId: string
 }) {
+  const { t } = useTranslation()
   const subQ = useGetSubscription(subscriptionId)
   const update = useUpdateSubscription()
 
@@ -141,7 +143,7 @@ export function SubscriptionInfoPanel({
   return (
     <div className='w-full mx-auto max-w-3xl flex flex-col gap-2 items-center pt-8'>
       {/* Title */}
-      <Section title='Title'>
+      <Section title={t('newsfeed.info.title_section')}>
         <Box
           editing={!!editing.title}
           onEdit={() => openEdit('title')}
@@ -151,14 +153,14 @@ export function SubscriptionInfoPanel({
         >
           {!editing.title ? (
             <div className='px-3 py-2 text-sm truncate rounded-md border border-border bg-background font-medium'>
-              {title || 'Untitled'}
+              {title || t('newsfeed.untitled')}
             </div>
           ) : (
             <div className='flex items-center gap-2'>
               <Input
                 value={titleVal}
                 onChange={e => setTitleVal(e.target.value)}
-                placeholder='Topic title'
+                placeholder={t('newsfeed.info.title_placeholder')}
                 className='focus-visible:ring-2 focus-visible:ring-secondary-foreground/50 focus-visible:border-secondary-foreground border border-border font-medium bg-card'
               />
             </div>
@@ -169,7 +171,7 @@ export function SubscriptionInfoPanel({
       <div className='w-px h-12 bg-border' />
 
       {/* Description */}
-      <Section title='Description'>
+      <Section title={t('newsfeed.info.description_section')}>
         <Box
           editing={!!editing.description}
           onEdit={() => openEdit('description')}
@@ -186,7 +188,7 @@ export function SubscriptionInfoPanel({
               rows={6}
               value={descVal}
               onChange={e => setDescVal(e.target.value)}
-              placeholder='Describe your topic…'
+              placeholder={t('newsfeed.info.description_placeholder')}
               className='border border-border resize-none focus-visible:ring-2 focus-visible:ring-secondary-foreground/50 focus-visible:border-secondary-foreground bg-card'
             />
           )}
@@ -196,7 +198,7 @@ export function SubscriptionInfoPanel({
       <div className='w-px h-12 bg-border' />
 
       {/* Keywords */}
-      <Section title='Keywords'>
+      <Section title={t('newsfeed.info.keywords_section')}>
         <Box
           editing={!!editing.keywords}
           onEdit={() => openEdit('keywords')}
@@ -221,7 +223,7 @@ export function SubscriptionInfoPanel({
                     <button
                       type='button'
                       onClick={() => removeKeyword(k)}
-                      title='Remove'
+                      title={t('newsfeed.info.remove_keyword')}
                       className='transition-all hover:bg-muted p-1 rounded-md -mr-1'
                     >
                       <DeleteIcon className='size-3' strokeWidth={2} />
@@ -234,7 +236,7 @@ export function SubscriptionInfoPanel({
                   value={kwInput}
                   onChange={e => setKwInput(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') addKeyword() }}
-                  placeholder='Add keyword and press Enter'
+                  placeholder={t('newsfeed.info.keyword_placeholder')}
                   className='focus-visible:ring-2 focus-visible:ring-secondary-foreground/50 focus-visible:border-secondary-foreground border border-border font-mono bg-card'
                 />
                 <Button type='button' size='icon' onClick={addKeyword}>
@@ -249,7 +251,7 @@ export function SubscriptionInfoPanel({
       <div className='w-px h-12 bg-border' />
 
       {/* Seed sources */}
-      <Section title='Seed sources'>
+      <Section title={t('newsfeed.info.seed_sources_section')}>
         <Box
           editing={!!editing.seed}
           onEdit={() => openEdit('seed')}
@@ -287,7 +289,7 @@ export function SubscriptionInfoPanel({
                   value={seedInput}
                   onChange={e => setSeedInput(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') addSeed() }}
-                  placeholder='Add a source URL then Enter'
+                  placeholder={t('newsfeed.info.seed_placeholder')}
                   className='focus-visible:ring-2 focus-visible:ring-secondary-foreground/50 focus-visible:border-secondary-foreground border border-border font-mono text-sm bg-card'
                 />
                 <Button type='button' size='icon' onClick={addSeed}>
@@ -328,6 +330,7 @@ function Box({
   onSave: () => void
   saving?: boolean
 }) {
+  const { t } = useTranslation()
   return (
     <div className='flex flex-col items-center'>
       <div className='space-x-1'>
@@ -337,8 +340,8 @@ function Box({
             variant='ghost'
             size='icon'
             onClick={onEdit}
-            title='Edit'
-            aria-label='Edit'
+            title={t('newsfeed.info.edit')}
+            aria-label={t('newsfeed.info.edit')}
             className='rounded-md !p-1 bg-background text-muted-foreground'
           >
             <PencilEditIcon className='size-4' strokeWidth={2} />
@@ -349,8 +352,8 @@ function Box({
               variant='ghost'
               size='icon'
               onClick={onCancel}
-              title='Cancel'
-              aria-label='Cancel'
+              title={t('common.cancel')}
+              aria-label={t('common.cancel')}
               disabled={saving}
               className='rounded-md !p-1 border border-border'
             >
@@ -359,8 +362,8 @@ function Box({
             <Button
               size='icon'
               onClick={onSave}
-              title='Save'
-              aria-label='Save'
+              title={t('newsfeed.info.save')}
+              aria-label={t('newsfeed.info.save')}
               disabled={saving}
               className='bg-primary text-primary-foreground hover:opacity-90 rounded-md !p-1'
             >

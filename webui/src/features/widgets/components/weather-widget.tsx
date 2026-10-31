@@ -6,6 +6,8 @@
  */
 
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
+import { getLanguage } from '@/i18n'
 import {
   MapPinIcon,
   TimeClockIcon,
@@ -91,12 +93,13 @@ function hourToAmPm(h: number) {
  * - anything else → returns original
  */
 function formatTimeLabel(v: unknown) {
-  if (v instanceof Date) return v.toLocaleTimeString([], { hour: 'numeric', hour12: true })
+  const locale = getLanguage() === 'ru' ? 'ru-RU' : 'en-US'
+  if (v instanceof Date) return v.toLocaleTimeString(locale, { hour: 'numeric', hour12: true })
 
   if (typeof v === 'number') {
     if (v >= 0 && v <= 23) return hourToAmPm(v)
     const d = new Date(v)
-    return isNaN(d.getTime()) ? String(v) : d.toLocaleTimeString([], { hour: 'numeric', hour12: true })
+    return isNaN(d.getTime()) ? String(v) : d.toLocaleTimeString(locale, { hour: 'numeric', hour12: true })
   }
 
   if (typeof v === 'string') {
@@ -108,13 +111,14 @@ function formatTimeLabel(v: unknown) {
     if (!Number.isNaN(n) && n >= 0 && n <= 23) return hourToAmPm(n)
     // try ISO/date string
     const d = new Date(s)
-    return isNaN(d.getTime()) ? s : d.toLocaleTimeString([], { hour: 'numeric', hour12: true })
+    return isNaN(d.getTime()) ? s : d.toLocaleTimeString(locale, { hour: 'numeric', hour12: true })
   }
 
   return String(v ?? '')
 }
 
 export function WeatherWidget(props: WeatherWidgetProps) {
+  const { t } = useTranslation()
   const { location, asOf, unit = 'C', current, hourly, daily } = props
 
   return (
@@ -141,7 +145,7 @@ export function WeatherWidget(props: WeatherWidgetProps) {
               {prettyTemp(current.temp, unit)}
             </div>
             <div className='text-xs opacity-80 capitalize'>
-              {current.description ?? current.kind}
+              {current.description ? t(current.description) : current.kind}
             </div>
           </div>
         </div>

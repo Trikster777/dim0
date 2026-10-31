@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { DocumentFileIcon } from "@/components/icons"
 import { useLocalDocUpload, Spinner } from "@/features/agent/local/use-local-doc-upload"
 
@@ -12,6 +13,7 @@ import { useLocalDocUpload, Spinner } from "@/features/agent/local/use-local-doc
  * unavailable (no managed access and no BYOK Mistral key).
  */
 export const DocAttachButton = ({ boardId }: { boardId: string }) => {
+  const { t } = useTranslation()
   const { canParse, busy, pick, elements } = useLocalDocUpload(boardId)
 
   return (
@@ -20,8 +22,8 @@ export const DocAttachButton = ({ boardId }: { boardId: string }) => {
         type="button"
         disabled={!canParse || busy}
         onClick={pick}
-        aria-label="Attach a PDF"
-        title={canParse ? "Attach a PDF to ask about it" : "Sign in or add a Mistral key to attach documents"}
+        aria-label={t("agent.documents.attach_aria")}
+        title={canParse ? t("agent.documents.attach_title") : t("agent.documents.attach_title_unavailable")}
         className="flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-secondary-foreground disabled:opacity-40 disabled:pointer-events-none"
       >
         {busy ? <Spinner /> : <DocumentFileIcon className="size-4" strokeWidth={2} />}

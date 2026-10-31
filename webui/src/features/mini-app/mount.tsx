@@ -26,6 +26,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { ArrowClockwiseIcon, WarningIcon } from "@phosphor-icons/react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 
 import { useTheme } from "@/components/theme-provider"
@@ -121,6 +122,7 @@ export function MiniAppMount({
   className,
   onContentHeightChange,
 }: MiniAppMountProps) {
+  const { t } = useTranslation()
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeReady, setIframeReady] = useState(false)
   const [savedStateLoaded, setSavedStateLoaded] = useState(false)
@@ -276,10 +278,10 @@ export function MiniAppMount({
       >
         <WarningIcon className="size-5 shrink-0 text-destructive" />
         <span className="text-sm font-medium text-destructive">
-          Mini-app failed to load
+          {t("mini_app.failed.title")}
         </span>
         <span className="text-xs text-muted-foreground">
-          The runtime didn't respond. Network blip, bad deploy, or the iframe was blocked.
+          {t("mini_app.failed.description")}
         </span>
         <button
           type="button"
@@ -287,7 +289,7 @@ export function MiniAppMount({
           className="mt-2 inline-flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 text-xs font-medium hover:bg-accent"
         >
           <ArrowClockwiseIcon className="size-3.5" />
-          Retry
+          {t("mini_app.failed.retry")}
         </button>
       </div>
     )
@@ -317,7 +319,7 @@ export function MiniAppMount({
       // own subdomain; the assertion below enforces it at boot.
       sandbox={SANDBOX}
       src={iframeSrc}
-      title="mini-app"
+      title={t("mini_app.frame_title")}
       onError={() => setIframeFailed(true)}
       style={{
         width: "100%",

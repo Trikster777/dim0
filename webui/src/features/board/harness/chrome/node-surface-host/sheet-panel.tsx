@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
 import { useCanvasStore, useNode } from "@canvas-harness/react"
 import type { NodeId } from "@canvas-harness/core"
 import { CancelPlainIcon, DownloadIcon } from "@/components/icons"
@@ -42,6 +43,7 @@ export const SheetPanel = memo(function SheetPanel({
   onClose,
 }: SheetPanelProps) {
   const liveStore = useCanvasStore()
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const liveNode = useNode(nodeId as NodeId)
   const activeBoardId = useBoardAppStore((s) => s.boardId)
@@ -288,7 +290,7 @@ export const SheetPanel = memo(function SheetPanel({
         <div
           className={`${PANEL_CLASS} items-center justify-center text-sm text-muted-foreground`}
         >
-          Loading note…
+          {t("harness.surface.loading_note")}
         </div>
       )
     }
@@ -296,15 +298,15 @@ export const SheetPanel = memo(function SheetPanel({
       <div
         className={`${PANEL_CLASS} items-center justify-center gap-3 text-sm text-muted-foreground`}
       >
-        <p>This sheet no longer exists.</p>
+        <p>{t("harness.surface.sheet_missing")}</p>
         <Button variant="outline" size="sm" onClick={onClose}>
-          Close
+          {t("common.close")}
         </Button>
       </div>
     )
   }
 
-  const displayTitle = noteLabel?.trim() || "Untitled note"
+  const displayTitle = noteLabel?.trim() || t("harness.surface.untitled_note")
 
   return (
     <div className={PANEL_CLASS} onClick={(e) => e.stopPropagation()}>
@@ -318,8 +320,8 @@ export const SheetPanel = memo(function SheetPanel({
             variant="ghost"
             size="icon-sm"
             onClick={handleDownloadMarkdown}
-            title="Download markdown"
-            aria-label="Download markdown"
+            title={t("harness.surface.download_markdown")}
+            aria-label={t("harness.surface.download_markdown")}
             disabled={!noteContent.trim()}
           >
             <DownloadIcon className="size-4" />
@@ -328,8 +330,8 @@ export const SheetPanel = memo(function SheetPanel({
             variant="ghost"
             size="icon-sm"
             onClick={onClose}
-            title="Close"
-            aria-label="Close"
+            title={t("common.close")}
+            aria-label={t("common.close")}
           >
             <CancelPlainIcon className="size-4" />
           </Button>
@@ -373,7 +375,7 @@ export const SheetPanel = memo(function SheetPanel({
                   }
                 }}
                 className="w-full border-0 bg-transparent px-0 py-0.5 text-3xl font-bold tracking-tight text-foreground focus:outline-none md:text-4xl"
-                placeholder="Untitled note"
+                placeholder={t("harness.surface.untitled_note")}
               />
             ) : (
               <button

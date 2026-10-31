@@ -2,6 +2,7 @@ import { createElement, createRef } from "react"
 import { createRoot } from "react-dom/client"
 import type { SuggestionOptions } from "@tiptap/suggestion"
 import type { Editor, Range } from "@tiptap/core"
+import { untitledLabel } from "@/features/board/const"
 import { PageSearchMenu, type PageSearchMenuHandle, type PageSearchSelection } from "./page-search-menu"
 import type { Page, PageProvider } from "./types"
 import { primePageCache } from "./page-cache"
@@ -54,7 +55,7 @@ export const pageSuggestion: Omit<SuggestionOptions<Page, PageSearchSelection>, 
         .insertContent([
           {
             type: "pageRef",
-            attrs: { pageId: page.id, title: page.title || "Untitled" },
+            attrs: { pageId: page.id, title: page.title || untitledLabel() },
           },
           { type: "text", text: " " },
         ])
@@ -73,7 +74,7 @@ export const pageSuggestion: Omit<SuggestionOptions<Page, PageSearchSelection>, 
         const page = await provider.create({ title: props.title })
         await insertRef({
           id: page.id,
-          title: page.title || props.title || "Untitled",
+          title: page.title || props.title || untitledLabel(),
         })
       } catch (err) {
         console.error("[pageSuggestion] create failed", err)

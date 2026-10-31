@@ -1,5 +1,6 @@
 import { CheckIcon, CopyActionIcon } from "@/components/icons"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import clsx from "clsx"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -10,13 +11,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
  * Renders icon-only with a tooltip when `compact` is set; otherwise shows icon + "Copy" label.
  */
 export const CopyAnswer = ({ answer, compact = false }: { answer: string, compact?: boolean }) => {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
-  const actionLabel = "Copy current answer to the clipboard"
+  const actionLabel = t("agent.copy.current_answer")
 
   const handleCopy = () => {
     void navigator.clipboard.writeText(answer).then(() => {
       setCopied(true)
-      toast('Answer copied to clipboard!')
+      toast(t("agent.copy.copied"))
       setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
     })
   }
@@ -34,7 +36,7 @@ export const CopyAnswer = ({ answer, compact = false }: { answer: string, compac
       title={actionLabel}
     >
       <Icon className='size-4 shrink-0' strokeWidth={2} weight={compact ? "duotone" : undefined} />
-      {!compact && <span>Copy</span>}
+      {!compact && <span>{t("agent.copy.label")}</span>}
     </button>
   )
 
@@ -43,7 +45,7 @@ export const CopyAnswer = ({ answer, compact = false }: { answer: string, compac
   return (
     <Tooltip>
       <TooltipTrigger asChild>{buttonEl}</TooltipTrigger>
-      <TooltipContent side='left'>Copy</TooltipContent>
+      <TooltipContent side='left'>{t("agent.copy.label")}</TooltipContent>
     </Tooltip>
   )
 }

@@ -26,8 +26,8 @@ describe("isDurableDelete", () => {
 
   it("every entry carries confirm-dialog copy", () => {
     for (const meta of Object.values(DURABLE_DELETE)) {
-      expect(meta.title).toBeTruthy()
-      expect(meta.description).toBeTruthy()
+      expect(meta.titleKey).toBeTruthy()
+      expect(meta.descriptionKey).toBeTruthy()
     }
   })
 })

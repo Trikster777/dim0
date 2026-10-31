@@ -1,4 +1,6 @@
 import { memo, useCallback } from "react"
+import { useTranslation } from "react-i18next"
+import type { TFunction } from "i18next"
 import { useNavigate } from "@tanstack/react-router"
 import type { Node, NodeId } from "@canvas-harness/core"
 import { useCanvasStore } from "@canvas-harness/react"
@@ -39,26 +41,45 @@ type RowMeta = {
  * navigate to the subboard via the router; everything else opens its
  * surface modal via the existing `openNodeSurface` action.
  */
-const metaOf = (node: Node): RowMeta => {
+const metaOf = (node: Node, t: TFunction): RowMeta => {
   const data = (node.data ?? {}) as Partial<NoteNodeData>
   const label = data.label?.markdown?.trim() ?? ""
   const customIcon = data.properties?.iconData?.icon ?? null
   switch (node.type) {
     case "folder":
-      return { icon: FolderIcon, customIcon, label: label || "Untitled folder", isFolder: true }
+      return {
+        icon: FolderIcon,
+        customIcon,
+        label: label || t("harness.surface.untitled_folder"),
+        isFolder: true,
+      }
     case "document":
-      return { icon: PdfIcon, customIcon, label: label || "Untitled document" }
+      return {
+        icon: PdfIcon,
+        customIcon,
+        label: label || t("harness.surface.untitled_document"),
+      }
     case "widget":
-      return { icon: LearnWidgetIcon, customIcon, label: label || "Untitled widget", surfaceKind: "widget" }
+      return {
+        icon: LearnWidgetIcon,
+        customIcon,
+        label: label || t("harness.surface.untitled_widget"),
+        surfaceKind: "widget",
+      }
     case "code-sandbox":
       return {
         icon: ConsoleIcon,
         customIcon,
-        label: label || "Untitled sandbox",
+        label: label || t("harness.surface.untitled_sandbox"),
         surfaceKind: "code-sandbox",
       }
     default:
-      return { icon: NotepadIcon, customIcon, label: label || "Untitled note", surfaceKind: "sheet" }
+      return {
+        icon: NotepadIcon,
+        customIcon,
+        label: label || t("harness.surface.untitled_note"),
+        surfaceKind: "sheet",
+      }
   }
 }
 
@@ -77,11 +98,12 @@ type RowProps = {
  */
 const ListRow = memo(function ListRow({ node, index, isLast }: RowProps) {
   const store = useCanvasStore()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const boardId = useBoardAppStore((s) => s.boardId)
   const canEdit = useBoardAppStore((s) => s.canEdit)
   const openNodeSurface = useBoardAppStore((s) => s.openNodeSurface)
-  const meta = metaOf(node)
+  const meta = metaOf(node, t)
   const Icon = meta.icon
   const data = node.data as Partial<NoteNodeData> | undefined
   // Canonical `meta` (agent notes) or legacy top-level strings — same stamp the
@@ -134,7 +156,7 @@ const ListRow = memo(function ListRow({ node, index, isLast }: RowProps) {
           if (e.detail > 1) e.preventDefault()
         }}
         onDoubleClick={handleOpen}
-        title={`Double-click to open ${meta.label}`}
+        title={t("harness.list.open_hint", { label: meta.label })}
       >
         {meta.customIcon ? (
           <span className="shrink-0">
@@ -159,8 +181,8 @@ const ListRow = memo(function ListRow({ node, index, isLast }: RowProps) {
             type="button"
             onClick={handleDelete}
             className="rounded-md p-1 text-foreground/55 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-            aria-label={`Delete ${meta.label}`}
-            title="Delete"
+            aria-label={t("harness.list.delete_named", { label: meta.label })}
+            title={t("common.delete")}
           >
             <DeleteIcon className="size-4" strokeWidth={2} />
           </button>

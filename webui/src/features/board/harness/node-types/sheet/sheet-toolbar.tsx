@@ -1,4 +1,5 @@
 import { useEditorState, type Editor } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import {
   TextB,
   TextItalic,
@@ -53,6 +54,7 @@ export function SheetEditorToolbar({
 }: {
   editor: Editor
 }) {
+  const { t } = useTranslation()
   const active = useEditorState({
     editor,
     selector: (ctx) => ({
@@ -75,19 +77,19 @@ export function SheetEditorToolbar({
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
       )}
     >
-      <MarkButton tooltip="Bold" active={active.bold} onClick={() => editor.chain().focus().toggleBold().run()}>
+      <MarkButton tooltip={t("harness.sheet_toolbar.bold")} active={active.bold} onClick={() => editor.chain().focus().toggleBold().run()}>
         <TextB size={14} weight="bold" />
       </MarkButton>
-      <MarkButton tooltip="Italic" active={active.italic} onClick={() => editor.chain().focus().toggleItalic().run()}>
+      <MarkButton tooltip={t("harness.sheet_toolbar.italic")} active={active.italic} onClick={() => editor.chain().focus().toggleItalic().run()}>
         <TextItalic size={14} />
       </MarkButton>
-      <MarkButton tooltip="Underline" active={active.underline} onClick={() => editor.chain().focus().toggleUnderline().run()}>
+      <MarkButton tooltip={t("harness.sheet_toolbar.underline")} active={active.underline} onClick={() => editor.chain().focus().toggleUnderline().run()}>
         <TextUnderline size={14} />
       </MarkButton>
-      <MarkButton tooltip="Highlight" active={active.highlight} onClick={() => editor.chain().focus().toggleMark("highlight").run()}>
+      <MarkButton tooltip={t("harness.sheet_toolbar.highlight")} active={active.highlight} onClick={() => editor.chain().focus().toggleMark("highlight").run()}>
         <Highlighter size={14} />
       </MarkButton>
-      <MarkButton tooltip="Strikethrough" active={active.strike} onClick={() => editor.chain().focus().toggleStrike().run()}>
+      <MarkButton tooltip={t("harness.sheet_toolbar.strikethrough")} active={active.strike} onClick={() => editor.chain().focus().toggleStrike().run()}>
         <TextStrikethrough size={14} />
       </MarkButton>
     </div>

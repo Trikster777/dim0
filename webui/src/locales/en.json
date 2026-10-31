@@ -1,0 +1,1553 @@
+{
+  "agent": {
+    "chat": {
+      "context": "Context",
+      "context_used": "Context used",
+      "copied": "Message copied to clipboard!",
+      "copy": "Copy",
+      "no_chats": "No chats yet.",
+      "no_chats_start": "No chats yet. Start a new one below.",
+      "pending": "Pending…",
+      "reasoning": "Reasoning",
+      "show_context": "Show message context",
+      "show_repeated_tool_calls": "Show repeated tool calls",
+      "untitled": "Untitled chat",
+      "wait_for_response": "Wait for the response to finish before switching chats."
+    },
+    "chat_history": {
+      "create_new": "Create new chat",
+      "new_chat": "New Chat",
+      "open_aria": "Open chat history",
+      "title": "Chat History"
+    },
+    "code_result": {
+      "stderr": "stderr",
+      "stdout": "stdout"
+    },
+    "context_board": {
+      "attach": "Attach Board"
+    },
+    "copy": {
+      "copied": "Answer copied to clipboard!",
+      "current_answer": "Copy current answer to the clipboard",
+      "label": "Copy"
+    },
+    "documents": {
+      "added_few": "Added {{name}} — {{count}} passages ready to ask about.",
+      "added_many": "Added {{name}} — {{count}} passages ready to ask about.",
+      "added_one": "Added {{name}} — {{count}} passage ready to ask about.",
+      "added_other": "Added {{name}} — {{count}} passages ready to ask about.",
+      "attach_aria": "Attach a PDF",
+      "attach_title": "Attach a PDF to ask about it",
+      "attach_title_unavailable": "Sign in or add a Mistral key to attach documents",
+      "attach_unavailable": "Sign in or add a Mistral key to upload documents.",
+      "no_text": "No readable text found in that PDF.",
+      "read_failed": "Couldn't read the PDF.",
+      "read_failed_detail": "Couldn't read the PDF: {{message}}",
+      "reading": "Reading {{name}}…",
+      "replace_action": "Replace",
+      "replace_body": "A document with this name is already on this board. Uploading will replace its contents.",
+      "replace_title": "Replace “{{name}}”?",
+      "replaced_few": "Replaced {{name}} — {{count}} passages ready to ask about.",
+      "replaced_many": "Replaced {{name}} — {{count}} passages ready to ask about.",
+      "replaced_one": "Replaced {{name}} — {{count}} passage ready to ask about.",
+      "replaced_other": "Replaced {{name}} — {{count}} passages ready to ask about.",
+      "too_large": "PDF must be under {{size}} MB."
+    },
+    "input": {
+      "create_board_failed": "Couldn't create a board. Please try again.",
+      "disclaimer": "AI can make mistakes. Verify important details carefully.",
+      "dr_description": "Deep Research runs longer, may use more tools, and will be created in a <strong>separate chat</strong>. Edit your prompt below before starting.",
+      "dr_placeholder": "Refine your prompt here...",
+      "dr_prompt_label": "Your prompt",
+      "dr_title": "Start a Deep Research in a new chat?",
+      "limit_free": "Your free plan includes a limited number of AI requests. {{reset}} Upgrade to Plus for unlimited requests and frontier models.",
+      "limit_paid": "You've used your plan's AI requests for now. {{reset}} Upgrade for more headroom.",
+      "limit_title": "You’ve reached your AI request limit for now.",
+      "placeholder_ask": "Ask anything...",
+      "placeholder_limit": "You've reached your plan's board limit",
+      "placeholder_new_board": "Start a new board with a question…",
+      "reset_soon": "It should reset automatically soon.",
+      "reset_today": "It should reset automatically later today.",
+      "reset_tomorrow": "It should reset automatically tomorrow.",
+      "retry_minutes": "Try again in {{count}} min.",
+      "retry_seconds": "Try again in {{count}}s.",
+      "send_failed": "Could not send message.",
+      "start": "Start Deep Research",
+      "starting": "Starting…",
+      "upgrade": "Upgrade",
+      "view_only": "You have view-only access to this board — ask an editor to run the assistant."
+    },
+    "local": {
+      "no_active_board": "No active board.",
+      "set_key_first": "Set your API key first."
+    },
+    "memory": {
+      "empty": "Nothing saved yet. The agent remembers durable facts here as you work — stable preferences, decisions, and what this board is about.",
+      "global": "Global",
+      "heading": "Memory",
+      "this_board": "This board",
+      "title": "Agent memory"
+    },
+    "note_tool": {
+      "note_label": "note",
+      "open_on_board": "Open on board",
+      "untitled_note": "Untitled note"
+    },
+    "save_note": {
+      "added": "Added to the board.",
+      "aria_mapify": "Convert current answer to a mind map",
+      "aria_notify": "Convert current answer to a sticky note",
+      "aria_schemify": "Convert current answer to a schema",
+      "boards": "Boards",
+      "create_failed": "Could not create the board or rewrite. ({{elapsed}}s)",
+      "create_new_board": "Create New Board",
+      "creating": "Creating board and rewriting… {{elapsed}}s",
+      "go_to_board": "Go to board",
+      "local_failed": "Failed — check your model key in settings.",
+      "no_message": "No message to convert!",
+      "notes_updated": "Notes updated. ({{elapsed}}s)",
+      "nothing_created": "Nothing was created.",
+      "rewrite_failed": "Failed to rewrite. ({{elapsed}}s)",
+      "rewriting": "Rewriting… {{elapsed}}s",
+      "select_board": "Select a different board",
+      "type_mapify": "Mapify",
+      "type_notify": "Notify",
+      "type_schemify": "Schemify"
+    },
+    "search_engine": {
+      "openai": "OpenAI's web search",
+      "perplexity": "Perplexity's web search pipeline",
+      "tavily": "Tavily's search engine + LLM synthesis",
+      "linkup": "Linkup's search engine + LLM synthesis",
+      "exa": "Exa's search engine + LLM synthesis"
+    },
+    "send": {
+      "label": "Send",
+      "sending": "Sending"
+    },
+    "settings": {
+      "add_key": "Add key ↓",
+      "agent_settings": "Agent settings",
+      "always_allow_code": "Always allow running code",
+      "always_allow_code_desc": "Skip the confirmation prompt before the assistant runs code. It runs in a sandbox, but only enable if you understand the risk.",
+      "always_allow_fetch": "Always allow fetching web pages",
+      "always_allow_fetch_desc": "Skip the prompt when the assistant opens a URL. Only enable if you trust the pages your boards link to.",
+      "always_allow_web_search": "Always allow web search",
+      "always_allow_web_search_desc": "Skip the confirmation prompt for web searches on this device.",
+      "api_key": "API key",
+      "attach_for_memory": "Attach this chat to a board to enable memory search",
+      "auto": "Auto",
+      "auto_hint": "Auto picks a model per task. Signed-in models come from our catalog; a BYOK key adds your own.",
+      "button_aria": "Agent settings",
+      "button_start_title": "Set a model to start",
+      "button_title": "Settings",
+      "byok_footnote": "Sent directly to the provider, never to dim0's servers. Kept on this device until you Forget keys.",
+      "code_hint": "Runs in a Daytona sandbox. Add your Daytona key to run on your own account (relayed, never stored).",
+      "code_label": "Code interpreter",
+      "code_unavailable": "Code Interpreter Unavailable",
+      "core_llm": "Core LLM",
+      "core_llm_value": "Core LLM ({{name}})",
+      "disable_board_context": "Disable selected nodes context",
+      "disable_code": "Disable Code Interpreter",
+      "disable_image_gen": "Disable Image Generation",
+      "disable_memory": "Disable Memory Search",
+      "disable_research": "Disable Deep Research",
+      "disable_web_search": "Disable Web Search",
+      "disable_web_search_desc": "Disable the web search tool.",
+      "documents_hint": "PDFs are OCR'd to markdown by Mistral. Add your Mistral key to parse on your own account (relayed, never stored) — required to upload documents when signed out.",
+      "enable_board_context": "Enable selected nodes context",
+      "enable_code": "Enable Code Interpreter",
+      "enable_image_gen": "Enable Image Generation",
+      "enable_memory": "Enable Memory Search",
+      "enable_research": "Enable Deep Research - Finds and organizes in-depth information to help you understand any subject.",
+      "fetch": "Fetch",
+      "forget_keys": "Forget keys on this device",
+      "general_hint": "We use our keys by default. Add your own under each service.",
+      "image_gen_label": "Image generation",
+      "image_gen_unavailable": "Image Generation Unavailable",
+      "keyless_hint": "Free for light use, with rate limits. No search API key and no sign-in needed — this device calls Parallel directly, so it also works on a local board. Model inference is configured separately.",
+      "memory_label": "Memory search",
+      "model": "Model",
+      "models": "Models",
+      "nav_code": "Code interpreter",
+      "nav_documents": "Documents",
+      "nav_general": "General",
+      "nav_models": "Model providers",
+      "nav_search": "Web search",
+      "needs_account": "Needs an account",
+      "no_key_needed": "No key needed",
+      "open_settings": "Open settings",
+      "our_keys": "Our keys",
+      "parallel_keyless": "Parallel (keyless)",
+      "providers_hint": "Bring your own key — sent directly to the provider, never to our servers.",
+      "research_label": "Deep Research",
+      "search_hint": "Pick a provider. Available ones use our keys; add your own key to enable another (relayed, never stored).",
+      "selected": "Selected",
+      "set_key": "Set a key →",
+      "set_model_key": "Set a model key →",
+      "status_not_setup": "not set up",
+      "status_usable": "usable",
+      "title": "Settings",
+      "toggle_board_context": "Toggle selected nodes context",
+      "toggle_code": "Toggle Code Interpreter",
+      "tools": "Tools",
+      "web_search_label": "Web search",
+      "web_search_tooltip": "Select Web Search Engine",
+      "web_search_trigger": "Web search ({{name}})",
+      "your_engine_key": "Your {{name}} key",
+      "your_key": "Your key"
+    },
+    "sources": {
+      "document": "Document",
+      "documents": "Documents",
+      "download_image": "Download image",
+      "find_document_aria": "Find \"{{title}}\" on board",
+      "find_note_aria": "Find \"{{label}}\" on board",
+      "find_on_board": "Find on board",
+      "hide_passages": "Hide passages",
+      "hide_snippets": "Hide snippets",
+      "image_alt": "Agent image",
+      "notes": "Notes",
+      "open_sources": "Open sources",
+      "passages_few": "{{count}} passages",
+      "passages_many": "{{count}} passages",
+      "passages_one": "{{count}} passage",
+      "passages_other": "{{count}} passages",
+      "show_passages": "Show passages",
+      "show_snippets": "Show snippets",
+      "sources": "Sources",
+      "sources_description": "These are the links referenced by the answer. Click any card to open the original page.",
+      "widget_generating": "Generating widget preview",
+      "widget_loading": "Loading widget preview",
+      "widget_preview": "Widget preview",
+      "widget_unavailable": "Widget preview unavailable"
+    },
+    "starter_prompts": {
+      "code_description": "Write a simple Python algorithm with examples and a short explanation.",
+      "code_label": "Code",
+      "code_prompt": "Hi! Could you help me write a simple implementation of an algorithm in Python? If you need more information from me, ask me 1-2 key questions right away, like what the algorithm should do, what inputs and outputs I want, and any constraints or edge cases I care about. If you think I should give you more context to help you do a better job, let me know. Use any tools you have access to if they’ll help. If it makes sense, include a clean Python implementation, a short explanation of how it works, and a few example inputs and outputs. Thanks for your help!",
+      "learn_description": "Understand a topic from scratch with a few clarifying questions first.",
+      "learn_label": "Learn",
+      "learn_prompt": "Hi! Could you help me understand a complex topic from scratch? If you need more information from me, ask me 1-2 key questions right away, like what topic I want to learn and what level I’m at now. If you think I should give you more context to help you do a better job, let me know. Use any tools you have access to, like web search or documents already available in the workspace, if they’ll help. If it makes sense, create something we can look at together, like a visual, a checklist, a comparison table, or something interactive. Thanks for your help!",
+      "visualize_description": "Turn a topic or process into a diagram, concept map, or visual explainer.",
+      "visualize_label": "Visualize",
+      "visualize_prompt": "Hi! Could you help me create a visual explainer for a topic, idea, or process? If you need more information from me, ask me 1-2 key questions right away, like what I want to explain, who it’s for, and what kind of visual would be most useful. If you think I should give you more context to help you do a better job, let me know. Use any tools you have access to if they’ll help. If it makes sense, create something we can look at together, like a diagram, a flow, a concept map, a checklist, or something interactive. Thanks for your help!",
+      "write_note_description": "Research a topic and organize the result into a detailed sticky note.",
+      "write_note_label": "Write note",
+      "write_note_prompt": "Hi! Could you help me research a topic and turn what you find into a detailed sticky note? If you need more information from me, ask me 1-2 key questions right away, like what topic I want covered and what depth or angle I care about most. If you think I should give you more context to help you do a better job, let me know. Use any tools you have access to, like web search or documents already available in the workspace, if they’ll help. If it makes sense, organize the result into a clear, useful note with the most important points, supporting details, and a structure that’s easy to skim. Thanks for your help!"
+    },
+    "synthesis": "Synthesis",
+    "thinking": "Thinking",
+    "thought": "Thought",
+    "tool": {
+      "answer_reformulate": "Reformulate answer",
+      "arrange_notes": "Arrange notes",
+      "code_interpreter": "Interpret code",
+      "create_folder": "Create folder",
+      "create_note": "Create note",
+      "display_image_search_widget": "Search for images from the web",
+      "display_stock_widget": "Display stock information",
+      "display_weather_widget": "Display weather information",
+      "doc_search": "Search uploaded documents",
+      "edit_note": "Edit note",
+      "fetch": "Fetch and analyze web page content",
+      "get_note": "Read note",
+      "image_description": "Describe image",
+      "image_generation": "Generate images based on prompts",
+      "learn_generate_applet": "Learn interactive applet skill",
+      "learn_generate_diagram": "Learn mindmap and diagram skill",
+      "learn_generate_html_widget": "Learn widget and visual explainer skill",
+      "link_notes": "Link notes",
+      "memory_search": "Search memory",
+      "navigate": "Open folder",
+      "outline_generator": "Generate outline",
+      "raw_message": "Reasoning",
+      "synthesizer": "Synthesize response",
+      "topic_illustrator": "Illustrate topic",
+      "web_collector": "Collect web content",
+      "web_search": "Search the web",
+      "write_note": "Write note"
+    },
+    "tool_confirm": {
+      "allow_code_hint": "It runs in a sandbox, but only allow code you understand — content on your board could try to make it exfiltrate data.",
+      "allow_code_title": "Allow the assistant to run this code?",
+      "allow_fetch_hint": "It will send this request from your session. Only allow URLs you trust — a page or document on your board could try to smuggle your data into one.",
+      "allow_fetch_title": "Allow the assistant to fetch a web page?",
+      "allow_for_request": "Allow for this request",
+      "allow_once": "Allow once",
+      "allow_search_hint": "It will send this query to a search provider. Content on your board could try to steer the query — check it says what you expect.",
+      "allow_search_title": "Allow the assistant to search the web?",
+      "deny": "Don't allow"
+    },
+    "tool_step": {
+      "collapse_details": "Collapse details",
+      "copied_to_clipboard": "Copied to clipboard",
+      "copy_code": "Copy code",
+      "created_note": "Created {{type}} note.",
+      "created_note_with_label": "Created {{type}} note \"{{label}}\".",
+      "creating_note": "Creating note…",
+      "editing_note": "Editing note…",
+      "expand_details": "Expand details",
+      "response": "Response",
+      "rewrote_note": "Rewrote {{type}} note.",
+      "rewrote_note_with_label": "Rewrote {{type}} note \"{{label}}\".",
+      "updated_note_as": "Updated note \"{{label}}\" as {{type}}.",
+      "updated_note_type_only": "Updated note as {{type}}.",
+      "writing_note": "Writing note…"
+    },
+    "welcome": {
+      "cat": "Curiosity compiled — I pounce on citations so you don’t have to.",
+      "dog": "Ask me anything — I’ll sniff through the web and fetch the best insights!",
+      "dolphin": "Sleek, social, and smart — I’ll dive deep for data and surface insights.",
+      "dove": "Peaceful queries, pure answers — I’ll keep your search serene.",
+      "elephant": "I never forget a fact — big memory, bigger context.",
+      "loading": "Loading your open‑source sidekick…",
+      "mouse": "Tiny agent, mighty findings — I’ll nibble through noise to signal.",
+      "panda": "Open-source and bamboo-strong — calm, focused, and ready to reason things out.",
+      "penguin": "Cool under pressure — I glide across data and surface crisp answers.",
+      "pig": "Rooting through the noise — I’ll sniff out the truffles of truth.",
+      "shark": "I circle the docs and bite into the signal — fast, sharp answers.",
+      "shuffle": "Shuffle",
+      "shuffle_aria": "Shuffle welcome message",
+      "spider": "Spinning a web of open data — I catch insights others miss.",
+      "starfish": "Many arms, one mission — reaching across sources to bring answers together.",
+      "toucan": "Two can play at that game — I’ll squawk up the right sources."
+    }
+  },
+  "auth": {
+    "back_to_sign_in": "Back to sign in",
+    "email_label": "Email",
+    "forgot_password": {
+      "description": "Enter your email and we'll send you a link to reset it.",
+      "error_fallback": "Unable to send reset link",
+      "remembered_it": "Remembered it?",
+      "sending": "Sending…",
+      "sent_prefix": "If an account exists for",
+      "sent_suffix": "we've sent a password reset link to that address. Check your inbox and spam folder.",
+      "submit": "Send reset link",
+      "title": "Forgot your password?"
+    },
+    "google": {
+      "browser_hint": "Opens your browser to sign in, then returns here.",
+      "continue": "Continue with Google",
+      "continue_in_browser": "Continue in your browser…",
+      "error_fallback": "Unable to continue with Google",
+      "redirecting": "Redirecting to Google…"
+    },
+    "google_callback": {
+      "cancelled": "Google sign in was cancelled or did not complete.",
+      "completing": "Completing sign in…",
+      "error_fallback": "Google sign in failed. Please try again.",
+      "incomplete": "Google sign in could not be completed. Please try again.",
+      "security_check": "Google sign in failed a security check. Please try again."
+    },
+    "graph": {
+      "chip_flow": "#flow",
+      "chip_focus": "#focus",
+      "connect": "connect",
+      "ideas": "ideas",
+      "notes": "notes",
+      "spark": "a spark",
+      "todo": "to-do"
+    },
+    "legal": {
+      "and": "and",
+      "privacy": "Privacy Policy",
+      "sign_in_prefix": "By signing in, you agree to our",
+      "sign_up_prefix": "By creating an account, you agree to our",
+      "terms": "Terms"
+    },
+    "name_label": "Name",
+    "or": "or",
+    "password_label": "Password",
+    "password_strength": {
+      "check_lowercase": "1 lowercase letter",
+      "check_min_length": "At least 8 characters",
+      "check_number": "1 number",
+      "check_special": "1 special character",
+      "check_uppercase": "1 uppercase letter",
+      "fair": "Fair",
+      "good": "Good",
+      "label": "Strength:",
+      "strong": "Strong",
+      "very_weak": "Very weak",
+      "weak": "Weak"
+    },
+    "passwords_do_not_match": "Passwords do not match.",
+    "placeholder_email": "you@example.com",
+    "placeholder_name": "Ada Lovelace",
+    "placeholder_username": "ada_l",
+    "reset_password": {
+      "confirm_password_label": "Confirm password",
+      "description": "Choose a new password for your account.",
+      "error_fallback": "Unable to reset password",
+      "link_problem": "Link expired or invalid?",
+      "missing_token": "This reset link is missing a token. Please request a new password reset email.",
+      "new_password_label": "New password",
+      "request_new_link": "Request a new reset link",
+      "request_new_one": "Request a new one",
+      "submit": "Reset password",
+      "submitting": "Resetting…",
+      "success": "Password reset. Please sign in with your new password.",
+      "title": "Reset your password"
+    },
+    "sign_in": {
+      "back_to_local_boards": "← Back to local boards",
+      "create_one": "Create one",
+      "description": "Sign in to continue to your workspace",
+      "error_fallback": "Unable to sign in",
+      "forgot_password": "Forgot password?",
+      "logo_alt": "Dim0 Logo",
+      "methods_error": "Unable to load sign-in methods",
+      "no_account": "Don’t have an account?",
+      "no_methods": "No sign-in methods are currently available.",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "title": "Welcome back!"
+    },
+    "sign_up": {
+      "description": "Start organizing your chats and boards",
+      "error_fallback": "Unable to sign up",
+      "have_account": "Already have an account?",
+      "sign_in": "Sign in",
+      "submit": "Create account",
+      "submitting": "Creating…",
+      "title": "Create your account"
+    },
+    "username_label": "Username",
+    "verify_email": {
+      "checking": "Checking...",
+      "continue": "I've verified, continue",
+      "invalid_link": "Verification link is invalid or expired.",
+      "resend": "Resend verification email",
+      "resend_error": "Could not resend verification email.",
+      "sending": "Sending...",
+      "sent": "Verification email sent. Please check your inbox.",
+      "sent_to_prefix": "We sent a verification link to",
+      "sign_out": "Sign out",
+      "status_error": "Could not check verification status.",
+      "still_unverified": "Email is still not verified yet.",
+      "title": "Verify your email",
+      "token_error": "Could not verify email token.",
+      "verified": "Email verified successfully. Redirecting...",
+      "verifying": "Verifying email..."
+    },
+    "weak_password": "Please choose a stronger password before continuing."
+  },
+  "billing": {
+    "access_until": "Access remains active until {{date}}.",
+    "cancels_at_period_end": "Cancels at period end",
+    "cancels_on": "Cancels on {{date}}",
+    "choose_basic": "Choose Basic",
+    "current_badge": "Current",
+    "current_plan": "Current Plan",
+    "current_subscription": {
+      "description": "Choose your plan and manage your subscription",
+      "title": "Current subscription"
+    },
+    "error": {
+      "create_checkout": "Could not create checkout session.",
+      "load_status": "Could not load billing status.",
+      "missing_checkout_url": "No checkout url returned",
+      "missing_portal_url": "No portal url returned",
+      "open_portal": "Could not open billing portal.",
+      "refresh_after_checkout": "Could not refresh billing plan after checkout."
+    },
+    "features": {
+      "ai_requests_day_150": "150 AI requests / day",
+      "ai_requests_day_50": "50 AI requests / day",
+      "ai_requests_month_3000": "3,000 AI requests / month",
+      "ai_requests_month_750": "750 AI requests / month",
+      "ai_requests_unlimited": "Unlimited AI requests",
+      "boards_5": "5 boards",
+      "boards_unlimited": "Unlimited boards",
+      "collaborators_10": "Up to 10 collaborators / board",
+      "collaborators_20": "Up to 20 collaborators / board",
+      "collaborators_5": "Up to 5 collaborators / board",
+      "community_support": "Community support",
+      "documents_10": "10 documents / board",
+      "documents_25": "25 documents / board",
+      "documents_3": "3 documents / board",
+      "frontier_models": "Frontier models: GPT, Claude, Gemini & more",
+      "lite_models_no_top_tier": "Lite models (no top-tier AI)",
+      "lite_models_only": "Lite models only",
+      "mini_apps_10": "10 mini-apps / board",
+      "mini_apps_100": "100 mini-apps / board",
+      "mini_apps_20": "20 mini-apps / board",
+      "priority_support": "Priority support",
+      "standard_support": "Standard support"
+    },
+    "get_the_code": "Get the code on GitHub →",
+    "manage_subscription": "Manage Subscription",
+    "open_source_note": "Prefer to run it yourself? Dim0 is open source (MIT).",
+    "opening_portal": "Opening portal...",
+    "plan": {
+      "basic": "Basic",
+      "free": "Free",
+      "plus": "Plus"
+    },
+    "plans": {
+      "basic": {
+        "tagline": "For steady, everyday use"
+      },
+      "free": {
+        "footnote": "Great for trying Dim0 and personal projects. Upgrade any time as your workspace grows.",
+        "tagline": "Starter plan for personal exploration"
+      },
+      "plus": {
+        "tagline": "Best for active daily workflows"
+      }
+    },
+    "price_free": "Free",
+    "redirecting": "Redirecting...",
+    "resume_membership": "Resume Membership",
+    "status": "Status",
+    "status_active": "Active",
+    "subtitle": "Pick the plan that matches your workspace needs",
+    "switch_to_basic": "Switch to Basic",
+    "switch_to_plus": "Switch to Plus",
+    "this_period_end": "the end of this period",
+    "title": "Billing Plans",
+    "upgrade_to_plus": "Upgrade to Plus"
+  },
+  "board": {
+    "breadcrumb": {
+      "aria": "Breadcrumb",
+      "board": "Board",
+      "name_placeholder": "Board name",
+      "rename_hint": "{{label}} — click to rename",
+      "show_levels": "Show intermediate levels"
+    },
+    "card": {
+      "available_offline": "Available offline",
+      "download": "Download for offline use",
+      "downloading": "Downloading for offline…",
+      "downloading_aria": "Downloading for offline",
+      "kind_local": "On device",
+      "kind_local_title": "On this device only",
+      "kind_synced": "Synced",
+      "kind_synced_title": "Synced — backed up and shareable",
+      "new": "New Board"
+    },
+    "dashboard": {
+      "aria": "Boards",
+      "empty": "No boards yet. Create your first one above!",
+      "error": "Failed to load boards"
+    },
+    "default_title": "Untitled board",
+    "flow": {
+      "answer": "Answer",
+      "assistant_title": "Board Assistant",
+      "code_placeholder": "Write code here",
+      "dismiss": "Dismiss",
+      "hide_steps": "Hide steps",
+      "open_chat": "Open full chat",
+      "open_chat_view": "Open full chat view",
+      "placeholder": "Ask about this board, or give a task…",
+      "placeholder_no_model": "Set a model key to start",
+      "select_board": "Select a board to start a conversation.",
+      "selected": "selected",
+      "selected_title": "Selected nodes included as context",
+      "show_steps": "Show steps",
+      "steps": "steps",
+      "steps_count_few": "{{count}} steps",
+      "steps_count_many": "{{count}} steps",
+      "steps_count_one": "{{count}} step",
+      "steps_count_other": "{{count}} steps",
+      "steps_in_turn": "Steps in this turn",
+      "thinking": "Thinking",
+      "widget_preview": "Widget preview"
+    },
+    "home": {
+      "cta_body": "Sign in to back them up and open them on any device.",
+      "cta_sign_in": "Sign in",
+      "cta_title": "Sync & share your boards",
+      "cta_tooltip": "Signing up is completely free — no credit card required",
+      "on_device": "On this device",
+      "on_device_empty": "No local boards yet — create one above.",
+      "on_device_hint": "Private to this browser — no account needed",
+      "synced": "Synced",
+      "synced_empty": "No synced boards yet. Enable sync on a local board to back it up and share it.",
+      "synced_hint": "Backed up, multi-device, shareable",
+      "title": "Note Boards"
+    },
+    "limit": {
+      "body": "Your plan includes {{limit}} synced boards, backed up and shareable across your devices. Upgrade for unlimited synced boards, or create a local-only board that stays on this device.",
+      "create_local": "Create a local-only board",
+      "title": "You've reached your plan's board limit",
+      "upgrade": "Upgrade"
+    },
+    "local": {
+      "delete": "Delete board",
+      "enable_sync": "Enable sync",
+      "enable_sync_title": "Enable sync — back up + share this board",
+      "rename_hint": "Double-click to rename",
+      "syncing": "Syncing…"
+    },
+    "search": {
+      "description": "Find a note by title or content and jump to it.",
+      "empty": "No notes found.",
+      "placeholder": "Search notes…",
+      "title": "Search notes"
+    },
+    "spark": {
+      "add_context": "Add some context text first.",
+      "add_request": "Add a request first.",
+      "added": "Added to board. ({{elapsed}})",
+      "drawify": "Draw (beta)",
+      "explain": "Explain (more detail)",
+      "failed": "Could not complete the action. ({{elapsed}})",
+      "mapify": "Mapify (generate mindmap)",
+      "quizify": "Quizify (MCQ exercises)",
+      "schemify": "Schemify (generate schema)",
+      "select_board": "Select a board first.",
+      "summarize": "Write a summary",
+      "translate": "Translate",
+      "working": "Working on it… {{elapsed}}"
+    },
+    "sync": {
+      "create_limit": "You've reached your plan's board limit ({{limit}}). Upgrade for more.",
+      "enabled": "Sync enabled — this board is now backed up and shareable.",
+      "failed": "Couldn't enable sync. Please try again.",
+      "limit": "You're at your plan's synced-board limit ({{limit}}). Upgrade, or delete a synced board — local boards stay unlimited."
+    },
+    "untitled": "Untitled"
+  },
+  "charts": {
+    "chart": {
+      "loading": "Loading chart"
+    },
+    "map": {
+      "failed": "Map failed to load.",
+      "loading": "Loading map…"
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "command_palette": {
+      "description": "Search for a command to run...",
+      "title": "Command Palette"
+    },
+    "delete": "Delete",
+    "empty": "Empty",
+    "language_toggle": {
+      "aria_label": "Change language",
+      "english": "English",
+      "label": "Language",
+      "russian": "Русский"
+    },
+    "loading": "Loading…",
+    "save": "Save"
+  },
+  "desktop": {
+    "window": {
+      "close": "Close",
+      "maximize": "Maximize",
+      "minimize": "Minimize",
+      "restore": "Restore"
+    }
+  },
+  "editor": {
+    "block_handle": {
+      "add_below": "Add block below",
+      "delete": "Delete",
+      "drag_or_click": "Drag or click for options",
+      "duplicate": "Duplicate"
+    },
+    "bubble": {
+      "blockquote": "Blockquote",
+      "bold": "Bold",
+      "code": "Inline code",
+      "heading_1": "Heading 1",
+      "heading_2": "Heading 2",
+      "heading_3": "Heading 3",
+      "highlight": "Highlight",
+      "italic": "Italic",
+      "link": "Link",
+      "remove_highlight": "Remove highlight",
+      "strike": "Strikethrough",
+      "underline": "Underline",
+      "url": "URL"
+    },
+    "code_block": {
+      "copied": "Copied!",
+      "copy": "Copy code"
+    },
+    "highlight_colors": {
+      "blue": "Blue",
+      "gray": "Gray",
+      "green": "Green",
+      "orange": "Orange",
+      "pink": "Pink",
+      "purple": "Purple",
+      "red": "Red",
+      "yellow": "Yellow"
+    },
+    "image": {
+      "failed": "Failed to load image",
+      "loading": "Loading image…"
+    },
+    "math": {
+      "block_placeholder": "LaTeX, e.g. \\frac{a}{b}",
+      "inline_placeholder": "Inline LaTeX, e.g. x^2"
+    },
+    "page": {
+      "create": "Create",
+      "deleted_suffix": "(deleted)",
+      "empty_page": "Empty page",
+      "new_page": "New page \"{{title}}\"",
+      "no_longer_accessible": "No longer accessible.",
+      "pages": "Pages",
+      "search_empty": "No pages — start typing to create one"
+    },
+    "placeholder": "Start writing…",
+    "slash": {
+      "basic_blocks": "Basic blocks",
+      "bullet_list": "Bullet list",
+      "code_block": "Code block",
+      "divider": "Divider",
+      "heading_1": "Heading 1",
+      "heading_2": "Heading 2",
+      "heading_3": "Heading 3",
+      "image": "Image",
+      "math_block": "Math block",
+      "no_results": "No results",
+      "numbered_list": "Numbered list",
+      "quote": "Quote",
+      "subpage": "Sub-page",
+      "table": "Table",
+      "text": "Text",
+      "toc": "Table of contents",
+      "todo_list": "Todo list",
+      "toggle": "Toggle"
+    },
+    "status": {
+      "chars_few": "{{count}} chars",
+      "chars_many": "{{count}} chars",
+      "chars_one": "{{count}} char",
+      "chars_other": "{{count}} chars",
+      "words_few": "{{count}} words",
+      "words_many": "{{count}} words",
+      "words_one": "{{count}} word",
+      "words_other": "{{count}} words"
+    },
+    "style": {
+      "code": "Code block",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "paragraph": "Paragraph",
+      "quote": "Quote"
+    },
+    "table_menu": {
+      "delete_col": "Delete column",
+      "delete_row": "Delete row",
+      "delete_table": "Delete table",
+      "insert_col_left": "Insert column left",
+      "insert_col_right": "Insert column right",
+      "insert_row_above": "Insert row above",
+      "insert_row_below": "Insert row below"
+    },
+    "toc": {
+      "empty": "No headings yet — add an H1, H2, or H3 to populate.",
+      "empty_heading": "(empty heading)",
+      "on_this_page": "On this page"
+    },
+    "toolbar": {
+      "blockquote": "Blockquote",
+      "bold": "Bold (Ctrl+B)",
+      "bullet_list": "Bullet list",
+      "code": "Code (Ctrl+E)",
+      "highlight": "Highlight",
+      "italic": "Italic (Ctrl+I)",
+      "link": "Link",
+      "numbered_list": "Numbered list",
+      "redo": "Redo (Ctrl+Y)",
+      "strike": "Strikethrough",
+      "underline": "Underline (Ctrl+U)",
+      "undo": "Undo (Ctrl+Z)",
+      "url": "URL"
+    }
+  },
+  "errors": {
+    "bad_credentials": "Wrong email or password.",
+    "bad_request": "The request was rejected. Check the input and try again.",
+    "conflict": "This already exists.",
+    "forbidden": "You don't have access to this.",
+    "network": "Network error. Check your connection and try again.",
+    "not_found": "We couldn't find what you asked for.",
+    "payload_too_large": "This file is too large.",
+    "rate_limited": "Too many requests. Wait a moment and try again.",
+    "server": "The server ran into a problem. Try again.",
+    "timeout": "The request timed out. Try again.",
+    "unauthorized": "Your session has expired. Sign in again.",
+    "unavailable": "The service is unavailable right now. Try again."
+  },
+  "harness": {
+    "applet": {
+      "error": {
+        "line": "(line {{line}})",
+        "retry": "Retry",
+        "title": "Applet error"
+      },
+      "smoke": {
+        "array_prop": "<{{tag}}> prop `{{prop}}` must be an array, but it evaluates to {{value}} on the initial state. Initialize it as an array (e.g. a `data`/`state` array literal) so the applet renders instead of throwing.",
+        "chart_data_not_object": "<Chart> `data` must be an object `{ labels, datasets: [{ data: [...] }] }`, but it evaluates to {{value}}.",
+        "chart_data_top_array": "<Chart> `data` must be an object `{ labels, datasets: [{ data: [...] }] }`, not a top-level array. Every type — pie/doughnut included — uses that same shape (no per-slice `{ name, value }` objects).",
+        "chart_dataset_data_missing": "<Chart> dataset {{index}} has no `data` array — put the numbers under `data`: `{ data: [10, 20, 30] }`. Even pie/doughnut use this; a `{ name, value }` per-slice object is the old shape.",
+        "chart_dataset_data_not_array": "<Chart> dataset {{index}}'s `data` must be an array (e.g. `[10, 20, 30]`), but it is {{value}}.",
+        "chart_dataset_not_object": "<Chart> dataset {{index}} must be an object like `{ label: \"Sales\", data: [10, 20, 30] }`, but it is {{value}}.",
+        "chart_datasets_missing": "<Chart> `data` needs a `datasets` array: {{example}}. Put the numbers under `datasets[].data`, not directly on `data`.",
+        "chart_type_invalid": "<Chart> `type` must be one of {{types}} — got {{value}}.",
+        "chart_type_missing": "<Chart> needs a `type` — one of {{types}}. e.g. {{example}}.",
+        "derived_failed": "the `derived` value `{{name}}` fails to evaluate: {{error}}",
+        "render_throws": "the applet throws while rendering: {{error}}"
+      },
+      "type": {
+        "array": "an array",
+        "bigint": "a bigint",
+        "boolean": "a boolean",
+        "function": "a function",
+        "null": "null",
+        "number": "a number",
+        "object": "an object",
+        "other": "a {{type}}",
+        "string": "a string",
+        "symbol": "a symbol",
+        "undefined": "undefined"
+      }
+    },
+    "breadcrumb": {
+      "node_path": "Node path"
+    },
+    "coachmarks": {
+      "a_hunch": "a hunch",
+      "ask_ai": "or ask the\nAI agent",
+      "ideas": "ideas",
+      "name_canvas": "name your\ncanvas",
+      "notes": "notes",
+      "share_invite": "share &\ninvite",
+      "tag_link": "#link",
+      "tag_topic": "#topic",
+      "todo": "to-do",
+      "tools_to_build": "tools to\nbuild"
+    },
+    "collab": {
+      "connecting": "Connecting…",
+      "failed": "Disconnected — refresh to retry",
+      "reconnecting": "Reconnecting…",
+      "room_full": "Board is full — try again later"
+    },
+    "colors": {
+      "amber": "Amber",
+      "blue": "Blue",
+      "brown": "Brown",
+      "cyan": "Cyan",
+      "emerald": "Emerald",
+      "fuchsia": "Fuchsia",
+      "gray": "Gray",
+      "green": "Green",
+      "indigo": "Indigo",
+      "lime": "Lime",
+      "neutral": "Neutral",
+      "orange": "Orange",
+      "pink": "Pink",
+      "purple": "Purple",
+      "red": "Red",
+      "rose": "Rose",
+      "shades": "Shades — {{family}}",
+      "sky": "Sky",
+      "slate": "Slate",
+      "stone": "Stone",
+      "teal": "Teal",
+      "violet": "Violet",
+      "yellow": "Yellow",
+      "zinc": "Zinc"
+    },
+    "context": {
+      "action_progress": "{{action}}…",
+      "added": "Added to the board.",
+      "beta": "Beta",
+      "copied": "Copied to clipboard",
+      "copy_png": "Copy selected as PNG",
+      "custom_language": "Custom language…",
+      "download_svg": "Download as SVG",
+      "export": "Export",
+      "export_failed": "Couldn't export selection",
+      "go": "Go",
+      "local_unavailable": "Not available on local boards yet.",
+      "model_key_failed": "Failed — check your model key in settings.",
+      "nothing_created": "Nothing was created.",
+      "position": "Position",
+      "rendering_applet": "Rendering applet…",
+      "rendering_applets": "Rendering applets… {{done}}/{{total}}",
+      "select_board_first": "Select a board first.",
+      "select_nodes": "Select at least one node with content.",
+      "send_backward": "Send backward",
+      "send_forward": "Send forward",
+      "send_to_back": "Send to back",
+      "send_to_front": "Send to front",
+      "translate": "Translate",
+      "transparent_background": "Transparent background"
+    },
+    "document_upload": {
+      "limit": "You've reached this board's document limit ({{limit}}). Upgrade for more.",
+      "limits": "Document must stay within both limits: 30 pages max and 5 MB max.",
+      "parse_failed": "Failed to parse document. ({{elapsed}})",
+      "parsed": "Document parsed. ({{elapsed}})",
+      "parsing": "Parsing…",
+      "parsing_analyzing": "Parsing & Analyzing document… {{elapsed}}",
+      "pdf_only": "PDF files only.",
+      "title": "Upload a document",
+      "upload_parse": "Upload & Parse"
+    },
+    "durable_delete": {
+      "document_description": "It's removed from the board along with its Q&A content. This can't be undone.",
+      "document_title": "Delete this document?",
+      "folder_description": "Its contents are removed from the board. This can't be undone.",
+      "folder_title": "Delete this folder?"
+    },
+    "editor": {
+      "url_prompt": "URL"
+    },
+    "footer": {
+      "edited": "Edited",
+      "hours_ago_one": "{{count}}h ago",
+      "hours_ago_few": "{{count}}h ago",
+      "hours_ago_many": "{{count}}h ago",
+      "hours_ago_other": "{{count}}h ago",
+      "just_now": "just now",
+      "minutes_ago_one": "{{count}}m ago",
+      "minutes_ago_few": "{{count}}m ago",
+      "minutes_ago_many": "{{count}}m ago",
+      "minutes_ago_other": "{{count}}m ago",
+      "save_failed": "Save failed",
+      "saved": "Saved",
+      "saving": "Saving…"
+    },
+    "icon_search": {
+      "no_results": "No results",
+      "placeholder": "Search Icon…",
+      "title": "Search icons"
+    },
+    "image_search": {
+      "alt": "image",
+      "import_from_computer": "Import from computer",
+      "importing": "Importing…",
+      "no_results": "No results",
+      "placeholder": "Search Unsplash…",
+      "title": "Search images"
+    },
+    "limit_types": {
+      "applet": "applet",
+      "code_sandbox": "code sandbox",
+      "document": "document",
+      "mini_app": "mini-app",
+      "sub_board": "sub-board"
+    },
+    "list": {
+      "delete_named": "Delete {{label}}",
+      "open_hint": "Double-click to open {{label}}"
+    },
+    "more": {
+      "applet": "Applet",
+      "code_sandbox": "Code sandbox",
+      "document": "Document",
+      "document_upload_unavailable": "Sign in or add a Mistral key to upload documents",
+      "icons": "Icons",
+      "images": "Images",
+      "sub_board": "Sub-board"
+    },
+    "node": {
+      "code_preview": "Code preview",
+      "code_preview_placeholder": "// Write code here",
+      "double_click_to_edit": "Double-click to edit",
+      "mini_app_paused": "Mini-app paused",
+      "mini_app_placeholder": "Mini-app source will render here",
+      "open_code": "Open code",
+      "render_failed": "Node failed to render",
+      "render_failed_with_type": "{{type}} failed to render",
+      "sheet_empty": "Empty sheet",
+      "sheet_paused": "Sheet paused",
+      "stamp_created": "Created",
+      "stamp_edited": "Edited",
+      "status_failed": "Failed",
+      "status_pending": "Pending",
+      "status_processing": "Processing",
+      "status_ready": "Ready",
+      "untitled": "Untitled",
+      "widget_paused": "Widget paused",
+      "widget_placeholder": "Widget HTML will render here"
+    },
+    "peer": {
+      "anonymous": "Anonymous",
+      "editing": "Editing",
+      "editing_named": "Editing \"{{name}}\"",
+      "online_one": "{{count}} peer online",
+      "online_few": "{{count}} peers online",
+      "online_many": "{{count}} peers online",
+      "online_other": "{{count}} peers online"
+    },
+    "presentation": {
+      "controls": "Presentation controls",
+      "next": "Next slide",
+      "previous": "Previous slide",
+      "stop": "Stop presenting"
+    },
+    "readonly": {
+      "aria": "Board is read-only",
+      "label": "Read-only"
+    },
+    "relative": {
+      "days_one": "{{count}}d ago",
+      "days_few": "{{count}}d ago",
+      "days_many": "{{count}}d ago",
+      "days_other": "{{count}}d ago",
+      "hours_one": "{{count}}h ago",
+      "hours_few": "{{count}}h ago",
+      "hours_many": "{{count}}h ago",
+      "hours_other": "{{count}}h ago",
+      "minutes_one": "{{count}}m ago",
+      "minutes_few": "{{count}}m ago",
+      "minutes_many": "{{count}}m ago",
+      "minutes_other": "{{count}}m ago",
+      "months_one": "{{count}}mo ago",
+      "months_few": "{{count}}mo ago",
+      "months_many": "{{count}}mo ago",
+      "months_other": "{{count}}mo ago",
+      "seconds_one": "{{count}}s ago",
+      "seconds_few": "{{count}}s ago",
+      "seconds_many": "{{count}}s ago",
+      "seconds_other": "{{count}}s ago",
+      "weeks_one": "{{count}}w ago",
+      "weeks_few": "{{count}}w ago",
+      "weeks_many": "{{count}}w ago",
+      "weeks_other": "{{count}}w ago",
+      "years_one": "{{count}}y ago",
+      "years_few": "{{count}}y ago",
+      "years_many": "{{count}}y ago",
+      "years_other": "{{count}}y ago"
+    },
+    "shape": {
+      "capsule": "Capsule",
+      "diamond": "Diamond",
+      "ellipse": "Ellipse",
+      "layered_diamond": "Layered diamond",
+      "layered_ellipse": "Layered circle",
+      "layered_rect": "Layered card",
+      "rect": "Rectangle",
+      "soft_diamond": "Double diamond",
+      "tag": "Tag",
+      "thought_cloud": "Cloud"
+    },
+    "sheet_color": {
+      "background_color": "Background color",
+      "default": "Default"
+    },
+    "sheet_toolbar": {
+      "bold": "Bold",
+      "highlight": "Highlight",
+      "italic": "Italic",
+      "strikethrough": "Strikethrough",
+      "underline": "Underline"
+    },
+    "slides": {
+      "add_slide": "Add Slide",
+      "close_aria": "Close slides panel",
+      "drag_to_reorder": "Drag to reorder",
+      "empty": "No slides yet. Click \"Add Slide\" to create one.",
+      "present": "Present",
+      "slide_number": "Slide {{number}}",
+      "title": "Slides"
+    },
+    "style": {
+      "background": "Background",
+      "background_color": "Background color",
+      "border_color": "Border color",
+      "font_family": "Font family",
+      "font_size": "Font size",
+      "path_style": "Path style",
+      "roundness": "Roundness",
+      "sloppiness": "Sloppiness",
+      "source_arrowhead": "Source arrowhead",
+      "stroke_style": "Stroke style",
+      "stroke_width": "Stroke width",
+      "target_arrowhead": "Target arrowhead",
+      "text_align": "Text align",
+      "text_color": "Text color"
+    },
+    "surface": {
+      "applet_empty": "Applet source is empty.",
+      "applet_missing": "This applet no longer exists.",
+      "code": "Code",
+      "code_placeholder": "Write code here",
+      "download_html": "Download HTML",
+      "download_jsx": "Download .jsx",
+      "download_markdown": "Download markdown",
+      "download_source": "Download source",
+      "download_tsx": "Download .tsx",
+      "execute": "Execute",
+      "execution_failed": "Execution failed.",
+      "language": "Language",
+      "last_run": "Last run",
+      "last_run_with_ms": "Last run • {{ms}} ms",
+      "loading_note": "Loading note…",
+      "max_runtime": "Max runtime 60s",
+      "mini_app_empty": "Mini-app source is empty.",
+      "mini_app_missing": "This mini-app no longer exists.",
+      "no_stderr": "No stderr",
+      "no_stdout": "No stdout",
+      "preview": "Preview",
+      "rendered": "Rendered",
+      "run_not_supported": "Run not supported",
+      "running": "Running",
+      "sandbox_missing": "This sandbox no longer exists.",
+      "sheet_missing": "This sheet no longer exists.",
+      "source": "Source",
+      "untitled_applet": "Untitled applet",
+      "untitled_code": "Untitled code",
+      "untitled_document": "Untitled document",
+      "untitled_file": "Untitled file",
+      "untitled_folder": "Untitled folder",
+      "untitled_mini_app": "Untitled mini-app",
+      "untitled_note": "Untitled note",
+      "untitled_sandbox": "Untitled sandbox",
+      "untitled_widget": "Untitled widget",
+      "widget": "Widget",
+      "widget_empty": "Widget HTML is empty.",
+      "widget_missing": "This widget no longer exists."
+    },
+    "toast": {
+      "folder_copy_blocked": "Folders can't be copied — open the folder and copy its contents instead.",
+      "folder_cut_blocked": "Folders can't be cut — open the folder and cut its contents instead.",
+      "icon_load_failed": "Couldn't load \"{{name}}\"",
+      "image_add_failed": "Failed to add \"{{name}}\"",
+      "max_depth_one": "Maximum nesting depth reached ({{count}} level).",
+      "max_depth_few": "Maximum nesting depth reached ({{count}} levels).",
+      "max_depth_many": "Maximum nesting depth reached ({{count}} levels).",
+      "max_depth_other": "Maximum nesting depth reached ({{count}} levels).",
+      "node_limit": "You've reached this board's {{type}} limit ({{limit}}). Upgrade for more."
+    },
+    "toolbar": {
+      "add_shape": "Add shape",
+      "board_toolbar": "Board toolbar",
+      "change_view": "Change view",
+      "connector": "Connector",
+      "custom_ink_color": "Custom ink color",
+      "eraser": "Eraser",
+      "ink_color": "Ink color {{color}}",
+      "more_actions": "More actions",
+      "note": "Note",
+      "pan": "Pan",
+      "pen": "Pen",
+      "select": "Select",
+      "shapes": "Shapes",
+      "slides": "Slides",
+      "text": "Text",
+      "width": "Width"
+    },
+    "traffic": {
+      "drag_to_move": "Drag to move · click to select",
+      "open": "Open"
+    },
+    "view": {
+      "board": "Board",
+      "files": "Files",
+      "list": "List"
+    },
+    "viewport": {
+      "background": "Board background",
+      "background_style": "Background style",
+      "color": "Color",
+      "redo": "Redo",
+      "redo_tooltip": "Redo (Cmd/Ctrl+Shift+Z)",
+      "reset": "Reset",
+      "reset_zoom": "Reset zoom",
+      "reset_zoom_aria": "Reset zoom to 100%",
+      "texture": "Texture",
+      "texture_dots": "Dots",
+      "texture_lines": "Lines",
+      "texture_none": "None",
+      "undo": "Undo",
+      "undo_tooltip": "Undo (Cmd/Ctrl+Z)"
+    }
+  },
+  "home": {
+    "page": {
+      "note_boards": "Note Boards"
+    }
+  },
+  "install": {
+    "android": {
+      "add_to_home_screen": "Add to Home screen",
+      "browser_chrome": "Chrome",
+      "install": "Install",
+      "install_app": "Install app",
+      "menu": "menu",
+      "tap_browser_menu": "Tap the browser",
+      "title": "Android"
+    },
+    "common": {
+      "choose": "Choose",
+      "in": "in",
+      "open": "Open",
+      "or": "or",
+      "tap": "Tap"
+    },
+    "description": "Add Dim0 to your home screen to use it like an app on mobile.",
+    "iphone": {
+      "add": "Add",
+      "add_to_home_screen": "Add to Home Screen",
+      "browser_safari": "Safari",
+      "share_button": "Share",
+      "title": "iPhone & iPad"
+    },
+    "title": "Install Dim0"
+  },
+  "markdown": {
+    "link": {
+      "source_label": "source"
+    },
+    "page_ref": {
+      "untitled": "Untitled"
+    },
+    "table": {
+      "container": "Table container"
+    }
+  },
+  "mini_app": {
+    "failed": {
+      "description": "The runtime didn't respond. Network blip, bad deploy, or the iframe was blocked.",
+      "retry": "Retry",
+      "title": "Mini-app failed to load"
+    },
+    "frame_title": "mini-app"
+  },
+  "newsfeed": {
+    "confirm_delete_newsletter": "Delete this newsletter? This cannot be undone.",
+    "create_newsfeed": "Create Newsfeed",
+    "create_sr": "Create",
+    "date": {
+      "month_apr": "Apr",
+      "month_aug": "Aug",
+      "month_dec": "Dec",
+      "month_feb": "Feb",
+      "month_jan": "Jan",
+      "month_jul": "Jul",
+      "month_jun": "Jun",
+      "month_mar": "Mar",
+      "month_may": "May",
+      "month_nov": "Nov",
+      "month_oct": "Oct",
+      "month_sep": "Sept",
+      "ordinal_nd": "nd",
+      "ordinal_rd": "rd",
+      "ordinal_st": "st",
+      "ordinal_th": "th"
+    },
+    "error": {
+      "load": "Failed to load newsfeed",
+      "load_newsletters": "Failed to load newsletters",
+      "load_subscriptions": "Failed to load subscriptions"
+    },
+    "generating": "Generating…",
+    "info": {
+      "description_placeholder": "Describe your topic…",
+      "description_section": "Description",
+      "edit": "Edit",
+      "keyword_placeholder": "Add keyword and press Enter",
+      "keywords_section": "Keywords",
+      "remove_keyword": "Remove",
+      "save": "Save",
+      "seed_placeholder": "Add a source URL then Enter",
+      "seed_sources_section": "Seed sources",
+      "title_placeholder": "Topic title",
+      "title_section": "Title"
+    },
+    "loading_newsletters": "Loading newsletters…",
+    "newsletter_title": "Newsletter {{date}}",
+    "no_links": "No links in this newsfeed",
+    "no_newsletters": "No newsletters yet",
+    "open": "Open",
+    "subscription": {
+      "add": "Add new subscription",
+      "create": "Create",
+      "create_new_topic": "Create New Topic",
+      "create_title": "Create a new Topic subscription",
+      "creating": "Creating subscription…",
+      "creating_title": "Creating subscription",
+      "custom_topic": "Custom topic",
+      "description_hint": "Add a few lines to improve results (sources, sub-topics, exclusions…)",
+      "description_label": "Description (optional)",
+      "description_placeholder": "Describe your topic in more details",
+      "matched": "Matched to: {{topic}}",
+      "topic_label": "Topic",
+      "topic_placeholder": "custom topic"
+    },
+    "subscription_fallback": "Subscription",
+    "title": "Newsfeed",
+    "topic": {
+      "ai": "Artificial Intelligence",
+      "climate": "Climate",
+      "finance": "Finance",
+      "health": "Health",
+      "technology": "Technology"
+    },
+    "untitled": "Untitled",
+    "view_all_topics": "View All Topics",
+    "view_mode": {
+      "article": "Article",
+      "grid": "Grid",
+      "history": "History",
+      "info": "Info",
+      "linear": "Linear",
+      "switch_title": "{{label}} view",
+      "toolbar": "Newsfeed view modes"
+    }
+  },
+  "not_found": {
+    "title": "Page not found"
+  },
+  "offline": {
+    "indicator": {
+      "label": "Offline",
+      "title": "You're offline — changes sync once the connection returns"
+    },
+    "overlay": {
+      "board_description": "You're offline and this board hasn't been downloaded to this device. It'll open automatically once you're back online.",
+      "board_title": "This board isn't available offline",
+      "server_description": "Check your internet connection. We'll reconnect automatically as soon as the server is reachable again.",
+      "server_title": "Can't reach the Dim0 server"
+    }
+  },
+  "progress": {
+    "bar": {
+      "estimated": "Estimated"
+    }
+  },
+  "settings": {
+    "billing": {
+      "description": "Manage subscription and usage limits",
+      "open": "Open billing",
+      "title": "Billing"
+    },
+    "current_plan": "Current plan",
+    "email_label": "Email",
+    "expires_at_period_end": "Expires at period end",
+    "expires_on": "Expires on {{date}}",
+    "profile": {
+      "description": "Basic account details",
+      "title": "Profile"
+    }
+  },
+  "share": {
+    "anyone_with_link": "Anyone with the link can:",
+    "button": {
+      "aria_label": "Share this board",
+      "label": "Share"
+    },
+    "checking_invitation": "Checking invitation…",
+    "confirm_disable": "Disable sharing? Existing members keep access; only future invites are blocked.",
+    "confirm_remove": "Remove {{email}} from this board?",
+    "copy": "Copy",
+    "create_link": "Create link",
+    "creating": "Creating…",
+    "disable": "Disable sharing",
+    "disabling": "Disabling…",
+    "error": {
+      "accept": "Couldn't accept the invitation. Try again.",
+      "copy": "Couldn't copy. Long-press to select.",
+      "create_link": "Couldn't create share link. Try again.",
+      "disable": "Couldn't disable sharing. Try again.",
+      "inactive_link": "This link is no longer active. Ask the owner for a new one.",
+      "missing_token": "Missing share token in the URL.",
+      "remove_member": "Couldn't remove member. Try again.",
+      "unknown": "Unknown error."
+    },
+    "error_panel": {
+      "back_home": "Back home",
+      "title": "This invitation isn't usable"
+    },
+    "joining": "Joining the board…",
+    "no_active_edit_link": "No active edit link yet.",
+    "no_active_view_link": "No active view link yet.",
+    "people_with_access": "People with access",
+    "ready": {
+      "member": "You'll be able to view and edit this board.",
+      "open": "Open board",
+      "title": "You've been invited",
+      "viewer": "You'll have view-only access to this board."
+    },
+    "remove": "Remove",
+    "role": {
+      "edit": "Edit",
+      "view": "View"
+    },
+    "signin_panel": {
+      "description": "Sign in to your Dim0 account to accept this invitation.",
+      "submit": "Sign in",
+      "title": "You've been invited to a board"
+    },
+    "switch_role_other_many": "Switch role to see the other links for this board.",
+    "switch_role_other_one": "Switch role to see the other link for this board.",
+    "title_prefix": "Share",
+    "toast": {
+      "added": "Added to board as {{role}}.",
+      "already_disabled": "Sharing was already disabled.",
+      "copied": "Link copied to clipboard.",
+      "disabled_links": "Disabled {{count}} link(s).",
+      "kicked_sessions": " ({{count}} live session(s) closed)",
+      "removed": "Removed from board."
+    },
+    "untitled_board": "Untitled board",
+    "warning": "Sharing this board also shares every sub-board and nested note inside it. Move anything private out before inviting."
+  },
+  "sidebar": {
+    "account": {
+      "billing": "Billing",
+      "logout": "Logout",
+      "profile": "Profile",
+      "upgrade_plan": "Upgrade Plan"
+    },
+    "board": {
+      "collapse": "Collapse board",
+      "create_failed": "Couldn't create a board. Please try again.",
+      "delete": "Delete board",
+      "delete_synced": "Delete Board",
+      "download_to_view": "Download for offline to view contents",
+      "enable_sync": "Enable sync",
+      "enable_sync_hint": "Enable sync — back up + share this board",
+      "enabling_sync": "Enabling sync…",
+      "expand": "Expand board",
+      "new_board": "New board",
+      "new_local_board": "New local board",
+      "on_this_device": "On this device",
+      "shared_by": "shared by {{email}}",
+      "untitled_title": "Untitled board",
+      "view_chats": "View chats in this board"
+    },
+    "brand": {
+      "logo_alt": "Dim0 Home"
+    },
+    "chat": {
+      "delete": "Delete Chat",
+      "new_chat": "New Chat"
+    },
+    "chats": {
+      "all": "All chats",
+      "dialog_title_for_board": "Chats — {{board}}",
+      "empty": "No chats yet.",
+      "in_this_board": "Chats in this board",
+      "view_all": "View all chats"
+    },
+    "confirm_delete": {
+      "description": "This will permanently delete this board and all its chats. This action cannot be undone.",
+      "title": "Delete this board?"
+    },
+    "install": {
+      "label": "Install app"
+    },
+    "mobile": {
+      "description": "Displays the mobile sidebar.",
+      "title": "Sidebar"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "home": "Home",
+      "newsfeed": "Newsfeed"
+    },
+    "offline": {
+      "available": "Available offline",
+      "download": "Download for offline use",
+      "downloading": "Downloading for offline…",
+      "downloading_label": "Downloading for offline"
+    },
+    "section": {
+      "chats": "CHATS",
+      "local": "LOCAL",
+      "shared_with_me": "SHARED WITH ME",
+      "synced": "SYNCED",
+      "workspace": "WORKSPACE"
+    },
+    "sheet": {
+      "label": "Sheet"
+    },
+    "sign_in_cta": {
+      "hint": "Signing up is completely free — no credit card required",
+      "label": "Sign in to sync & share"
+    },
+    "subscriptions": {
+      "fallback": "Topics"
+    },
+    "toggle": "Toggle Sidebar",
+    "tree": {
+      "collapse": "Collapse {{kind}}",
+      "expand": "Expand {{kind}}",
+      "no_sub_pages": "No sub-pages"
+    }
+  },
+  "theme": {
+    "mode": {
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System"
+    },
+    "name": {
+      "catppuccin": "Catppuccin",
+      "gruvbox": "Gruvbox",
+      "matcha": "Matcha",
+      "monokai_pro": "Monokai Pro",
+      "noir": "Noir",
+      "parchment": "Parchment",
+      "rose_pine": "Rosé Pine",
+      "tokyo_night": "Tokyo Night"
+    },
+    "section": {
+      "mode": "Mode",
+      "theme": "Theme"
+    },
+    "toggle": "Toggle theme",
+    "toggle_label": "Theme and mode"
+  },
+  "widgets": {
+    "image": {
+      "open_aria": "Open image",
+      "open_in_new_tab": "Open in new tab",
+      "photo_alt": "web photo",
+      "title": "Images",
+      "view_more": "View {{count}} more"
+    },
+    "trading": {
+      "after_hours": "After hours",
+      "disclaimer": "Disclaimer",
+      "high": "High",
+      "low": "Low",
+      "open": "Open",
+      "prev_close": "Prev close",
+      "price": "Price • {{value}}",
+      "time": "Time • {{value}}",
+      "today": "today",
+      "updated": "Updated • {{time}}"
+    },
+    "weather": {
+      "clear_sky": "Clear sky",
+      "fog": "Fog",
+      "heavy_rain": "Heavy rain",
+      "heavy_snow": "Heavy snow",
+      "light_drizzle": "Light drizzle",
+      "light_rain": "Light rain",
+      "light_snow": "Light snow",
+      "mainly_clear": "Mainly clear",
+      "moderate_rain": "Moderate rain",
+      "moderate_snow": "Moderate snow",
+      "overcast": "Overcast",
+      "partly_cloudy": "Partly cloudy",
+      "rain_showers": "Rain showers",
+      "rime_fog": "Depositing rime fog",
+      "thunderstorm": "Thunderstorm",
+      "unknown": "Unknown"
+    }
+  }
+}

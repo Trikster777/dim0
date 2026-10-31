@@ -3,12 +3,12 @@ import {
   createRouter,
   createRootRoute,
   createRoute,
+  lazyRouteComponent,
   redirect,
 } from "@tanstack/react-router"
 import { RootLayout } from "./root-layout"
 import { ChatScreen } from "@/features/agent/screens/chat-screen"
 import { BoardScreen } from "@/features/board/screens/board-screen"
-import { CaptureSpikePage } from "@/features/dev/capture-spike"
 import { SigninPage } from "@/features/signin/screens/sign-in"
 import { SignupPage } from "@/features/signin/screens/sign-up"
 import { GoogleCallbackPage } from "@/features/signin/screens/google-callback"
@@ -77,13 +77,23 @@ const signinRoute = createRoute({
   component: SigninPage,
 })
 
-// DEV-only spike: snapDOM whole-applet capture on WKWebView (throwaway — PR 0 of the
-// applet canvas migration). Registered only under `import.meta.env.DEV`.
-const captureSpikeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/dev/capture-spike",
-  component: CaptureSpikePage,
-})
+// DEV-only spike: snapDOM whole-applet capture on WKWebView (throwaway — PR 0 of
+// the applet canvas migration). Both the route and the screen are loaded through
+// a *dynamic* import inside a branch that Vite's `import.meta.env.DEV` define
+// collapses to `[]` in production, so neither the path nor the screen's code
+// reaches the prod bundle.
+const devRoutes = import.meta.env.DEV
+  ? [
+      createRoute({
+        getParentRoute: () => rootRoute,
+        path: "/dev/capture-spike",
+        component: lazyRouteComponent(
+          () => import("@/features/dev/capture-spike"),
+          "CaptureSpikePage",
+        ),
+      }),
+    ]
+  : []
 
 const signupRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -362,7 +372,7 @@ const routeTree = rootRoute.addChildren([
     localMiniAppRoute,
     localAppletRoute,
   ]),
-  ...(import.meta.env.DEV ? [captureSpikeRoute] : []),
+  ...devRoutes,
   signinRoute,
   signupRoute,
   googleCallbackRoute,

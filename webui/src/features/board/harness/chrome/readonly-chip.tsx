@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { useBoardAppStore } from "../store/board-app-store"
 
 
@@ -15,6 +16,7 @@ import { useBoardAppStore } from "../store/board-app-store"
  * Hidden in presentation mode where the read-only state is implicit.
  */
 export function HarnessReadonlyChip() {
+  const { t } = useTranslation()
   const boardRole = useBoardAppStore((s) => s.boardRole)
   const presentationMode = useBoardAppStore((s) => s.presentationMode)
 
@@ -25,9 +27,9 @@ export function HarnessReadonlyChip() {
     <span
       className="px-1 text-xs font-medium text-amber-600 dark:text-amber-400"
       role="status"
-      aria-label="Board is read-only"
+      aria-label={t("harness.readonly.aria")}
     >
-      Read-only
+      {t("harness.readonly.label")}
     </span>
   )
 }

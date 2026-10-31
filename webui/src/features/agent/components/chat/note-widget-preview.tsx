@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Link, useSearch } from "@tanstack/react-router"
 import { ExternalLinkIcon, LoaderIcon, WarningIcon } from "@/components/icons"
 
@@ -26,6 +27,7 @@ export const NoteWidgetPreview = ({
   noteId,
   pending = false,
 }: NoteWidgetPreviewProps) => {
+  const { t } = useTranslation()
   const { chatId } = useChat()
   const { rootId } = useSearch({
     from: BoardUrl,
@@ -44,7 +46,7 @@ export const NoteWidgetPreview = ({
         <div className='skeleton-shimmer absolute inset-0' />
         <div className='relative z-10 flex h-full w-full flex-col items-center justify-center gap-2 text-center text-sm text-muted-foreground'>
           <LoaderIcon className='size-5 animate-spin' />
-          <span>Generating widget preview</span>
+          <span>{t("agent.sources.widget_generating")}</span>
         </div>
       </div>
     )
@@ -54,7 +56,7 @@ export const NoteWidgetPreview = ({
     return (
       <div className='flex h-[260px] w-full items-center justify-center rounded-xl bg-muted/40 text-sm text-muted-foreground'>
         <LoaderIcon className='mr-2 size-4 animate-spin' />
-        Loading widget preview
+        {t("agent.sources.widget_loading")}
       </div>
     )
   }
@@ -63,7 +65,7 @@ export const NoteWidgetPreview = ({
     return (
       <div className='flex h-[260px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/60 bg-muted/30 px-4 text-center text-sm text-muted-foreground'>
         <WarningIcon className='size-5' />
-        <span>Widget preview unavailable</span>
+        <span>{t("agent.sources.widget_unavailable")}</span>
         <Link
           to='/boards/$id'
           params={{ id: boardId }}
@@ -74,7 +76,7 @@ export const NoteWidgetPreview = ({
           }}
           className='inline-flex items-center gap-1 text-xs font-medium text-secondary-foreground hover:underline'
         >
-          Open on board
+          {t("agent.note_tool.open_on_board")}
           <ExternalLinkIcon className='size-3.5' />
         </Link>
       </div>
@@ -84,7 +86,7 @@ export const NoteWidgetPreview = ({
   return (
     <LazyMountedWidgetIframe
       html={note.content.markdown}
-      title={note.label?.markdown || "Widget preview"}
+      title={note.label?.markdown || t("agent.sources.widget_preview")}
     />
   )
 }

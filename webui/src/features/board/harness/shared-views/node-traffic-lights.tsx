@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { ArrowsOutSimpleIcon, XIcon } from "@phosphor-icons/react"
 import { DragGripIcon } from "@/components/icons"
 import {
@@ -58,6 +59,7 @@ export function NodeTrafficLights({
   onExpand,
   className,
 }: NodeTrafficLightsProps) {
+  const { t } = useTranslation()
   const dragHandleProps = useEmbeddedDragHandle()
   const deleteRef = useRef<HTMLButtonElement>(null)
   const expandRef = useRef<HTMLButtonElement>(null)
@@ -75,7 +77,7 @@ export function NodeTrafficLights({
     <>
     <div
       {...dragHandleProps}
-      title="Drag to move · click to select"
+      title={t("harness.traffic.drag_to_move")}
       className={cn(
         "pointer-events-auto absolute inset-x-0 top-0 z-30",
         "flex h-10 items-center px-3",
@@ -92,8 +94,8 @@ export function NodeTrafficLights({
             handleDelete()
           }}
           onDoubleClick={(e) => e.stopPropagation()}
-          aria-label="Delete"
-          title="Delete"
+          aria-label={t("common.delete")}
+          title={t("common.delete")}
           className="group/dot flex size-5 cursor-pointer items-center justify-center"
         >
           <span
@@ -137,8 +139,8 @@ export function NodeTrafficLights({
             onExpand()
           }}
           onDoubleClick={(e) => e.stopPropagation()}
-          aria-label="Open"
-          title="Open"
+          aria-label={t("harness.traffic.open")}
+          title={t("harness.traffic.open")}
           className="group/dot flex size-5 cursor-pointer items-center justify-center"
         >
           <span
@@ -166,14 +168,14 @@ export function NodeTrafficLights({
             <AlertDialogDescription>{confirmDelete.description}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setConfirming(false)
                 onDelete?.()
               }}
             >
-              Delete
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

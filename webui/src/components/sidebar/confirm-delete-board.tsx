@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog"
+import { useTranslation } from "react-i18next"
 
 
 /**
@@ -38,28 +39,31 @@ export function ConfirmDeleteBoardAlert({
   open,
   onOpenChange,
   onConfirm,
-  title = "Delete this board?",
-  description = "This will permanently delete this board and all its chats. This action cannot be undone.",
+  title,
+  description,
 }: ConfirmDeleteBoardAlertProps) {
+  const { t } = useTranslation()
+  const dialogTitle = title ?? t('sidebar.confirm_delete.title')
+  const dialogDescription = description ?? t('sidebar.confirm_delete.description')
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
           <AlertDialogDescription>
-            {description}
+            {dialogDescription}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
           <AlertDialogCancel>
-            Cancel
+            {t('common.cancel')}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             className="bg-destructive !text-destructive-foreground hover:bg-destructive/90"
           >
-            Delete
+            {t('common.delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

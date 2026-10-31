@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { NotepadIcon } from "@phosphor-icons/react"
 import type { Editor } from "@tiptap/react"
 import { type NodeId } from "@canvas-harness/core"
@@ -10,6 +11,7 @@ import { createBoardPageProvider } from "@/features/board/providers/board-page-p
 import { findFamilyShadeFromHex, toBaseHex } from "@/features/board/lib/colors/tailwind"
 import { nodeStamp } from "@/features/board/utils/node-meta"
 import { cn } from "@/lib/utils"
+import { i18n } from "@/i18n"
 import type { NoteNodeData } from "../../convert/note-to-node"
 import { computeNodeColorUpdate } from "../../theme/apply-node-colors"
 import {
@@ -40,7 +42,7 @@ const formatStampDate = (iso: string): string => {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ""
   const sameYear = d.getFullYear() === new Date().getFullYear()
-  return d.toLocaleDateString(undefined, {
+  return d.toLocaleDateString(i18n.language || undefined, {
     month: "short",
     day: "numeric",
     ...(sameYear ? {} : { year: "numeric" }),
@@ -63,6 +65,7 @@ const formatStampDate = (iso: string): string => {
  */
 export function SheetView({ id }: SheetViewProps) {
   const node = useNode(id)
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const { resolvedTheme } = useTheme()
   const openNodeSurface = useBoardAppStore((s) => s.openNodeSurface)
@@ -142,7 +145,7 @@ export function SheetView({ id }: SheetViewProps) {
   // Last-modified, falling back to created. Reads canonical `meta` (agent notes)
   // or legacy strings; `edited` picks the prefix.
   const { iso: stampIso, edited } = nodeStamp(data)
-  const stampPrefix = edited ? "Edited" : "Created"
+  const stampPrefix = edited ? t("harness.node.stamp_edited") : t("harness.node.stamp_created")
 
   const enterEdit = () => {
     if (canEdit) setEditing(true)
@@ -196,7 +199,7 @@ export function SheetView({ id }: SheetViewProps) {
           // Never while editing — don't stop rendering the editor being typed in.
           contentVisibility: shouldMount && !isInView && !editing ? "hidden" : undefined,
         }}
-        title={!editing && canEdit ? "Double-click to edit" : undefined}
+        title={!editing && canEdit ? t("harness.node.double_click_to_edit") : undefined}
       >
         <div
           className={cn(
@@ -234,10 +237,10 @@ export function SheetView({ id }: SheetViewProps) {
             // the card still reads as a sheet at a glance.
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center text-muted-foreground">
               <NotepadIcon className="size-5 shrink-0" />
-              <span className="text-xs">Sheet paused</span>
+              <span className="text-xs">{t("harness.node.sheet_paused")}</span>
             </div>
           ) : (
-            <span className="italic text-muted-foreground">Empty sheet</span>
+            <span className="italic text-muted-foreground">{t("harness.node.sheet_empty")}</span>
           )}
         </div>
 
@@ -267,7 +270,7 @@ export function SheetView({ id }: SheetViewProps) {
         <NodeTitleCaption
           nodeId={id}
           label={label}
-          placeholder="Untitled"
+          placeholder={t("harness.node.untitled")}
           textClassName="text-center text-sm font-handwriting text-foreground"
         />
       </div>

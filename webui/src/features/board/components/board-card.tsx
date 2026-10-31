@@ -1,7 +1,8 @@
 import { useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { AddIcon, CloudArrowDownIcon, CloudCheckIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
-import { UNTITLED_LABEL } from "../const"
+import { untitledLabel } from "../const"
 import type { Graph } from "../types/board"
 import { useCreateBoard } from "../api/create-board"
 import { formatDateForUI } from "../utils/datetime"
@@ -11,6 +12,7 @@ import { BoardKindBadge } from "./board-kind-badge"
 
 /** Offline status / download control for a synced board card. */
 const CardOfflineBadge = ({ boardId }: { boardId: string }) => {
+  const { t } = useTranslation()
   const { data: offline } = useBoardOfflineStatus(boardId)
   const download = useDownloadBoard()
   // Still resolving the idb read — render nothing rather than flash the download
@@ -18,7 +20,7 @@ const CardOfflineBadge = ({ boardId }: { boardId: string }) => {
   if (offline === undefined) return null
   if (offline) {
     return (
-      <span title="Available offline" className="text-secondary-foreground/60">
+      <span title={t("board.card.available_offline")} className="text-secondary-foreground/60">
         <CloudCheckIcon className="size-4" strokeWidth={2} />
       </span>
     )
@@ -26,8 +28,8 @@ const CardOfflineBadge = ({ boardId }: { boardId: string }) => {
   return (
     <button
       type="button"
-      title={download.isPending ? "Downloading for offline…" : "Download for offline use"}
-      aria-label={download.isPending ? "Downloading for offline" : "Download for offline use"}
+      title={download.isPending ? t("board.card.downloading") : t("board.card.download")}
+      aria-label={download.isPending ? t("board.card.downloading_aria") : t("board.card.download")}
       className={cn(
         "text-muted-foreground/50 hover:text-secondary-foreground",
         download.isPending && "opacity-60",
@@ -85,7 +87,7 @@ export const BoardCard = ({
           <div className='bg-transparent rounded-xl'>
             <img
               src={board.thumbnail}
-              alt={board.label || UNTITLED_LABEL}
+              alt={board.label || untitledLabel()}
               className='w-full h-40 object-cover rounded-md'
             />
           </div>
@@ -94,7 +96,7 @@ export const BoardCard = ({
         )
       }
       <div className='p-2 w-full overflow-ellipsis'>
-        <h4 className='inline-block font-medium text-sm'>{board.label || UNTITLED_LABEL}</h4>
+        <h4 className='inline-block font-medium text-sm'>{board.label || untitledLabel()}</h4>
         <div className='mt-1 flex w-full items-center justify-between gap-2'>
           <div className='flex items-center gap-2'>
             <BoardKindBadge kind="synced" />
@@ -112,6 +114,7 @@ export const BoardCard = ({
 
 // New board card component
 export const NewBoardCard = () => {
+  const { t } = useTranslation()
   const { createBoardAsync } = useCreateBoard()
   const navigate = useNavigate()
 
@@ -142,7 +145,7 @@ export const NewBoardCard = () => {
       onClick={handleClick}
     >
       <AddIcon className='shrink-0 size-6 text-secondary-foreground' strokeWidth={2} />
-      <span className='font-medium text-sm text-secondary-foreground'>New Board</span>
+      <span className='font-medium text-sm text-secondary-foreground'>{t("board.card.new")}</span>
     </div>
   )
 }

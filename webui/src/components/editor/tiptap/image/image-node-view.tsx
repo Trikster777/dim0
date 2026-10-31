@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { NodeViewWrapper } from "@tiptap/react"
 import type { NodeViewProps } from "@tiptap/react"
+import { useTranslation } from "react-i18next"
 import { resolveImageSrc, isDirectImageSrc } from "./image-cache"
 
 
@@ -13,6 +14,7 @@ import { resolveImageSrc, isDirectImageSrc } from "./image-cache"
  * survive backend embedding limits; this component handles the round trip.
  */
 export function ImageNodeView({ node }: NodeViewProps) {
+  const { t } = useTranslation()
   const src = (node.attrs.src as string | undefined) ?? ""
   const alt = (node.attrs.alt as string | undefined) ?? ""
 
@@ -48,9 +50,9 @@ export function ImageNodeView({ node }: NodeViewProps) {
       {resolved ? (
         <img src={resolved} alt={alt} className="editor-image" draggable={false} />
       ) : error ? (
-        <span className="editor-image-fallback">Failed to load image</span>
+        <span className="editor-image-fallback">{t("editor.image.failed")}</span>
       ) : (
-        <span className="editor-image-fallback">Loading image…</span>
+        <span className="editor-image-fallback">{t("editor.image.loading")}</span>
       )}
     </NodeViewWrapper>
   )

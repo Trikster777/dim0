@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { Suspense, lazy, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const DotLottieReact = lazy(async () => {
   const m = await import('@lottiefiles/dotlottie-react')
@@ -10,67 +11,67 @@ const MASCOTS = [
   {
     name: 'Dog',
     file: 'Dog.lottie',
-    message: "Ask me anything — I’ll sniff through the web and fetch the best insights!",
+    message: "agent.welcome.dog",
   },
   {
     name: 'Cat',
     file: 'Cat.lottie',
-    message: 'Curiosity compiled — I pounce on citations so you don’t have to.',
+    message: 'agent.welcome.cat',
   },
   {
     name: 'Shark',
     file: 'Shark.lottie',
-    message: 'I circle the docs and bite into the signal — fast, sharp answers.',
+    message: 'agent.welcome.shark',
   },
   {
     name: 'Mouse',
     file: 'Mouse.lottie',
-    message: 'Tiny agent, mighty findings — I’ll nibble through noise to signal.',
+    message: 'agent.welcome.mouse',
   },
   {
     name: 'Panda',
     file: 'Panda.lottie',
-    message: 'Open-source and bamboo-strong — calm, focused, and ready to reason things out.',
+    message: 'agent.welcome.panda',
   },
   {
     name: 'Dolphin',
     file: 'Dolphin.lottie',
-    message: 'Sleek, social, and smart — I’ll dive deep for data and surface insights.',
+    message: 'agent.welcome.dolphin',
   },
   {
     name: 'Elephant',
     file: 'Elephant.lottie',
-    message: 'I never forget a fact — big memory, bigger context.',
+    message: 'agent.welcome.elephant',
   },
   {
     name: 'Dove',
     file: 'Dove.lottie',
-    message: 'Peaceful queries, pure answers — I’ll keep your search serene.',
+    message: 'agent.welcome.dove',
   },
   {
     name: 'Penguin',
     file: 'Penguin.lottie',
-    message: 'Cool under pressure — I glide across data and surface crisp answers.',
+    message: 'agent.welcome.penguin',
   },
   {
     name: 'Toucan',
     file: 'Toucan.lottie',
-    message: 'Two can play at that game — I’ll squawk up the right sources.',
+    message: 'agent.welcome.toucan',
   },
   {
     name: 'Starfish',
     file: 'Starfish.lottie',
-    message: 'Many arms, one mission — reaching across sources to bring answers together.',
+    message: 'agent.welcome.starfish',
   },
   {
     name: 'Spider',
     file: 'Spider.lottie',
-    message: 'Spinning a web of open data — I catch insights others miss.',
+    message: 'agent.welcome.spider',
   },
   {
     name: 'Pig',
     file: 'Pig.lottie',
-    message: 'Rooting through the noise — I’ll sniff out the truffles of truth.',
+    message: 'agent.welcome.pig',
   },
 ] as const
 
@@ -116,6 +117,7 @@ function WelcomeLayout({
   onShuffle?: () => void
   afterContent?: ReactNode
 }) {
+  const { t } = useTranslation()
   return (
     <div className={cn('relative w-full flex flex-col items-center justify-center text-center', className)}>
       <div className='flex justify-center'>
@@ -129,9 +131,9 @@ function WelcomeLayout({
           type='button'
           className='mt-3 rounded-md px-3 py-1 text-xs font-medium text-accent-foreground/50 bg-accent hover:bg-muted shadow-sm hover:text-accent-foreground transition-colors'
           onClick={onShuffle}
-          aria-label='Shuffle welcome message'
+          aria-label={t('agent.welcome.shuffle_aria')}
         >
-          Shuffle
+          {t('agent.welcome.shuffle')}
         </button>
       ) : null}
       {afterContent ? <div className='mt-4 flex justify-center'>{afterContent}</div> : null}
@@ -140,6 +142,7 @@ function WelcomeLayout({
 }
 
 export function WelcomeMessage({ afterContent }: { afterContent?: ReactNode }) {
+  const { t } = useTranslation()
   const { mascot, reshuffle } = useRandomMascot()
 
   if (!mascot) {
@@ -147,7 +150,7 @@ export function WelcomeMessage({ afterContent }: { afterContent?: ReactNode }) {
       <div className='relative w-full flex flex-col items-center justify-center text-center'>
         <div style={{ width: 100, height: 100 }} />
         <div className='mt-2 text-xl text-card-foreground'>
-          <span>Loading your open‑source sidekick…</span>
+          <span>{t('agent.welcome.loading')}</span>
         </div>
       </div>
     )
@@ -156,7 +159,7 @@ export function WelcomeMessage({ afterContent }: { afterContent?: ReactNode }) {
   return (
     <WelcomeLayout
       file={mascot.file}
-      message={mascot.message}
+      message={t(mascot.message)}
       showShuffle
       onShuffle={reshuffle}
       afterContent={afterContent}
@@ -169,9 +172,10 @@ export function WelcomeMessage({ afterContent }: { afterContent?: ReactNode }) {
  * Render a fixed mascot variant with the shared welcome layout.
  */
 export function ThemedWelcome({ name, message, className, afterContent }: { name: MascotName, message?: string, className?: string, afterContent?: ReactNode }) {
+  const { t } = useTranslation()
   const mascot = MASCOTS.find(m => m.name === name) ?? MASCOTS[0]
 
-  const customMessage = message ?? mascot.message
+  const customMessage = message ?? t(mascot.message)
 
   return (
     <WelcomeLayout

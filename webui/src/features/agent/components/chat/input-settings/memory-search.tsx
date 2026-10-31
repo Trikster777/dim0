@@ -3,9 +3,11 @@ import { MemorySearchIcon } from "@/components/icons"
 import { useChatStore } from "@/features/agent/store/chat-store"
 import { clsx } from "clsx"
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 // Component that allows users to enable or disable the memory search tool
 export const MemorySearchChoiceMenu = ({ available = true }: { available?: boolean }) => {
+  const { t } = useTranslation()
   const { enabledTools, setEnabledTools } = useChatStore()
 
   const isEnabled = enabledTools.includes("memory_search")
@@ -26,8 +28,8 @@ export const MemorySearchChoiceMenu = ({ available = true }: { available?: boole
   }
 
   const tooltipText = !available
-    ? "Attach this chat to a board to enable memory search"
-    : (isEnabled ? "Disable Memory Search" : "Enable Memory Search")
+    ? t("agent.settings.attach_for_memory")
+    : (isEnabled ? t("agent.settings.disable_memory") : t("agent.settings.enable_memory"))
 
   const buttonClass = clsx(
     "transition-all w-full my-icon px-2 py-1.5 rounded-md border border-transparent transition-colors flex flex-row items-center gap-2 text-left text-muted-foreground",
@@ -48,7 +50,7 @@ export const MemorySearchChoiceMenu = ({ available = true }: { available?: boole
             disabled={!available}
           >
             <MemorySearchIcon className={iconClass} strokeWidth={2} />
-            <span className="text-xs">Memory search</span>
+            <span className="text-xs">{t("agent.settings.memory_label")}</span>
           </button>
         </TooltipTrigger>
       </div>

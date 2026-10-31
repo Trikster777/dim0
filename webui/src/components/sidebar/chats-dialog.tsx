@@ -5,9 +5,10 @@ import { useAppStore } from "@/store"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useCheckEleInView } from "@/hooks/use-check-ele-in-view"
 import { trimText } from "@/lib/common"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { ChatHistoryIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 
 type ChatsDialogProps = {
@@ -38,6 +39,7 @@ const formatChatDate = (value?: string) => {
  * every board-attached chat across the workspace.
  */
 export function ChatsDialog({ open, onOpenChange, boardId, title }: ChatsDialogProps) {
+  const { t } = useTranslation()
   const userId = useAppStore((s) => s.userId)
   const navigate = useNavigate()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -97,7 +99,7 @@ export function ChatsDialog({ open, onOpenChange, boardId, title }: ChatsDialogP
     }
   }
 
-  const dialogTitle = title ?? (boardId ? "Chats in this board" : "All chats")
+  const dialogTitle = title ?? (boardId ? t('sidebar.chats.in_this_board') : t('sidebar.chats.all'))
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -113,7 +115,7 @@ export function ChatsDialog({ open, onOpenChange, boardId, title }: ChatsDialogP
           {chats.length ? (
             <ul className="flex flex-col gap-1 py-2">
               {chats.map((chat) => {
-                const fullLabel = chat.label || UNTITLED_LABEL
+                const fullLabel = chat.label || untitledLabel()
                 const subtitle = formatChatDate(chat.updatedAt || chat.createdAt)
                 return (
                   <li key={chat.uid}>
@@ -139,7 +141,7 @@ export function ChatsDialog({ open, onOpenChange, boardId, title }: ChatsDialogP
             </ul>
           ) : (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-              {isFetchingNextPage ? "Loading…" : "No chats yet."}
+              {isFetchingNextPage ? t('common.loading') : t('sidebar.chats.empty')}
             </div>
           )}
         </div>

@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react"
 import { DragHandle } from "@tiptap/extension-drag-handle-react"
+import { useTranslation } from "react-i18next"
 import { offset } from "@floating-ui/dom"
 import type { Editor } from "@tiptap/react"
 import type { Node } from "@tiptap/pm/model"
@@ -40,6 +41,7 @@ function MenuItem({
 
 /** Notion-style drag + block-action handle rendered next to the hovered block. */
 export function BlockHandle({ editor }: { editor: Editor }) {
+  const { t } = useTranslation()
   const [currentNode, setCurrentNode] = useState<CurrentNode | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -102,7 +104,7 @@ export function BlockHandle({ editor }: { editor: Editor }) {
         {/* + : add new paragraph below this block */}
         <button
           type="button"
-          title="Add block below"
+          title={t("editor.block_handle.add_below")}
           className="block-handle-btn"
           onMouseDown={(e) => e.preventDefault()}
           onClick={addBlockBelow}
@@ -115,7 +117,7 @@ export function BlockHandle({ editor }: { editor: Editor }) {
           <PopoverAnchor asChild>
             <button
               type="button"
-              title="Drag or click for options"
+              title={t("editor.block_handle.drag_or_click")}
               className="block-handle-btn block-drag-btn"
               onClick={() => setMenuOpen((o) => !o)}
             >
@@ -131,12 +133,12 @@ export function BlockHandle({ editor }: { editor: Editor }) {
           >
             <MenuItem onClick={duplicateBlock}>
               <CopySimple size={14} />
-              Duplicate
+              {t("editor.block_handle.duplicate")}
             </MenuItem>
             <div className="my-1 h-px bg-border" />
             <MenuItem danger onClick={deleteBlock}>
               <Trash size={14} />
-              Delete
+              {t("editor.block_handle.delete")}
             </MenuItem>
           </PopoverContent>
         </Popover>

@@ -12,6 +12,7 @@ import {
   useCanvasStore,
 } from "@canvas-harness/react"
 import clsx from "clsx"
+import { useTranslation } from "react-i18next"
 import {
   Popover,
   PopoverContent,
@@ -39,9 +40,9 @@ type TextureOption = {
 
 
 const TEXTURE_OPTIONS: ReadonlyArray<TextureOption> = [
-  { value: null, label: "None" },
-  { value: "lines", label: "Lines" },
-  { value: "dots", label: "Dots" },
+  { value: null, label: "harness.viewport.texture_none" },
+  { value: "lines", label: "harness.viewport.texture_lines" },
+  { value: "dots", label: "harness.viewport.texture_dots" },
 ]
 
 
@@ -57,6 +58,7 @@ const BTN_CLASS =
  * board-app-store instead of react-flow + graph-store.
  */
 export function HarnessViewportControls() {
+  const { t } = useTranslation()
   const camera = useCamera()
   const store = useCanvasStore()
   const canUndo = useCanUndo()
@@ -109,14 +111,14 @@ export function HarnessViewportControls() {
               type="button"
               onClick={handleResetZoom}
               className={BTN_CLASS}
-              aria-label="Reset zoom to 100%"
+              aria-label={t("harness.viewport.reset_zoom_aria")}
             >
               <span className="min-w-[2.4rem] text-center text-xs font-medium text-secondary-foreground">
                 {zoomPercent}%
               </span>
             </button>
           </TooltipTrigger>
-          <TooltipContent side="top">Reset zoom</TooltipContent>
+          <TooltipContent side="top">{t("harness.viewport.reset_zoom")}</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -129,12 +131,12 @@ export function HarnessViewportControls() {
                 BTN_CLASS,
                 !canUndo && "pointer-events-none opacity-50",
               )}
-              aria-label="Undo"
+              aria-label={t("harness.viewport.undo")}
             >
               <ArrowCounterClockwiseIcon className="size-4" weight="bold" />
             </button>
           </TooltipTrigger>
-          <TooltipContent side="top">Undo (Cmd/Ctrl+Z)</TooltipContent>
+          <TooltipContent side="top">{t("harness.viewport.undo_tooltip")}</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -147,12 +149,12 @@ export function HarnessViewportControls() {
                 BTN_CLASS,
                 !canRedo && "pointer-events-none opacity-50",
               )}
-              aria-label="Redo"
+              aria-label={t("harness.viewport.redo")}
             >
               <ArrowClockwiseIcon className="size-4" weight="bold" />
             </button>
           </TooltipTrigger>
-          <TooltipContent side="top">Redo (Cmd/Ctrl+Shift+Z)</TooltipContent>
+          <TooltipContent side="top">{t("harness.viewport.redo_tooltip")}</TooltipContent>
         </Tooltip>
 
         <Popover>
@@ -162,7 +164,7 @@ export function HarnessViewportControls() {
                 <button
                   type="button"
                   className={BTN_CLASS}
-                  aria-label="Board background"
+                  aria-label={t("harness.viewport.background")}
                 >
                   <span
                     className="size-4 rounded-full border-2 border-secondary-foreground/50"
@@ -171,18 +173,18 @@ export function HarnessViewportControls() {
                 </button>
               </PopoverTrigger>
             </TooltipTrigger>
-            <TooltipContent side="top">Background style</TooltipContent>
+            <TooltipContent side="top">{t("harness.viewport.background_style")}</TooltipContent>
           </Tooltip>
           <PopoverContent side="top" align="start" className="w-auto p-2">
             <div className="flex items-center justify-between px-1 text-[11px] font-medium text-muted-foreground">
-              <span>Color</span>
+              <span>{t("harness.viewport.color")}</span>
               <button
                 type="button"
                 className="text-[11px] font-medium text-muted-foreground hover:text-foreground disabled:opacity-50"
                 onClick={() => setBoardBackground(null)}
                 disabled={!boardBackground}
               >
-                Reset
+                {t("harness.viewport.reset")}
               </button>
             </div>
             <div className="mt-1 grid grid-cols-10 gap-1">
@@ -198,14 +200,14 @@ export function HarnessViewportControls() {
               ))}
             </div>
             <div className="mt-3 flex items-center justify-between px-1 text-[11px] font-medium text-muted-foreground">
-              <span>Texture</span>
+              <span>{t("harness.viewport.texture")}</span>
               <button
                 type="button"
                 className="text-[11px] font-medium text-muted-foreground hover:text-foreground disabled:opacity-50"
                 onClick={() => setBoardBackgroundTexture(null)}
                 disabled={!boardBackgroundTexture}
               >
-                Reset
+                {t("harness.viewport.reset")}
               </button>
             </div>
             <div className="mt-1 flex items-center justify-center gap-1">
@@ -220,14 +222,14 @@ export function HarnessViewportControls() {
                       : "bg-muted text-muted-foreground/50 hover:bg-muted/70",
                   )}
                   onClick={() => setBoardBackgroundTexture(option.value)}
-                  aria-label={option.label}
+                  aria-label={t(option.label)}
                 >
                   {option.value === "lines" ? (
                     <GridFourIcon className="size-4" />
                   ) : option.value === "dots" ? (
                     <DotsNineIcon className="size-4" />
                   ) : (
-                    "None"
+                    t("harness.viewport.texture_none")
                   )}
                 </button>
               ))}

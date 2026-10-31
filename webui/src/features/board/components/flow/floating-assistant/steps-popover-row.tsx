@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { useSearch } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { ChevronDownIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
 import { MiniLinkCard } from "@/features/agent/components/link-preview"
@@ -44,6 +45,7 @@ const buildArgPreview = (step: ToolCallStep, inputString: string | undefined): s
  */
 export const StepsPopoverRow = ({ step, index }: { step: ToolCallStep; index: number }) => {
   const [expanded, setExpanded] = useState(false)
+  const { t } = useTranslation()
   const { chatId } = useChat()
   const { rootId } = useSearch({
     from: BoardUrl,
@@ -52,7 +54,7 @@ export const StepsPopoverRow = ({ step, index }: { step: ToolCallStep; index: nu
   }) ?? {}
 
   const Icon = ToolNameIcon[step.name] ?? DEFAULT_TOOL_ICON
-  const title = getToolTitle(step.name)
+  const title = t(getToolTitle(step.name))
   const { input } = extractStepDescription(step)
   const sources = useMemo(() => getWebSearchUrls(step), [step])
   const argPreview = useMemo(() => buildArgPreview(step, input), [step, input])

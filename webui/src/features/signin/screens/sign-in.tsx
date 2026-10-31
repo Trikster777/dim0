@@ -2,6 +2,7 @@ import * as React from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { Google } from "@lobehub/icons"
+import { useTranslation } from "react-i18next"
 import { getAuthMethods, signin } from "@/api"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -10,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Loader2Icon, LockIcon, MailIcon } from "@/components/icons"
+import { localizeApiError } from "@/lib/i18n/errors"
 import { PasswordInput } from "../components/password-input"
 import { initiateWebGoogleSignin } from "../lib/web-google"
 import { desktopGoogleSignin } from "../lib/desktop-google"
@@ -18,6 +20,7 @@ import { isTauri } from "@/platform"
 
 /** Renders the sign-in screen and routes successful authentication into the app. */
 export function SigninPage() {
+  const { t } = useTranslation()
   const completeSignin = useCompleteSignin()
 
   const [email, setEmail] = React.useState("")
@@ -38,7 +41,7 @@ export function SigninPage() {
       // via the /signin/google/callback route.
       await initiateWebGoogleSignin(clientId)
     } catch (error) {
-      setGoogleError((error as Error).message || "Unable to continue with Google")
+      setGoogleError(localizeApiError(error, "auth.google.error_fallback"))
       setGoogleRedirecting(false)
     }
   }, [])
@@ -65,7 +68,7 @@ export function SigninPage() {
     onMutate: () => setGoogleError(null),
     onSuccess: completeSignin,
     onError: error => {
-      setGoogleError((error as Error).message || "Unable to continue with Google")
+      setGoogleError(localizeApiError(error, "auth.google.error_fallback"))
     },
   })
 
@@ -82,7 +85,7 @@ export function SigninPage() {
   const showGoogleDesktop = desktop && Boolean(authMethods?.google_desktop_client_id)
   const showSeparator = showLocalSignin && (showGoogleWeb || showGoogleDesktop)
   const localError = localSigninMutation.isError
-    ? (localSigninMutation.error as Error).message || "Unable to sign in"
+    ? localizeApiError(localSigninMutation.error, "auth.sign_in.error_fallback")
     : null
 
   return (
@@ -90,11 +93,11 @@ export function SigninPage() {
       <Card className="bg-card text-card-foreground border border-border shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl flex flex-col items-center justify-center gap-2">
-            <img src="/dim0.svg" alt="Dim0 Logo" className="h-12 w-12 aspect-square object-contain" />
-            <span className="text-muted-foreground">Welcome back!</span>
+            <img src="/dim0.svg" alt={t("auth.sign_in.logo_alt")} className="h-12 w-12 aspect-square object-contain" />
+            <span className="text-muted-foreground">{t("auth.sign_in.title")}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Sign in to continue to your workspace
+            {t("auth.sign_in.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -109,12 +112,12 @@ export function SigninPage() {
             {showLocalSignin ? (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("auth.email_label")}</Label>
                   <div className="relative">
                     <Input
                       id="email"
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder={t("auth.placeholder_email")}
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       required
@@ -127,7 +130,7 @@ export function SigninPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t("auth.password_label")}</Label>
                   <div className="relative">
                     <PasswordInput
                       id="password"
@@ -152,10 +155,10 @@ export function SigninPage() {
                   {localSigninMutation.isPending ? (
                     <span className="inline-flex items-center gap-2">
                       <Loader2Icon className="h-4 w-4 animate-spin" />
-                      Signing in…
+                      {t("auth.sign_in.submitting")}
                     </span>
                   ) : (
-                    "Sign in"
+                    t("auth.sign_in.submit")
                   )}
                 </Button>
               </>
@@ -164,7 +167,7 @@ export function SigninPage() {
             {showSeparator ? (
               <div className="space-y-3">
                 <Separator />
-                <p className="text-center text-sm text-muted-foreground">or</p>
+                <p className="text-center text-sm text-muted-foreground">{t("auth.or")}</p>
               </div>
             ) : null}
 
@@ -183,12 +186,12 @@ export function SigninPage() {
                   {googleRedirecting ? (
                     <span className="inline-flex items-center gap-2">
                       <Loader2Icon className="h-4 w-4 animate-spin" />
-                      Redirecting to Google…
+                      {t("auth.google.redirecting")}
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-2">
                       <Google.Color size={18} />
-                      Continue with Google
+                      {t("auth.google.continue")}
                     </span>
                   )}
                 </Button>
@@ -210,70 +213,70 @@ export function SigninPage() {
                   {desktopGoogleMutation.isPending ? (
                     <span className="inline-flex items-center gap-2">
                       <Loader2Icon className="h-4 w-4 animate-spin" />
-                      Continue in your browser…
+                      {t("auth.google.continue_in_browser")}
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-2">
                       <Google.Color size={18} />
-                      Continue with Google
+                      {t("auth.google.continue")}
                     </span>
                   )}
                 </Button>
                 <p className="text-center text-xs text-muted-foreground">
-                  Opens your browser to sign in, then returns here.
+                  {t("auth.google.browser_hint")}
                 </p>
               </div>
             ) : null}
 
             {!authMethodsQuery.isLoading && !showLocalSignin && !showGoogleWeb && !showGoogleDesktop ? (
               <p className="text-sm text-destructive">
-                No sign-in methods are currently available.
+                {t("auth.sign_in.no_methods")}
               </p>
             ) : null}
 
             {authMethodsQuery.isError ? (
               <p className="text-sm text-destructive">
-                {(authMethodsQuery.error as Error).message || "Unable to load sign-in methods"}
+                {localizeApiError(authMethodsQuery.error, "auth.sign_in.methods_error")}
               </p>
             ) : null}
 
             <p className="text-center text-xs text-muted-foreground">
-              By signing in, you agree to our{" "}
+              {t("auth.legal.sign_in_prefix")}{" "}
               <a
                 href="https://www.dim0.net/terms"
                 target="_blank"
                 rel="noreferrer"
                 className="underline underline-offset-2"
               >
-                Terms
+                {t("auth.legal.terms")}
               </a>{" "}
-              and{" "}
+              {t("auth.legal.and")}{" "}
               <a
                 href="https://www.dim0.net/privacy"
                 target="_blank"
                 rel="noreferrer"
                 className="underline underline-offset-2"
               >
-                Privacy Policy
+                {t("auth.legal.privacy")}
               </a>
               .
             </p>
 
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">
-                Don’t have an account?{" "}
+                {t("auth.sign_in.no_account")}{" "}
                 <Link to="/signup" className="font-medium underline">
-                  Create one
+                  {t("auth.sign_in.create_one")}
                 </Link>
               </span>
               <Link to="/forgot-password" className="text-muted-foreground underline">
-                Forgot password?
+                {t("auth.sign_in.forgot_password")}
               </Link>
             </div>
 
             <div className="text-center">
               <Link to="/" className="text-sm text-muted-foreground underline underline-offset-2">
-                ← Back to local boards
+                {t("auth.sign_in.back_to_local_boards")}
               </Link>
             </div>
           </form>

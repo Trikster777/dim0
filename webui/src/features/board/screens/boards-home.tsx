@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import type { ReactNode } from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { ThemedWelcome } from "@/features/agent/components/chat/welcome-message"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -29,6 +30,7 @@ export function BoardsHome({
   className?: string
   hideTitle?: boolean
 }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const userId = useAppStore((s) => s.userId)
   const { boards: localBoards, ready, createBoard, deleteBoard, renameBoard, refresh } =
@@ -46,7 +48,7 @@ export function BoardsHome({
   }
 
   const handleCreateLocal = async (): Promise<void> => {
-    const meta = await createBoard("Untitled board")
+    const meta = await createBoard(t("board.default_title"))
     if (meta) openLocal(meta.id)
   }
 
@@ -56,17 +58,17 @@ export function BoardsHome({
     <div className={cn("w-full h-full", className)}>
       {!hideTitle && (
         <div className="pt-8 pb-4">
-          <ThemedWelcome name="Dog" message="Note Boards" />
+          <ThemedWelcome name="Dog" message={t("board.home.title")} />
         </div>
       )}
 
       <div className="mx-auto max-w-5xl p-4 space-y-10">
         <Section
-          title="On this device"
-          hint="Private to this browser — no account needed"
+          title={t("board.home.on_device")}
+          hint={t("board.home.on_device_hint")}
           footer={
             ready && onDevice.length === 0
-              ? "No local boards yet — create one above."
+              ? t("board.home.on_device_empty")
               : null
           }
         >
@@ -92,13 +94,13 @@ export function BoardsHome({
         </Section>
 
         <Section
-          title="Synced"
-          hint="Backed up, multi-device, shareable"
+          title={t("board.home.synced")}
+          hint={t("board.home.synced_hint")}
           footer={
             signedIn && !isLoading && synced.length === 0
-              ? "No synced boards yet. Enable sync on a local board to back it up and share it."
+              ? t("board.home.synced_empty")
               : signedIn && isLoading
-                ? "Loading…"
+                ? t("common.loading")
                 : null
           }
         >
@@ -171,23 +173,24 @@ function CardCell({ children }: { children: ReactNode }) {
  * would, and ignoring it costs nothing (local-first stays the default).
  */
 function SyncedSignInCta({ onSignIn }: { onSignIn: () => void }) {
+  const { t } = useTranslation()
   return (
     <div className="w-64 h-60 flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-border p-6 text-center">
       <CloudArrowUpIcon className="size-8 text-muted-foreground" strokeWidth={2} />
       <div className="space-y-1">
-        <p className="text-sm font-medium text-foreground">Sync &amp; share your boards</p>
+        <p className="text-sm font-medium text-foreground">{t("board.home.cta_title")}</p>
         <p className="text-xs text-muted-foreground">
-          Sign in to back them up and open them on any device.
+          {t("board.home.cta_body")}
         </p>
       </div>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="secondary" size="sm" onClick={onSignIn}>
-            Sign in
+            {t("board.home.cta_sign_in")}
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          Signing up is completely free — no credit card required
+          {t("board.home.cta_tooltip")}
         </TooltipContent>
       </Tooltip>
     </div>

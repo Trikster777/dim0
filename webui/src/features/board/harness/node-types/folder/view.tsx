@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { type NodeId } from "@canvas-harness/core"
 import { useCanvasStore, useNode } from "@canvas-harness/react"
 import { removeNodeSubtree } from "@/features/board/harness/graph/subtree"
@@ -63,6 +64,7 @@ const FolderSilhouette = () => (
  */
 export function FolderView({ id }: FolderViewProps) {
   const node = useNode(id)
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const canEdit = useBoardAppStore((s) => s.canEdit)
   const embedded = useIsEmbeddedNodeView()
@@ -83,7 +85,10 @@ export function FolderView({ id }: FolderViewProps) {
       {embedded ? (
         <NodeTrafficLights
           onDelete={canEdit ? () => removeNodeSubtree(store, id) : undefined}
-          confirmDelete={DURABLE_DELETE.folder}
+          confirmDelete={{
+            title: t(DURABLE_DELETE.folder.titleKey),
+            description: t(DURABLE_DELETE.folder.descriptionKey),
+          }}
         />
       ) : null}
 
@@ -97,7 +102,7 @@ export function FolderView({ id }: FolderViewProps) {
         <NodeTitleCaption
           nodeId={id}
           label={label}
-          placeholder="Untitled folder"
+          placeholder={t("harness.surface.untitled_folder")}
           textClassName="text-center text-sm font-handwriting text-foreground"
         />
       </div>

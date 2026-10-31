@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent } from "react"
+import { useTranslation } from "react-i18next"
 import TextareaAutosize from "react-textarea-autosize"
 import { toast } from "sonner"
 import { SparklesIcon } from "@/components/icons"
@@ -27,6 +28,7 @@ export interface FloatingIslandProps {
  * Shares the active board chat via useSubmitPrompt; errors surface as toasts.
  */
 export const FloatingIsland = ({ boardId, onOpenFullSheet }: FloatingIslandProps) => {
+  const { t } = useTranslation()
   const [input, setInput] = useState("")
   const latestAssistantMessage = useCurrentAssistantMessage()
   const isStreaming = latestAssistantMessage?.streaming === true
@@ -54,7 +56,7 @@ export const FloatingIsland = ({ boardId, onOpenFullSheet }: FloatingIslandProps
         ? error.message
         : error instanceof Error
           ? error.message
-          : "Could not send message."
+          : t("agent.input.send_failed")
       toast.error(message)
     }
   }
@@ -87,8 +89,8 @@ export const FloatingIsland = ({ boardId, onOpenFullSheet }: FloatingIslandProps
             <button
               type='button'
               onClick={onOpenFullSheet}
-              title='Open full chat'
-              aria-label='Open full chat'
+              title={t("board.flow.open_chat")}
+              aria-label={t("board.flow.open_chat")}
               className='inline-flex items-center shrink-0 rounded-md cursor-pointer transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-foreground/30'
             >
               <ThinkingIndicator className='text-xs text-foreground/70' iconSize={14} />
@@ -97,8 +99,8 @@ export const FloatingIsland = ({ boardId, onOpenFullSheet }: FloatingIslandProps
             <button
               type='button'
               onClick={onOpenFullSheet}
-              title='Open full chat'
-              aria-label='Open full chat'
+              title={t("board.flow.open_chat")}
+              aria-label={t("board.flow.open_chat")}
               className='flex items-center justify-center rounded-md bg-gradient-to-br from-wiki-link to-secondary-foreground size-7 shrink-0 shadow-sm cursor-pointer transition hover:brightness-110 focus-visible:outline-none'
             >
               <SparklesIcon className='size-3.5 text-primary-foreground' weight='fill' />
@@ -110,16 +112,16 @@ export const FloatingIsland = ({ boardId, onOpenFullSheet }: FloatingIslandProps
           {hasMessageContext && (
             <span
               className='text-xs font-mono px-2 py-0.5 rounded bg-secondary/60 text-secondary-foreground/80 shrink-0'
-              title='Selected nodes included as context'
+              title={t("board.flow.selected_title")}
             >
-              · selected
+              · {t("board.flow.selected")}
             </span>
           )}
           <TextareaAutosize
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={hasModel ? 'Ask about this board, or give a task…' : 'Set a model key to start'}
+            placeholder={hasModel ? t("board.flow.placeholder") : t("board.flow.placeholder_no_model")}
             minRows={1}
             maxRows={4}
             disabled={isStreaming || !hasModel}
@@ -134,7 +136,7 @@ export const FloatingIsland = ({ boardId, onOpenFullSheet }: FloatingIslandProps
         </div>
       </div>
       <p className='text-center text-[11px] text-muted-foreground/70 px-3'>
-        AI can make mistakes. Verify important details carefully.
+        {t("agent.input.disclaimer")}
       </p>
     </div>
   )

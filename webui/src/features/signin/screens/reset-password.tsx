@@ -2,12 +2,14 @@ import * as React from "react"
 import { useMutation } from "@tanstack/react-query"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 import { resetPassword } from "@/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Loader2Icon, LockIcon } from "@/components/icons"
+import { localizeApiError } from "@/lib/i18n/errors"
 import { PasswordInput } from "../components/password-input"
 import { PasswordStrengthMeter } from "../components/password-strength-meter"
 import { getPasswordStrength } from "../lib/password-strength"
@@ -15,6 +17,7 @@ import { getPasswordStrength } from "../lib/password-strength"
 
 /** Renders the reset-password screen and posts a new password against the URL token. */
 export function ResetPasswordPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const token = React.useMemo(
     () => new URLSearchParams(window.location.search).get("token") ?? "",
@@ -30,7 +33,7 @@ export function ResetPasswordPage() {
   const mut = useMutation({
     mutationFn: () => resetPassword(token, password),
     onSuccess: () => {
-      toast.success("Password reset. Please sign in with your new password.")
+      toast.success(t("auth.reset_password.success"))
       navigate({ to: "/signin", replace: true })
     },
   })
@@ -41,9 +44,9 @@ export function ResetPasswordPage() {
     <div className="w-full max-w-md mx-auto">
       <Card className="bg-card text-card-foreground border border-border shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Reset your password</CardTitle>
+          <CardTitle className="text-2xl">{t("auth.reset_password.title")}</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Choose a new password for your account.
+            {t("auth.reset_password.description")}
           </CardDescription>
         </CardHeader>
 
@@ -51,13 +54,13 @@ export function ResetPasswordPage() {
           {tokenError ? (
             <div className="space-y-4">
               <p className="text-sm text-destructive">
-                This reset link is missing a token. Please request a new password reset email.
+                {t("auth.reset_password.missing_token")}
               </p>
               <Link
                 to="/forgot-password"
                 className="block w-full text-center text-sm font-medium underline underline-offset-2"
               >
-                Request a new reset link
+                {t("auth.reset_password.request_new_link")}
               </Link>
             </div>
           ) : (
@@ -66,11 +69,11 @@ export function ResetPasswordPage() {
               onSubmit={e => {
                 e.preventDefault()
                 if (!passwordStrength.isValid) {
-                  setFormError("Please choose a stronger password before continuing.")
+                  setFormError(t("auth.weak_password"))
                   return
                 }
                 if (!passwordsMatch) {
-                  setFormError("Passwords do not match.")
+                  setFormError(t("auth.passwords_do_not_match"))
                   return
                 }
                 setFormError(null)
@@ -78,7 +81,7 @@ export function ResetPasswordPage() {
               }}
             >
               <div className="space-y-2">
-                <Label htmlFor="password">New password</Label>
+                <Label htmlFor="password">{t("auth.reset_password.new_password_label")}</Label>
                 <div className="relative">
                   <PasswordInput
                     id="password"
@@ -96,7 +99,7 @@ export function ResetPasswordPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirm">Confirm password</Label>
+                <Label htmlFor="confirm">{t("auth.reset_password.confirm_password_label")}</Label>
                 <div className="relative">
                   <PasswordInput
                     id="confirm"
@@ -110,7 +113,7 @@ export function ResetPasswordPage() {
                   <LockIcon className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" strokeWidth={2} />
                 </div>
                 {confirm.length > 0 && !passwordsMatch ? (
-                  <p className="text-xs text-destructive">Passwords do not match.</p>
+                  <p className="text-xs text-destructive">{t("auth.passwords_do_not_match")}</p>
                 ) : null}
               </div>
 
@@ -120,7 +123,7 @@ export function ResetPasswordPage() {
 
               {mut.isError ? (
                 <p className="text-sm text-destructive">
-                  {(mut.error as Error).message || "Unable to reset password"}
+                  {localizeApiError(mut.error, "auth.reset_password.error_fallback")}
                 </p>
               ) : null}
 
@@ -128,17 +131,17 @@ export function ResetPasswordPage() {
                 {mut.isPending ? (
                   <span className="inline-flex items-center gap-2">
                     <Loader2Icon className="h-4 w-4 animate-spin" />
-                    Resetting…
+                    {t("auth.reset_password.submitting")}
                   </span>
                 ) : (
-                  "Reset password"
+                  t("auth.reset_password.submit")
                 )}
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
-                Link expired or invalid?{" "}
+                {t("auth.reset_password.link_problem")}{" "}
                 <Link to="/forgot-password" className="font-medium underline">
-                  Request a new one
+                  {t("auth.reset_password.request_new_one")}
                 </Link>
               </p>
             </form>

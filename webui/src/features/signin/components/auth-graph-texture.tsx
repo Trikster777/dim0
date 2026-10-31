@@ -1,4 +1,5 @@
 import { type CSSProperties, useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import "./auth-graph-texture.css"
 
@@ -27,17 +28,18 @@ type AmbientNode = {
 }
 
 
+// Decorative labels; `label` holds a locale key and is resolved in AuthGraphNode.
 const NODES: AmbientNode[] = [
-  { kind: "note", color: COLORS[0], label: "ideas", fx: 0.12, fy: 0.22 },
+  { kind: "note", color: COLORS[0], label: "auth.graph.ideas", fx: 0.12, fy: 0.22 },
   { kind: "dot", color: COLORS[1], label: "", fx: 0.07, fy: 0.48 },
-  { kind: "chip", color: COLORS[2], label: "#focus", fx: 0.19, fy: 0.72 },
-  { kind: "note", color: COLORS[1], label: "to-do", fx: 0.15, fy: 0.88 },
-  { kind: "idea", color: COLORS[0], label: "a spark", fx: 0.85, fy: 0.26 },
+  { kind: "chip", color: COLORS[2], label: "auth.graph.chip_focus", fx: 0.19, fy: 0.72 },
+  { kind: "note", color: COLORS[1], label: "auth.graph.todo", fx: 0.15, fy: 0.88 },
+  { kind: "idea", color: COLORS[0], label: "auth.graph.spark", fx: 0.85, fy: 0.26 },
   { kind: "dot", color: COLORS[2], label: "", fx: 0.74, fy: 0.5 },
-  { kind: "note", color: COLORS[3], label: "notes", fx: 0.9, fy: 0.64 },
-  { kind: "chip", color: COLORS[1], label: "#flow", fx: 0.82, fy: 0.86 },
+  { kind: "note", color: COLORS[3], label: "auth.graph.notes", fx: 0.9, fy: 0.64 },
+  { kind: "chip", color: COLORS[1], label: "auth.graph.chip_flow", fx: 0.82, fy: 0.86 },
   { kind: "dot", color: COLORS[0], label: "", fx: 0.5, fy: 0.1 },
-  { kind: "idea", color: COLORS[2], label: "connect", fx: 0.52, fy: 0.9 },
+  { kind: "idea", color: COLORS[2], label: "auth.graph.connect", fx: 0.52, fy: 0.9 },
 ]
 
 
@@ -154,8 +156,10 @@ type AuthGraphNodeProps = {
 
 
 /** One decorative node. Archetypes mirror the landing-page graph; each
- *  drifts on its own slow, staggered loop. */
+ *  drifts on its own slow, staggered loop. `label` is a locale key. */
 function AuthGraphNode({ kind, color, label, x, y, floatSeed }: AuthGraphNodeProps) {
+  const { t } = useTranslation()
+
   const floatStyle: CSSProperties = {
     left: x,
     top: y,
@@ -195,7 +199,7 @@ function AuthGraphNode({ kind, color, label, x, y, floatSeed }: AuthGraphNodePro
           opacity: 0.7,
         }}
       >
-        {label}
+        {label ? t(label) : null}
       </div>
     )
   }
@@ -217,7 +221,7 @@ function AuthGraphNode({ kind, color, label, x, y, floatSeed }: AuthGraphNodePro
           opacity: 0.82,
         }}
       >
-        {label}
+        {label ? t(label) : null}
       </div>
     )
   }
@@ -240,7 +244,7 @@ function AuthGraphNode({ kind, color, label, x, y, floatSeed }: AuthGraphNodePro
         opacity: 0.75,
       }}
     >
-      {label}
+      {label ? t(label) : null}
     </div>
   )
 }

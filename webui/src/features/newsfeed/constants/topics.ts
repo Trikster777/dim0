@@ -5,14 +5,14 @@ export const PREDEFINED_TOPICS = ['ai', 'technology', 'health', 'climate', 'fina
 export type PredefinedTopic = typeof PREDEFINED_TOPICS[number]
 
 /**
- * A human-readable display name for each predefined topic.
+ * Locale key for each predefined topic's display name; resolve with `t()`.
  */
 export const TOPIC_DISPLAY: Record<PredefinedTopic, string> = {
-  ai: 'Artificial Intelligence',
-  technology: 'Technology',
-  health: 'Health',
-  climate: 'Climate',
-  finance: 'Finance'
+  ai: 'newsfeed.topic.ai',
+  technology: 'newsfeed.topic.technology',
+  health: 'newsfeed.topic.health',
+  climate: 'newsfeed.topic.climate',
+  finance: 'newsfeed.topic.finance'
 }
 
 /**

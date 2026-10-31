@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 import { useListBoards } from "../api/list-boards"
 import { BoardCard, NewBoardCard } from "./board-card"
 import { ThemedWelcome } from "@/features/agent/components/chat/welcome-message"
@@ -11,6 +12,7 @@ import { useAppStore } from "@/store"
  * Dashboard component displaying user's boards, styled like SubscriptionsPage.
  */
 export const Dashboard = ({ className, hideTitle = false }: { className?: string; hideTitle?: boolean }) => {
+  const { t } = useTranslation()
   const userId = useAppStore(s => s.userId)
   const { data: boards, isLoading, isError } = useListBoards(userId)
 
@@ -33,7 +35,7 @@ export const Dashboard = ({ className, hideTitle = false }: { className?: string
       {
         !hideTitle && (
           <div className="pt-8 pb-4">
-            <ThemedWelcome name="Dog" message="Note Boards" />
+            <ThemedWelcome name="Dog" message={t("board.home.title")} />
           </div>
         )
       }
@@ -46,7 +48,7 @@ export const Dashboard = ({ className, hideTitle = false }: { className?: string
             place-items-center
           "
           role="list"
-          aria-label="Boards"
+          aria-label={t("board.dashboard.aria")}
         >
           <div className="w-full h-full flex justify-center items-center">
             <NewBoardCard />
@@ -70,17 +72,17 @@ export const Dashboard = ({ className, hideTitle = false }: { className?: string
 
         {isLoading && (
           <div className="text-center mt-6 text-muted-foreground text-sm">
-            Loading…
+            {t("common.loading")}
           </div>
         )}
         {isError && (
           <div className="text-center mt-6 text-destructive text-sm">
-            Failed to load boards
+            {t("board.dashboard.error")}
           </div>
         )}
         {!isLoading && !isError && sorted.length === 0 && (
           <div className="text-center mt-8 text-muted-foreground">
-            No boards yet. Create your first one above!
+            {t("board.dashboard.empty")}
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { Loader2Icon, MailCheckIcon } from "@/components/icons"
 
 import { getEmailVerificationStatus, resendVerificationEmail, verifyEmailToken } from "@/api"
@@ -8,11 +9,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { clearTokens } from "@/features/signin/auth-storage"
+import { localizeApiError } from "@/lib/i18n/errors"
 import { useAppStore } from "@/store"
 
 
 export function VerifyEmailPage() {
   /** Render a verification gate screen until the account email is confirmed. */
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const userEmail = useAppStore(s => s.userEmail)
   const setUserId = useAppStore(s => s.setUserId)
@@ -26,7 +29,7 @@ export function VerifyEmailPage() {
 
   const resendMut = useMutation({
     mutationFn: async () => resendVerificationEmail(),
-    onSuccess: () => setInfoMessage("Verification email sent. Please check your inbox."),
+    onSuccess: () => setInfoMessage(t("auth.verify_email.sent")),
   })
 
   const verifyTokenMut = useMutation({
@@ -34,11 +37,11 @@ export function VerifyEmailPage() {
     onSuccess: () => {
       setEmailVerificationEnabled(true)
       setEmailVerified(true)
-      setInfoMessage("Email verified successfully. Redirecting...")
+      setInfoMessage(t("auth.verify_email.verified"))
       navigate({ to: "/", replace: true })
     },
     onError: () => {
-      setInfoMessage("Verification link is invalid or expired.")
+      setInfoMessage(t("auth.verify_email.invalid_link"))
     },
   })
 
@@ -51,7 +54,7 @@ export function VerifyEmailPage() {
         navigate({ to: "/", replace: true })
         return
       }
-      setInfoMessage("Email is still not verified yet.")
+      setInfoMessage(t("auth.verify_email.still_unverified"))
     },
   })
 
@@ -70,29 +73,29 @@ export function VerifyEmailPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl flex items-center justify-center gap-2">
             <MailCheckIcon className="h-6 w-6 text-secondary-foreground" />
-            Verify your email
+            {t("auth.verify_email.title")}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            We sent a verification link to <span className="font-medium text-foreground">{userEmail}</span>
+            {t("auth.verify_email.sent_to_prefix")} <span className="font-medium text-foreground">{userEmail}</span>
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
           {resendMut.isError ? (
             <p className="text-sm text-destructive">
-              {(resendMut.error as Error).message || "Could not resend verification email."}
+              {localizeApiError(resendMut.error, "auth.verify_email.resend_error")}
             </p>
           ) : null}
 
           {verifyTokenMut.isError ? (
             <p className="text-sm text-destructive">
-              {(verifyTokenMut.error as Error).message || "Could not verify email token."}
+              {localizeApiError(verifyTokenMut.error, "auth.verify_email.token_error")}
             </p>
           ) : null}
 
           {checkMut.isError ? (
             <p className="text-sm text-destructive">
-              {(checkMut.error as Error).message || "Could not check verification status."}
+              {localizeApiError(checkMut.error, "auth.verify_email.status_error")}
             </p>
           ) : null}
 
@@ -103,7 +106,7 @@ export function VerifyEmailPage() {
           {verifyTokenMut.isPending ? (
             <p className="text-sm text-muted-foreground inline-flex items-center gap-2">
               <Loader2Icon className="h-4 w-4 animate-spin" />
-              Verifying email...
+              {t("auth.verify_email.verifying")}
             </p>
           ) : null}
 
@@ -120,10 +123,10 @@ export function VerifyEmailPage() {
             {resendMut.isPending ? (
               <span className="inline-flex items-center gap-2">
                 <Loader2Icon className="h-4 w-4 animate-spin" />
-                Sending...
+                {t("auth.verify_email.sending")}
               </span>
             ) : (
-              "Resend verification email"
+              t("auth.verify_email.resend")
             )}
           </Button>
 
@@ -141,10 +144,10 @@ export function VerifyEmailPage() {
             {checkMut.isPending ? (
               <span className="inline-flex items-center gap-2">
                 <Loader2Icon className="h-4 w-4 animate-spin" />
-                Checking...
+                {t("auth.verify_email.checking")}
               </span>
             ) : (
-              "I've verified, continue"
+              t("auth.verify_email.continue")
             )}
           </Button>
 
@@ -162,7 +165,7 @@ export function VerifyEmailPage() {
               navigate({ to: "/signin", replace: true })
             }}
           >
-            Sign out
+            {t("auth.verify_email.sign_out")}
           </Button>
         </CardContent>
       </Card>

@@ -18,6 +18,7 @@
 import { CHART_TYPES } from "../render/chart/types"
 import { evalExpr, makeCtx, type Env, type Expr } from "../interpreter"
 import type { AppletTree, ElNode, JsonValue, Node } from "../tree"
+import { i18n } from "@/i18n"
 
 
 export type SmokeResult = { ok: true } | { ok: false; message: string }
@@ -49,6 +50,12 @@ const ARRAY_PROPS: Record<string, readonly string[]> = {
 class SmokeFail extends Error {}
 
 
+// Code samples stay out of the locale files: their `{{ … }}` JSX bindings would be
+// parsed as i18next placeholders. The prose around them is translated.
+const CHART_TYPE_EXAMPLE = '`<Chart type="bar" data={{ labels, datasets: [{ data }] }} />`'
+const CHART_DATASETS_EXAMPLE = '`data={{ labels: [...], datasets: [{ data: [...] }] }}`'
+
+
 /**
  * Dry-run the compiled tree against its declared initial state. Returns `ok` when
  * nothing throws and every array-iterating component gets an array; otherwise a
@@ -66,7 +73,10 @@ export function smokeTestApplet(tree: AppletTree): SmokeResult {
     try {
       derived[name] = evalExpr(expr, derivedEnv, makeCtx())
     } catch (e) {
-      return { ok: false, message: `the \`derived\` value \`${name}\` fails to evaluate: ${errText(e)}` }
+      return {
+        ok: false,
+        message: i18n.t("harness.applet.smoke.derived_failed", { name, error: errText(e) }),
+      }
     }
   }
 
@@ -75,7 +85,10 @@ export function smokeTestApplet(tree: AppletTree): SmokeResult {
     walk(tree.root, env)
   } catch (e) {
     if (e instanceof SmokeFail) return { ok: false, message: e.message }
-    return { ok: false, message: `the applet throws while rendering: ${errText(e)}` }
+    return {
+      ok: false,
+      message: i18n.t("harness.applet.smoke.render_throws", { error: errText(e) }),
+    }
   }
   return { ok: true }
 }
@@ -142,9 +155,11 @@ function walkElement(node: ElNode, env: Env): void {
       // non-array value is a definite crash.
       if (value != null && !Array.isArray(value)) {
         throw new SmokeFail(
-          `<${node.tag}> prop \`${prop}\` must be an array, but it evaluates to ${typeName(value)} on the ` +
-            `initial state. Initialize it as an array (e.g. a \`data\`/\`state\` array literal) so the ` +
-            `applet renders instead of throwing.`,
+          i18n.t("harness.applet.smoke.array_prop", {
+            tag: node.tag,
+            prop,
+            value: typeName(value),
+          }),
         )
       }
     }
@@ -171,13 +186,23 @@ function checkChart(node: ElNode, bound: Record<string, unknown>): void {
 
   const type = resolve("type")
   if (!type.present) {
-    throw new SmokeFail(`<Chart> needs a \`type\` — one of ${CHART_TYPES.join(", ")}. e.g. \`<Chart type="bar" data={{ labels, datasets: [{ data }] }} />\`.`)
+    throw new SmokeFail(
+      i18n.t("harness.applet.smoke.chart_type_missing", {
+        types: CHART_TYPES.join(", "),
+        example: CHART_TYPE_EXAMPLE,
+      }),
+    )
   }
   // Reject any present, non-nullish type that isn't a valid kind — a string typo AND a
   // non-string (a number/object from a bad binding), both of which break the renderer. A
   // nullish resolved value (a dynamic type not yet set) is left alone, like `data` below.
   if (type.value != null && !(typeof type.value === "string" && (CHART_TYPES as readonly string[]).includes(type.value))) {
-    throw new SmokeFail(`<Chart> \`type\` must be one of ${CHART_TYPES.join(", ")} — got ${JSON.stringify(type.value)}.`)
+    throw new SmokeFail(
+      i18n.t("harness.applet.smoke.chart_type_invalid", {
+        types: CHART_TYPES.join(", "),
+        value: JSON.stringify(type.value),
+      }),
+    )
   }
 
   // `data` is optional (omitted → an empty chart, not a crash); only a PRESENT, non-nullish
@@ -186,13 +211,12 @@ function checkChart(node: ElNode, bound: Record<string, unknown>): void {
   if (!data.present || data.value == null) return
   const d = data.value
   if (Array.isArray(d)) {
-    throw new SmokeFail(
-      `<Chart> \`data\` must be an object \`{ labels, datasets: [{ data: [...] }] }\`, not a top-level array. ` +
-        `Every type — pie/doughnut included — uses that same shape (no per-slice \`{ name, value }\` objects).`,
-    )
+    throw new SmokeFail(i18n.t("harness.applet.smoke.chart_data_top_array"))
   }
   if (typeof d !== "object") {
-    throw new SmokeFail(`<Chart> \`data\` must be an object \`{ labels, datasets: [{ data: [...] }] }\`, but it evaluates to ${typeName(d)}.`)
+    throw new SmokeFail(
+      i18n.t("harness.applet.smoke.chart_data_not_object", { value: typeName(d) }),
+    )
   }
   // A MISSING `datasets` key is the mistake (data put directly on `data`) → flag. A present
   // but nullish `datasets` (a dynamic binding not yet populated) renders an empty chart —
@@ -201,15 +225,21 @@ function checkChart(node: ElNode, bound: Record<string, unknown>): void {
   const dObj = d as Record<string, unknown>
   if (!("datasets" in dObj) || (dObj.datasets != null && !Array.isArray(dObj.datasets))) {
     throw new SmokeFail(
-      `<Chart> \`data\` needs a \`datasets\` array: \`data={{ labels: [...], datasets: [{ data: [...] }] }}\`. ` +
-        `Put the numbers under \`datasets[].data\`, not directly on \`data\`.`,
+      i18n.t("harness.applet.smoke.chart_datasets_missing", {
+        example: CHART_DATASETS_EXAMPLE,
+      }),
     )
   }
   const datasets = dObj.datasets
   if (datasets == null) return // populated later — an empty chart, not a crash
   datasets.forEach((ds, i) => {
     if (ds == null || typeof ds !== "object" || Array.isArray(ds)) {
-      throw new SmokeFail(`<Chart> dataset ${i} must be an object like \`{ label: "Sales", data: [10, 20, 30] }\`, but it is ${typeName(ds)}.`)
+      throw new SmokeFail(
+        i18n.t("harness.applet.smoke.chart_dataset_not_object", {
+          index: i,
+          value: typeName(ds),
+        }),
+      )
     }
     const dsObj = ds as Record<string, unknown>
     // A MISSING `data` key is the recharts/`{ name, value }` mistake → flag. A present but
@@ -217,12 +247,16 @@ function checkChart(node: ElNode, bound: Record<string, unknown>): void {
     // the top-level nullish policy.
     if (!("data" in dsObj)) {
       throw new SmokeFail(
-        `<Chart> dataset ${i} has no \`data\` array — put the numbers under \`data\`: \`{ data: [10, 20, 30] }\`. ` +
-          `Even pie/doughnut use this; a \`{ name, value }\` per-slice object is the old shape.`,
+        i18n.t("harness.applet.smoke.chart_dataset_data_missing", { index: i }),
       )
     }
     if (dsObj.data != null && !Array.isArray(dsObj.data)) {
-      throw new SmokeFail(`<Chart> dataset ${i}'s \`data\` must be an array (e.g. \`[10, 20, 30]\`), but it is ${typeName(dsObj.data)}.`)
+      throw new SmokeFail(
+        i18n.t("harness.applet.smoke.chart_dataset_data_not_array", {
+          index: i,
+          value: typeName(dsObj.data),
+        }),
+      )
     }
   })
 }
@@ -240,11 +274,18 @@ function buildEnv(
 
 /** A short, human type label (with article) for the array-prop failure message. */
 function typeName(value: unknown): string {
-  if (value === null) return "null"
-  if (value === undefined) return "undefined"
-  if (Array.isArray(value)) return "an array"
+  if (value === null) return i18n.t("harness.applet.type.null")
+  if (value === undefined) return i18n.t("harness.applet.type.undefined")
+  if (Array.isArray(value)) return i18n.t("harness.applet.type.array")
   const t = typeof value
-  return `${t === "object" ? "an" : "a"} ${t}`
+  if (t === "object") return i18n.t("harness.applet.type.object")
+  if (t === "string") return i18n.t("harness.applet.type.string")
+  if (t === "number") return i18n.t("harness.applet.type.number")
+  if (t === "boolean") return i18n.t("harness.applet.type.boolean")
+  if (t === "function") return i18n.t("harness.applet.type.function")
+  if (t === "symbol") return i18n.t("harness.applet.type.symbol")
+  if (t === "bigint") return i18n.t("harness.applet.type.bigint")
+  return i18n.t("harness.applet.type.other", { type: t })
 }
 
 

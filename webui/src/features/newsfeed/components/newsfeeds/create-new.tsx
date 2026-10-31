@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent } from '@/components/ui/card'
 import { AddIcon } from '@/components/icons'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,7 @@ export function CreateNewsfeedTile({
   subscriptionId?: string
   onStart?: (id: string) => void
 }) {
+  const { t } = useTranslation()
   const create = useCreateNewsfeed(subscriptionId)
   const pending = create.isPending
 
@@ -30,7 +32,7 @@ export function CreateNewsfeedTile({
       onClick={handleClick}
       disabled={!subscriptionId || pending}
       className='text-left w-full'
-      aria-label='Create Newsfeed'
+      aria-label={t('newsfeed.create_newsfeed')}
     >
       <Card
         className={cn(

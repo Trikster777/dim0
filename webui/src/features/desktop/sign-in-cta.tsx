@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { SidebarMenuButton } from "@/components/ui/sidebar"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { UserProfileIcon } from "@/components/icons"
@@ -15,16 +16,17 @@ const CTA_CLASS =
  */
 export function SignInCta() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <SidebarMenuButton className={CTA_CLASS} onClick={() => navigate({ to: "/signin" })}>
           <UserProfileIcon className="size-4 shrink-0" strokeWidth={2} />
-          <span>Sign in to sync &amp; share</span>
+          <span>{t("sidebar.sign_in_cta.label")}</span>
         </SidebarMenuButton>
       </TooltipTrigger>
       <TooltipContent side="top">
-        Signing up is completely free — no credit card required
+        {t("sidebar.sign_in_cta.hint")}
       </TooltipContent>
     </Tooltip>
   )

@@ -11,6 +11,7 @@
 // exists only for on-demand PNG/SVG export of selected nodes, not for this placeholder.)
 
 import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useTranslation } from "react-i18next"
 
 import { ChartLineIcon } from "@phosphor-icons/react"
 import { type NodeId } from "@canvas-harness/core"
@@ -44,6 +45,7 @@ export interface AppletViewProps {
  */
 export function AppletNodeView({ id }: AppletViewProps) {
   const node = useNode(id)
+  const { t } = useTranslation()
   const store = useCanvasStore()
   const canEdit = useBoardAppStore((s) => s.canEdit)
   const openNodeSurface = useBoardAppStore((s) => s.openNodeSurface)
@@ -167,7 +169,7 @@ export function AppletNodeView({ id }: AppletViewProps) {
         <NodeTitleCaption
           nodeId={id}
           label={label}
-          placeholder="Untitled applet"
+          placeholder={t("harness.surface.untitled_applet")}
           textClassName="text-center text-sm font-handwriting text-foreground"
         />
       </div>

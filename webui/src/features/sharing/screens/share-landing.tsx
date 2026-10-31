@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { getAccessToken } from "@/features/signin/auth-storage"
@@ -25,6 +26,7 @@ type Phase = "checking-auth" | "needs-signin" | "loading" | "ready" | "accepting
  *  3. Link unknown / revoked: friendly error with a way back home.
  */
 export function ShareLandingScreen() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const userId = useAppStore((s) => s.userId)
@@ -36,7 +38,7 @@ export function ShareLandingScreen() {
 
   useEffect(() => {
     if (!token) {
-      setError("Missing share token in the URL.")
+      setError(t("share.error.missing_token"))
       setPhase("error")
       return
     }
@@ -59,13 +61,13 @@ export function ShareLandingScreen() {
       })
       .catch(() => {
         if (cancelled) return
-        setError("This link is no longer active. Ask the owner for a new one.")
+        setError(t("share.error.inactive_link"))
         setPhase("error")
       })
     return () => {
       cancelled = true
     }
-  }, [token])
+  }, [token, t])
 
   const onOpen = async () => {
     setPhase("accepting")
@@ -79,7 +81,7 @@ export function ShareLandingScreen() {
       }
       if (!result.already_member) {
         toast.success(
-          `Added to board as ${result.role}.`,
+          t("share.toast.added", { role: result.role }),
         )
       }
       // Refresh the sidebar's "Shared with me" section — without
@@ -91,7 +93,7 @@ export function ShareLandingScreen() {
       }
       navigate({ to: "/boards/$id", params: { id: result.graph_uid } })
     } catch {
-      setError("Couldn't accept the invitation. Try again.")
+      setError(t("share.error.accept"))
       setPhase("error")
     }
   }
@@ -100,16 +102,16 @@ export function ShareLandingScreen() {
     <div className="mx-auto max-w-md p-6">
       <div className="rounded-2xl border border-border bg-background p-6 shadow-md">
         {phase === "checking-auth" || phase === "loading" ? (
-          <Status text="Checking invitation…" />
+          <Status text={t("share.checking_invitation")} />
         ) : phase === "needs-signin" ? (
           <SignInPanel onGoSignIn={() => navigate({ to: "/signin" })} />
         ) : phase === "ready" && info ? (
           <ReadyPanel role={info.role} onOpen={onOpen} />
         ) : phase === "accepting" ? (
-          <Status text="Joining the board…" />
+          <Status text={t("share.joining")} />
         ) : (
           <ErrorPanel
-            message={error ?? "Unknown error."}
+            message={error ?? t("share.error.unknown")}
             onGoHome={() => navigate({ to: "/" })}
           />
         )}
@@ -130,14 +132,15 @@ function Status({ text }: { text: string }) {
 
 
 function SignInPanel({ onGoSignIn }: { onGoSignIn: () => void }) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <h1 className="text-lg font-semibold">You've been invited to a board</h1>
+      <h1 className="text-lg font-semibold">{t("share.signin_panel.title")}</h1>
       <p className="text-sm text-muted-foreground">
-        Sign in to your Dim0 account to accept this invitation.
+        {t("share.signin_panel.description")}
       </p>
       <Button onClick={onGoSignIn} className="mt-2">
-        Sign in
+        {t("share.signin_panel.submit")}
       </Button>
     </div>
   )
@@ -145,16 +148,17 @@ function SignInPanel({ onGoSignIn }: { onGoSignIn: () => void }) {
 
 
 function ReadyPanel({ role, onOpen }: { role: ShareRole; onOpen: () => void }) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <h1 className="text-lg font-semibold">You've been invited</h1>
+      <h1 className="text-lg font-semibold">{t("share.ready.title")}</h1>
       <p className="text-sm text-muted-foreground">
         {role === "member"
-          ? "You'll be able to view and edit this board."
-          : "You'll have view-only access to this board."}
+          ? t("share.ready.member")
+          : t("share.ready.viewer")}
       </p>
       <Button onClick={onOpen} className="mt-2">
-        Open board
+        {t("share.ready.open")}
       </Button>
     </div>
   )
@@ -162,12 +166,13 @@ function ReadyPanel({ role, onOpen }: { role: ShareRole; onOpen: () => void }) {
 
 
 function ErrorPanel({ message, onGoHome }: { message: string; onGoHome: () => void }) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <h1 className="text-lg font-semibold">This invitation isn't usable</h1>
+      <h1 className="text-lg font-semibold">{t("share.error_panel.title")}</h1>
       <p className="text-sm text-muted-foreground">{message}</p>
       <Button variant="secondary" onClick={onGoHome} className="mt-2">
-        Back home
+        {t("share.error_panel.back_home")}
       </Button>
     </div>
   )

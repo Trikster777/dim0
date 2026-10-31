@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Progress } from '@/components/ui/progress'
+import { useTranslation } from 'react-i18next'
 
 type ProgressBarProps = {
   estimatedTime: number   // seconds
@@ -13,6 +14,7 @@ type ProgressBarProps = {
  * so it won’t restart on remount/navigation.
  */
 export const ProgressBar = ({ estimatedTime, isStop, startedAt }: ProgressBarProps) => {
+  const { t } = useTranslation()
   const [value, setValue] = useState(0)
   const [visible, setVisible] = useState(false)
 
@@ -71,7 +73,7 @@ export const ProgressBar = ({ estimatedTime, isStop, startedAt }: ProgressBarPro
     <div className='px-2 pb-2 w-full flex flex-col items-center'>
       <div className='w-full max-w-[250px]'>
         <div className='flex items-center justify-between mb-1'>
-          <span className='text-xs text-muted-foreground font-mono'>Estimated</span>
+          <span className='text-xs text-muted-foreground font-mono'>{t('progress.bar.estimated')}</span>
           <span className='text-xs font-mono tabular-nums text-secondary-foreground'>{value}%</span>
         </div>
         <Progress value={value} className='h-2' />

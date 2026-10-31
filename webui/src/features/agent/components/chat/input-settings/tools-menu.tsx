@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ToolsMenuIcon } from "@/components/icons"
 import { clsx } from "clsx"
+import { useTranslation } from "react-i18next"
 import { CodeInterpreterChoiceMenu } from "./code-interpreter"
 import { ImageGenMenu } from "./image-gen"
 import { MemorySearchChoiceMenu } from "./memory-search"
@@ -13,6 +14,7 @@ type ToolsMenuProps = {
 }
 
 export const ToolsMenu = ({ memorySearchAvailable = true }: ToolsMenuProps) => {
+  const { t } = useTranslation()
   const buttonClass = clsx(
     "transition-all shrink-0 my-icon p-2 rounded-lg",
     "hover:bg-accent dark:bg-input/30 dark:hover:bg-accent/50",
@@ -29,7 +31,7 @@ export const ToolsMenu = ({ memorySearchAvailable = true }: ToolsMenuProps) => {
               render={
                 <button
                   className={buttonClass}
-                  aria-label="Open settings"
+                  aria-label={t("agent.settings.open_settings")}
                 >
                   <ToolsMenuIcon className="size-4 shrink-0" strokeWidth={2} />
                 </button>
@@ -38,13 +40,13 @@ export const ToolsMenu = ({ memorySearchAvailable = true }: ToolsMenuProps) => {
           </TooltipTrigger>
         </div>
         <TooltipContent>
-          Settings
+          {t("agent.settings.title")}
         </TooltipContent>
       </Tooltip>
       <DialogContent className="w-[320px] max-w-[calc(100%-2rem)] rounded-lg p-4">
         <DialogHeader className="mb-2">
           <DialogTitle className="text-sm font-medium text-muted-foreground">
-            Settings
+            {t("agent.settings.title")}
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-1">

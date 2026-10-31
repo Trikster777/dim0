@@ -1,5 +1,6 @@
 import React from "react"
 import { useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { LinkIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
 import { PageRefChip } from "./page-ref-chip"
@@ -64,13 +65,14 @@ const textOf = (node: React.ReactNode): string => {
  */
 export function MarkdownLink({ children, href, ...rest }: MarkdownLinkProps) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   // Page-ref short-circuit: don't render an <a> at all. The chip
   // carries the title from the markdown's link text and behaves as a
   // self-contained inline element. v1 has no click target — adding
   // navigate() requires a host PageProvider that knows where pages live.
   if (href?.startsWith(PAGE_HREF_PREFIX)) {
-    const title = textOf(children).trim() || "Untitled"
+    const title = textOf(children).trim() || t('markdown.page_ref.untitled')
     return <PageRefChip title={title} />
   }
 
@@ -101,7 +103,7 @@ export function MarkdownLink({ children, href, ...rest }: MarkdownLinkProps) {
   }
 
   const content = Array.isArray(children) ? children[0] : children
-  const label = typeof content === "string" ? content.replace(/^[[]|[\]]$/g, "") : "source"
+  const label = typeof content === "string" ? content.replace(/^[[]|[\]]$/g, "") : t('markdown.link.source_label')
 
   const onClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (!href) return

@@ -18,6 +18,8 @@
  * harness migration notes.
  */
 
+import { i18n } from "@/i18n"
+
 // Tolerant pattern: matches both the canonical multi-line form
 //   :::page <id>
 //   title (one or more lines)
@@ -44,7 +46,7 @@ export const expandPageBlocks = (markdown: string): string => {
   return markdown.replace(SUBPAGE_BLOCK_RE, (_match, id: string, titleBody: string) => {
     // Title may span multiple lines in the block — flatten + trim so
     // the inline chip reads cleanly. Fallback matches the TipTap snap.
-    const title = titleBody.replace(/\s+/g, " ").trim() || "Untitled"
+    const title = titleBody.replace(/\s+/g, " ").trim() || i18n.t("markdown.page_ref.untitled")
     return `[${escapeLinkText(title)}](page://${id})`
   })
 }

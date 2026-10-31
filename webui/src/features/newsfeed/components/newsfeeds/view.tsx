@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { useListNewsfeeds } from '@/features/newsfeed/api/list-newsfeeds'
 import { useGetNewsfeed } from '@/features/newsfeed/api/get-newsfeed'
 import { MarkdownView } from '@/components/markdown/markdown-view'
@@ -20,6 +21,7 @@ import { SaveAsNote } from '@/features/agent/components/chat/actions/save-as-not
 const EMPTY_LIST = [] as Newsfeed[]
 
 export function NewsfeedsView() {
+  const { t } = useTranslation()
   const { id } = useParams({ from: '/subscriptions/$id', shouldThrow: false })
   const subId = id as string | undefined
 
@@ -81,7 +83,9 @@ export function NewsfeedsView() {
   const currentId = viewMode !== 'history' ? (selectedId ?? latestReadyId) : undefined
   const currentFeed = useGetNewsfeed(subId, currentId)
   const markdown = currentFeed.data?.content?.markdown ?? ''
-  const currentFeedTitle = currentFeed.data ? `Newsletter ${formatNewsletterDate(currentFeed.data.createdAt)}` : ''
+  const currentFeedTitle = currentFeed.data
+    ? t('newsfeed.newsletter_title', { date: formatNewsletterDate(currentFeed.data.createdAt) })
+    : ''
 
   const annotations: UrlAnnotation[] = useMemo(() => {
     return (currentFeed.data?.properties?.newsGrid?.sources || []) as UrlAnnotation[]
@@ -107,10 +111,10 @@ export function NewsfeedsView() {
       <div className='w-full h-full p-6 space-y-4 relative'>
         <div className='w-full absolute inset-0 overflow-x-hidden overflow-y-auto scrollbar-thin pt-20 pb-16'>
           {feedsQuery.isLoading && (
-            <LoadingWindow message='Loading newsletters…' viewMode='full' className='bg-transparent' />
+            <LoadingWindow message={t('newsfeed.loading_newsletters')} viewMode='full' className='bg-transparent' />
           )}
           {feedsQuery.isError && (
-            <ErrorWindow message='Failed to load newsletters' viewMode='full' className='bg-transparent' />
+            <ErrorWindow message={t('newsfeed.error.load_newsletters')} viewMode='full' className='bg-transparent' />
           )}
           {
             markdown && viewMode !== 'history' && viewMode !== 'info' && (
@@ -126,10 +130,10 @@ export function NewsfeedsView() {
           {viewMode === 'article' && currentId && (
             <div className='mx-auto max-w-[900px] space-y-3'>
               {currentFeed.isLoading && (
-                <LoadingWindow message='Loading…' viewMode='full' className='bg-transparent' />
+                <LoadingWindow message={t('common.loading')} viewMode='full' className='bg-transparent' />
               )}
               {currentFeed.isError && (
-                <ErrorWindow message='Failed to load newsfeed' viewMode='full' className='bg-transparent' />
+                <ErrorWindow message={t('newsfeed.error.load')} viewMode='full' className='bg-transparent' />
               )}
               {markdown && (
                 <div className='prose max-w-[800px] mx-auto p-4'>
@@ -169,10 +173,10 @@ export function NewsfeedsView() {
           {(viewMode === 'grid' || viewMode === "linear") && currentId && (
             <div className='mx-auto max-w-[1100px] space-y-3 px-2'>
               {currentFeed.isLoading && (
-                <LoadingWindow message='Loading…' viewMode='full' className='bg-transparent' />
+                <LoadingWindow message={t('common.loading')} viewMode='full' className='bg-transparent' />
               )}
               {currentFeed.isError && (
-                <ErrorWindow message='Failed to load newsfeed' viewMode='full' className='bg-transparent' />
+                <ErrorWindow message={t('newsfeed.error.load')} viewMode='full' className='bg-transparent' />
               )}
               <div className='text-center mt-16 mb-4'>
                 <h1 className='text-xl text-secondary-foreground font-semibold'>{currentFeedTitle}</h1>
@@ -181,7 +185,7 @@ export function NewsfeedsView() {
                 <NewsfeedGrid annotations={annotations} viewMode={viewMode} />
               ) : (
                 <div className='text-center text-sm text-muted-foreground py-8'>
-                  No links in this newsfeed
+                  {t('newsfeed.no_links')}
                 </div>
               )}
             </div>
@@ -195,7 +199,7 @@ export function NewsfeedsView() {
           }
 
           {!feedsQuery.isLoading && fused.length === 0 && (
-            <div className='text-center text-sm text-muted-foreground'>No newsletters yet</div>
+            <div className='text-center text-sm text-muted-foreground'>{t('newsfeed.no_newsletters')}</div>
           )}
         </div>
       </div>

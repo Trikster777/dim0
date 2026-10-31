@@ -19,6 +19,7 @@ import { memo, useCallback, useEffect, useState } from "react"
 import { ChartLineIcon } from "@phosphor-icons/react"
 import { useNode } from "@canvas-harness/react"
 import type { NodeId } from "@canvas-harness/core"
+import { useTranslation } from "react-i18next"
 
 import { CancelPlainIcon, DownloadIcon } from "@/components/icons"
 import { Button } from "@/components/ui/button"
@@ -48,6 +49,7 @@ export const AppletPanel = memo(function AppletPanel({
   onClose,
 }: AppletPanelProps) {
   const node = useNode(nodeId as NodeId)
+  const { t } = useTranslation()
   const data = (node?.data ?? {}) as Partial<NoteNodeData>
   const label = data.label?.markdown
   const setActiveSurfaceLabel = useBoardAppStore((s) => s.setActiveSurfaceLabel)
@@ -67,7 +69,7 @@ export const AppletPanel = memo(function AppletPanel({
   const { initialState, stateLoaded } = useAppletInitialState(nodeId)
 
   const source = (node?.content ?? "").trim()
-  const displayTitle = label?.trim() || "Untitled applet"
+  const displayTitle = label?.trim() || t("harness.surface.untitled_applet")
 
   const handleDownloadSource = useCallback(() => {
     downloadTextFile(label || "applet", source, { ext: "jsx", mime: "text/plain;charset=utf-8", fallback: "applet" })
@@ -76,9 +78,9 @@ export const AppletPanel = memo(function AppletPanel({
   if (!node) {
     return (
       <div className={`${SURFACE_PANEL_CLASS} items-center justify-center gap-3 text-sm text-muted-foreground`}>
-        <p>This applet no longer exists.</p>
+        <p>{t("harness.surface.applet_missing")}</p>
         <Button variant="outline" size="sm" onClick={onClose}>
-          Close
+          {t("common.close")}
         </Button>
       </div>
     )
@@ -98,8 +100,8 @@ export const AppletPanel = memo(function AppletPanel({
             variant="ghost"
             size="icon-sm"
             onClick={handleDownloadSource}
-            title="Download .jsx"
-            aria-label="Download source"
+            title={t("harness.surface.download_jsx")}
+            aria-label={t("harness.surface.download_source")}
             disabled={!source}
           >
             <DownloadIcon className="size-4" />
@@ -108,8 +110,8 @@ export const AppletPanel = memo(function AppletPanel({
             variant="ghost"
             size="icon-sm"
             onClick={onClose}
-            title="Close"
-            aria-label="Close"
+            title={t("common.close")}
+            aria-label={t("common.close")}
           >
             <CancelPlainIcon className="size-4" />
           </Button>
@@ -119,8 +121,8 @@ export const AppletPanel = memo(function AppletPanel({
       <Tabs value={activeTab} onValueChange={setActiveTab} className="min-h-0 flex-1 gap-0">
         <div className="border-b border-border/70 px-4 py-2">
           <TabsList>
-            <TabsTrigger value="preview">Preview</TabsTrigger>
-            <TabsTrigger value="source">Source</TabsTrigger>
+            <TabsTrigger value="preview">{t("harness.surface.preview")}</TabsTrigger>
+            <TabsTrigger value="source">{t("harness.surface.source")}</TabsTrigger>
           </TabsList>
         </div>
 
@@ -135,11 +137,11 @@ export const AppletPanel = memo(function AppletPanel({
                 // (e.g. the step table) unreachable.
                 <AppletRenderer source={source} initialState={initialState} className="w-full" />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">Loading…</div>
+                <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">{t("common.loading")}</div>
               )
             ) : (
               <div className="flex h-full w-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-                Applet source is empty.
+                {t("harness.surface.applet_empty")}
               </div>
             )}
           </div>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,6 +20,7 @@ export function CreateSubscriptionDialog({
   afterCreate?: () => void
   trigger?: React.ReactElement
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step>('editing')
   const [topic, setTopic] = useState<string>('')
@@ -62,15 +64,15 @@ export function CreateSubscriptionDialog({
     <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) reset() }}>
       <DialogTrigger
         render={trigger ?? (
-          <Button size='sm' className='rounded-md'>Add new subscription</Button>
+          <Button size='sm' className='rounded-md'>{t('newsfeed.subscription.add')}</Button>
         )}
       />
 
       <DialogContent className='sm:max-w-xl'>
         <DialogHeader className='w-full flex flex-row items-center justify-center'>
           <DialogTitle>
-            {step === 'editing' && 'Create a new Topic subscription'}
-            {step === 'creating' && 'Creating subscription'}
+            {step === 'editing' && t('newsfeed.subscription.create_title')}
+            {step === 'creating' && t('newsfeed.subscription.creating_title')}
           </DialogTitle>
         </DialogHeader>
 
@@ -78,9 +80,9 @@ export function CreateSubscriptionDialog({
           <div className='space-y-5'>
             {/* Topic */}
             <div className='space-y-2'>
-              <label className='text-sm font-medium'>Topic</label>
+              <label className='text-sm font-medium'>{t('newsfeed.subscription.topic_label')}</label>
               <Input
-                placeholder='custom topic'
+                placeholder={t('newsfeed.subscription.topic_placeholder')}
                 value={topic}
                 onChange={e => setTopic(e.target.value)}
                 className='focus-visible:ring-2 focus-visible:ring-secondary-foreground/20 focus-visible:border-secondary-foreground transition-all'
@@ -108,36 +110,36 @@ export function CreateSubscriptionDialog({
                           : <TopicIcon strokeWidth={2} className='w-4 h-4' />
                         }
                       </span>
-                      {label}
+                      {t(label)}
                     </Badge>
                   )
                 })}
               </div>
               <div className='text-xs text-muted-foreground'>
-                {matched ? `Matched to: ${TOPIC_DISPLAY[matched]}` : 'Custom topic'}
+                {matched ? t('newsfeed.subscription.matched', { topic: t(TOPIC_DISPLAY[matched]) }) : t('newsfeed.subscription.custom_topic')}
               </div>
             </div>
 
             {/* Description */}
             <div className='space-y-2'>
-              <label className='text-sm font-medium'>Description (optional)</label>
+              <label className='text-sm font-medium'>{t('newsfeed.subscription.description_label')}</label>
               <Textarea
                 rows={6}
                 value={desc}
                 onChange={e => setDesc(e.target.value)}
                 className='resize-none focus-visible:ring-2 focus-visible:ring-secondary-foreground/20 focus-visible:border-secondary-foreground transition-all'
-                placeholder='Describe your topic in more details'
+                placeholder={t('newsfeed.subscription.description_placeholder')}
               />
               <div className='text-xs text-muted-foreground'>
-                Add a few lines to improve results (sources, sub-topics, exclusions…)
+                {t('newsfeed.subscription.description_hint')}
               </div>
             </div>
 
             {/* Actions */}
             <div className='flex justify-end gap-2'>
-              <Button variant='ghost' onClick={() => setOpen(false)}>Cancel</Button>
+              <Button variant='ghost' onClick={() => setOpen(false)}>{t('common.cancel')}</Button>
               <Button onClick={submit} disabled={disabledCreate} className='rounded-md'>
-                Create
+                {t('newsfeed.subscription.create')}
               </Button>
             </div>
           </div>

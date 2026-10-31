@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { CloudCheckIcon, MonitorIcon } from "@/components/icons"
 import type { BoardKind } from "@/features/board/model"
 
@@ -8,6 +9,7 @@ import type { BoardKind } from "@/features/board/model"
  * so the local/remote distinction is per-board, not just group-header deep.
  */
 export function BoardKindBadge({ kind }: { kind: BoardKind }) {
+  const { t } = useTranslation()
   const synced = kind === "synced"
   return (
     <span
@@ -17,14 +19,14 @@ export function BoardKindBadge({ kind }: { kind: BoardKind }) {
           ? "bg-sky-500/10 text-sky-600 dark:text-sky-400"
           : "bg-muted text-muted-foreground")
       }
-      title={synced ? "Synced — backed up and shareable" : "On this device only"}
+      title={synced ? t("board.card.kind_synced_title") : t("board.card.kind_local_title")}
     >
       {synced ? (
         <CloudCheckIcon className="size-3 shrink-0" strokeWidth={2} />
       ) : (
         <MonitorIcon className="size-3 shrink-0" strokeWidth={2} />
       )}
-      {synced ? "Synced" : "On device"}
+      {synced ? t("board.card.kind_synced") : t("board.card.kind_local")}
     </span>
   )
 }

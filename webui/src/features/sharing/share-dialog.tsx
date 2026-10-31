@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 import {
   Dialog,
@@ -39,6 +40,7 @@ type ShareDialogProps = {
  * (see [HarnessCanvas](../board/harness/canvas/harness-canvas.tsx)).
  */
 export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDialogProps) {
+  const { t } = useTranslation()
   const [selectedRole, setSelectedRole] = useState<ShareRole>("member")
   const queryClient = useQueryClient()
 
@@ -57,16 +59,16 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
   const mintMutation = useMutation({
     mutationFn: (role: ShareRole) => mintShareLink(boardId, role),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["shareLinks", boardId] }),
-    onError: () => toast.error("Couldn't create share link. Try again."),
+    onError: () => toast.error(t("share.error.create_link")),
   })
 
   const revokeAllMutation = useMutation({
     mutationFn: () => revokeAllShareLinks(boardId),
     onSuccess: (count) => {
       queryClient.invalidateQueries({ queryKey: ["shareLinks", boardId] })
-      toast.success(count === 0 ? "Sharing was already disabled." : `Disabled ${count} link(s).`)
+      toast.success(count === 0 ? t("share.toast.already_disabled") : t("share.toast.disabled_links", { count }))
     },
-    onError: () => toast.error("Couldn't disable sharing. Try again."),
+    onError: () => toast.error(t("share.error.disable")),
   })
 
   const removeMutation = useMutation({
@@ -74,11 +76,11 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ["boardMembers", boardId] })
       const kickedNote = res.kicked_sessions > 0
-        ? ` (${res.kicked_sessions} live session(s) closed)`
+        ? t("share.toast.kicked_sessions", { count: res.kicked_sessions })
         : ""
-      toast.success(`Removed from board.${kickedNote}`)
+      toast.success(t("share.toast.removed") + kickedNote)
     },
-    onError: () => toast.error("Couldn't remove member. Try again."),
+    onError: () => toast.error(t("share.error.remove_member")),
   })
 
   const activeLink = (linksQuery.data ?? []).find((l) => l.role === selectedRole) ?? null
@@ -87,9 +89,9 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
   const copyLink = async (link: ShareLink) => {
     try {
       await navigator.clipboard.writeText(shareLinkUrl(link.token))
-      toast.success("Link copied to clipboard.")
+      toast.success(t("share.toast.copied"))
     } catch {
-      toast.error("Couldn't copy. Long-press to select.")
+      toast.error(t("share.error.copy"))
     }
   }
 
@@ -105,7 +107,7 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
         */}
         <DialogHeader className="min-w-0">
           <DialogTitle className="truncate">
-            Share &ldquo;{boardLabel || "Untitled board"}&rdquo;
+            {t("share.title_prefix")} &ldquo;{boardLabel || t("share.untitled_board")}&rdquo;
           </DialogTitle>
         </DialogHeader>
 
@@ -122,23 +124,22 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
         >
           <WarningIcon className="mt-0.5 size-4 shrink-0" weight="fill" />
           <span>
-            Sharing this board also shares every sub-board and nested
-            note inside it. Move anything private out before inviting.
+            {t("share.warning")}
           </span>
         </div>
 
         <section className="flex flex-col gap-3">
-          <div className="text-sm text-muted-foreground">Anyone with the link can:</div>
+          <div className="text-sm text-muted-foreground">{t("share.anyone_with_link")}</div>
           <div className="flex items-center gap-2">
             <RoleToggle
               value="viewer"
-              label="View"
+              label={t("share.role.view")}
               selected={selectedRole === "viewer"}
               onSelect={() => setSelectedRole("viewer")}
             />
             <RoleToggle
               value="member"
-              label="Edit"
+              label={t("share.role.edit")}
               selected={selectedRole === "member"}
               onSelect={() => setSelectedRole("member")}
             />
@@ -152,22 +153,21 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
           ) : (
             <div className="flex items-center justify-between gap-2 rounded-md border border-dashed border-border bg-muted/40 p-3 text-sm">
               <span className="text-muted-foreground">
-                No active {selectedRole === "member" ? "edit" : "view"} link yet.
+                {selectedRole === "member" ? t("share.no_active_edit_link") : t("share.no_active_view_link")}
               </span>
               <Button
                 size="sm"
                 onClick={() => mintMutation.mutate(selectedRole)}
                 disabled={mintMutation.isPending}
               >
-                {mintMutation.isPending ? "Creating…" : "Create link"}
+                {mintMutation.isPending ? t("share.creating") : t("share.create_link")}
               </Button>
             </div>
           )}
 
           {otherLinks.length > 0 && (
             <div className="text-xs text-muted-foreground">
-              Switch role to see the other link
-              {otherLinks.length > 1 ? "s" : ""} for this board.
+              {otherLinks.length > 1 ? t("share.switch_role_other_many") : t("share.switch_role_other_one")}
             </div>
           )}
 
@@ -177,13 +177,13 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
               size="sm"
               className="text-destructive"
               onClick={() => {
-                if (window.confirm("Disable sharing? Existing members keep access; only future invites are blocked.")) {
+                if (window.confirm(t("share.confirm_disable"))) {
                   revokeAllMutation.mutate()
                 }
               }}
               disabled={revokeAllMutation.isPending}
             >
-              {revokeAllMutation.isPending ? "Disabling…" : "Disable sharing"}
+              {revokeAllMutation.isPending ? t("share.disabling") : t("share.disable")}
             </Button>
           </div>
         </section>
@@ -191,9 +191,9 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
         <hr className="my-2 border-border" />
 
         <section className="flex flex-col gap-2">
-          <div className="text-sm font-medium">People with access</div>
+          <div className="text-sm font-medium">{t("share.people_with_access")}</div>
           {membersQuery.isLoading ? (
-            <div className="text-sm text-muted-foreground">Loading…</div>
+            <div className="text-sm text-muted-foreground">{t("common.loading")}</div>
           ) : (
             <ul className="flex flex-col gap-1">
               {(membersQuery.data ?? []).map((m) => (
@@ -201,7 +201,7 @@ export function ShareDialog({ boardId, boardLabel, open, onOpenChange }: ShareDi
                   key={m.user_uid}
                   member={m}
                   onRemove={() => {
-                    if (window.confirm(`Remove ${m.email} from this board?`)) {
+                    if (window.confirm(t("share.confirm_remove", { email: m.email }))) {
                       removeMutation.mutate(m.user_uid)
                     }
                   }}
@@ -244,6 +244,7 @@ function RoleToggle({
 
 
 function LinkRow({ link, onCopy }: { link: ShareLink; onCopy: () => void }) {
+  const { t } = useTranslation()
   const url = shareLinkUrl(link.token)
   return (
     <div className="flex items-center gap-2 rounded-md border border-border bg-background p-2">
@@ -254,7 +255,7 @@ function LinkRow({ link, onCopy }: { link: ShareLink; onCopy: () => void }) {
         className="flex-1 truncate bg-transparent text-xs font-mono text-muted-foreground outline-none"
       />
       <Button size="sm" variant="secondary" onClick={onCopy}>
-        Copy
+        {t("share.copy")}
       </Button>
     </div>
   )
@@ -266,6 +267,7 @@ function MemberRow({
   onRemove,
   removeBusy,
 }: { member: BoardMember; onRemove: () => void; removeBusy: boolean }) {
+  const { t } = useTranslation()
   const isOwner = member.role === "owner"
   return (
     <li className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/60">
@@ -283,7 +285,7 @@ function MemberRow({
             onClick={onRemove}
             disabled={removeBusy}
           >
-            {removeBusy ? "…" : "Remove"}
+            {removeBusy ? "…" : t("share.remove")}
           </Button>
         )}
       </div>

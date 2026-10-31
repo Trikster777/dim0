@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 import type { SlashCommand } from "./commands"
 
@@ -13,6 +14,7 @@ export interface SlashMenuHandle {
 
 export const SlashMenu = forwardRef<SlashMenuHandle, Props>(
   ({ items, command }, ref) => {
+    const { t } = useTranslation()
     const [selectedIndex, setSelectedIndex] = useState(0)
     const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
 
@@ -47,7 +49,7 @@ export const SlashMenu = forwardRef<SlashMenuHandle, Props>(
       return (
         <div className="slash-menu" onMouseDown={(e) => e.preventDefault()}>
           <p className="px-3 py-2 font-sans text-xs text-muted-foreground">
-            No results
+            {t("editor.slash.no_results")}
           </p>
         </div>
       )
@@ -56,7 +58,7 @@ export const SlashMenu = forwardRef<SlashMenuHandle, Props>(
     return (
       <div className="slash-menu" onMouseDown={(e) => e.preventDefault()}>
         <p className="px-3 pb-1 pt-2 font-sans text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Basic blocks
+          {t("editor.slash.basic_blocks")}
         </p>
         {items.map((item, index) => {
           const Icon = item.icon

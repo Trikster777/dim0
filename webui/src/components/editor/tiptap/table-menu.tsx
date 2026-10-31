@@ -1,5 +1,6 @@
 import type { Editor } from "@tiptap/react"
 import { BubbleMenu } from "@tiptap/react/menus"
+import { useTranslation } from "react-i18next"
 import {
   RowsPlusTop,
   RowsPlusBottom,
@@ -81,6 +82,7 @@ function TDivider() {
 
 /** Floating toolbar that appears whenever the cursor is inside a table cell. */
 export function TableMenu({ editor }: Props) {
+  const { t } = useTranslation()
   return (
     <BubbleMenu
       editor={editor}
@@ -92,7 +94,7 @@ export function TableMenu({ editor }: Props) {
     >
       {/* ── rows ──────────────────────────────────────── */}
       <TBtn
-        tooltip="Insert row above"
+        tooltip={t("editor.table_menu.insert_row_above")}
         onClick={() => {
           editor.chain().focus().addRowBefore().run()
           normalizeBodyRows(editor)
@@ -101,7 +103,7 @@ export function TableMenu({ editor }: Props) {
         <RowsPlusTop size={15} />
       </TBtn>
       <TBtn
-        tooltip="Insert row below"
+        tooltip={t("editor.table_menu.insert_row_below")}
         onClick={() => {
           editor.chain().focus().addRowAfter().run()
           normalizeBodyRows(editor)
@@ -110,7 +112,7 @@ export function TableMenu({ editor }: Props) {
         <RowsPlusBottom size={15} />
       </TBtn>
       <TBtn
-        tooltip="Delete row"
+        tooltip={t("editor.table_menu.delete_row")}
         danger
         onClick={() => editor.chain().focus().deleteRow().run()}
       >
@@ -121,19 +123,19 @@ export function TableMenu({ editor }: Props) {
 
       {/* ── columns ───────────────────────────────────── */}
       <TBtn
-        tooltip="Insert column left"
+        tooltip={t("editor.table_menu.insert_col_left")}
         onClick={() => editor.chain().focus().addColumnBefore().run()}
       >
         <ColumnsPlusLeft size={15} />
       </TBtn>
       <TBtn
-        tooltip="Insert column right"
+        tooltip={t("editor.table_menu.insert_col_right")}
         onClick={() => editor.chain().focus().addColumnAfter().run()}
       >
         <ColumnsPlusRight size={15} />
       </TBtn>
       <TBtn
-        tooltip="Delete column"
+        tooltip={t("editor.table_menu.delete_col")}
         danger
         onClick={() => editor.chain().focus().deleteColumn().run()}
       >
@@ -144,7 +146,7 @@ export function TableMenu({ editor }: Props) {
 
       {/* ── table ─────────────────────────────────────── */}
       <TBtn
-        tooltip="Delete table"
+        tooltip={t("editor.table_menu.delete_table")}
         danger
         onClick={() => editor.chain().focus().deleteTable().run()}
       >

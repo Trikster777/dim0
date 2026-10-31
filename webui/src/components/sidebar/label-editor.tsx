@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useClickOutside } from "@/hooks/use-click-outside"
-import { UNTITLED_LABEL } from "@/features/board/const"
+import { untitledLabel } from "@/features/board/const"
 import { CheckIcon, PencilEditIcon } from "@/components/icons"
 import { cn } from "@/lib/utils"
 
@@ -68,8 +68,8 @@ export const LabelEditor = ({ initialLabel, onSave, className }: LabelEditorProp
           autoFocus
         />
       ) : (
-        <span className='flex-1 min-w-0 truncate sm:max-w-[24rem] max-w-[12.5rem]' title={label.trim() || UNTITLED_LABEL}>
-          {label.trim() || UNTITLED_LABEL}
+        <span className='flex-1 min-w-0 truncate sm:max-w-[24rem] max-w-[12.5rem]' title={label.trim() || untitledLabel()}>
+          {label.trim() || untitledLabel()}
         </span>
       )}
       <Button variant="ghost" onClick={handleClick} size='icon' className='shrink-0'>

@@ -43,7 +43,8 @@ export type ServiceName = typeof SERVICE_NAMES[number]
  */
 export const AUTO_LLM_OPTION: LlmOption = {
   name: "auto",
-  label: "Auto",
+  // Key, not copy: the picker renders it through `t()`.
+  label: "agent.settings.auto",
   family: "dim0",
   provider: "dim0",
   available: true,

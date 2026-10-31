@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate, useRouter } from "@tanstack/react-router"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -46,6 +47,7 @@ export function promoteNavTarget(pathname: string, boardId: string): PromoteNavT
  * (for a spinner / disabled state).
  */
 export function useEnableSync() {
+  const { t } = useTranslation()
   const userId = useAppStore((s) => s.userId)
   const userPlan = useAppStore((s) => s.userPlan)
   const navigate = useNavigate()
@@ -71,10 +73,7 @@ export function useEnableSync() {
       // OWNED synced boards; shared-with-me don't count against the owner's cap.
       const ownedSynced = syncedBoards.filter((b) => b.role === "owner").length
       if (isBoardCreationLimited(userPlan, ownedSynced)) {
-        toast.error(
-          `You're at your plan's synced-board limit (${boardLimitForPlan(userPlan)}). ` +
-            "Upgrade, or delete a synced board — local boards stay unlimited.",
-        )
+        toast.error(t("board.sync.limit", { limit: boardLimitForPlan(userPlan) }))
         return { ok: false, reason: "limited" }
       }
       if (inFlight.current.has(boardId)) return { ok: false, reason: "in-flight" }
@@ -94,7 +93,7 @@ export function useEnableSync() {
         })
         if (result.ok) {
           await queryClient.invalidateQueries({ queryKey: ["listBoards", userId] })
-          toast.success("Sync enabled — this board is now backed up and shareable.")
+          toast.success(t("board.sync.enabled"))
           // If the promoted board is the one currently open at `/local/$id`, move
           // the view to the synced route so it re-mounts in collab mode. Promotion
           // is in-place (same id) but LocalBoardScreen renders `<HarnessCanvas
@@ -115,7 +114,7 @@ export function useEnableSync() {
             })
           }
         } else {
-          toast.error("Couldn't enable sync. Please try again.")
+          toast.error(t("board.sync.failed"))
         }
         return result
       } finally {
@@ -124,7 +123,7 @@ export function useEnableSync() {
         setPendingId(null)
       }
     },
-    [userId, userPlan, syncedBoards, navigate, router, queryClient],
+    [userId, userPlan, syncedBoards, navigate, router, queryClient, t],
   )
 
   return { enableSync: run, pendingId }

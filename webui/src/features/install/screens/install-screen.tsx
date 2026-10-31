@@ -2,6 +2,7 @@ import { InstallPhoneIllustration } from "@/components/illustrations/install-pho
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ShareIcon, SidebarMenuIcon } from "@/components/icons"
 import type { ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 import { siAndroid, siApple, siGooglechrome, siSafari } from "simple-icons"
 
 
@@ -101,13 +102,15 @@ function InstallSection({ icon, title, steps }: InstallSectionProps) {
  * Explains how to install Dim0 as a PWA on mobile devices.
  */
 export function InstallScreen() {
+  const { t } = useTranslation()
+
   return (
     <div className="absolute inset-0 overflow-y-auto scrollbar-thin">
       <div className="mx-auto w-full max-w-5xl px-6 py-20 space-y-8">
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">Install Dim0</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("install.title")}</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Add Dim0 to your home screen to use it like an app on mobile.
+            {t("install.description")}
           </p>
         </div>
 
@@ -122,10 +125,10 @@ export function InstallScreen() {
           <div className="grid gap-6">
             <InstallSection
               icon={siApple}
-              title="iPhone & iPad"
+              title={t("install.iphone.title")}
               steps={[
                 <>
-                  Open{" "}
+                  {t("install.common.open")}{" "}
                   <a
                     href="https://app.dim0.net"
                     target="_blank"
@@ -134,32 +137,32 @@ export function InstallScreen() {
                   >
                     app.dim0.net
                   </a>{" "}
-                  in <strong>Safari</strong>
+                  {t("install.common.in")} <strong>{t("install.iphone.browser_safari")}</strong>
                   <BrandIcon icon={siSafari} />
                   .
                 </>,
                 <>
-                  Tap <strong>Share</strong>
+                  {t("install.common.tap")} <strong>{t("install.iphone.share_button")}</strong>
                   <InstructionIcon>
                     <ShareIcon className="size-3.5" strokeWidth={2} />
                   </InstructionIcon>
                   .
                 </>,
                 <>
-                  Choose <strong>Add to Home Screen</strong>.
+                  {t("install.common.choose")} <strong>{t("install.iphone.add_to_home_screen")}</strong>.
                 </>,
                 <>
-                  Tap <strong>Add</strong>.
+                  {t("install.common.tap")} <strong>{t("install.iphone.add")}</strong>.
                 </>,
               ]}
             />
 
             <InstallSection
               icon={siAndroid}
-              title="Android"
+              title={t("install.android.title")}
               steps={[
                 <>
-                  Open{" "}
+                  {t("install.common.open")}{" "}
                   <a
                     href="https://app.dim0.net"
                     target="_blank"
@@ -168,22 +171,22 @@ export function InstallScreen() {
                   >
                     app.dim0.net
                   </a>{" "}
-                  in <strong>Chrome</strong>
+                  {t("install.common.in")} <strong>{t("install.android.browser_chrome")}</strong>
                   <BrandIcon icon={siGooglechrome} />
                   .
                 </>,
                 <>
-                  Tap the browser <strong>menu</strong>
+                  {t("install.android.tap_browser_menu")} <strong>{t("install.android.menu")}</strong>
                   <InstructionIcon>
                     <SidebarMenuIcon className="size-3.5" strokeWidth={2} />
                   </InstructionIcon>
                   .
                 </>,
                 <>
-                  Choose <strong>Install app</strong> or <strong>Add to Home screen</strong>.
+                  {t("install.common.choose")} <strong>{t("install.android.install_app")}</strong> {t("install.common.or")} <strong>{t("install.android.add_to_home_screen")}</strong>.
                 </>,
                 <>
-                  Tap <strong>Install</strong>.
+                  {t("install.common.tap")} <strong>{t("install.android.install")}</strong>.
                 </>,
               ]}
             />

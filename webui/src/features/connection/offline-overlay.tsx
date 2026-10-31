@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { useBoardOfflineStatus } from "@/features/board/api/board-offline-status"
 import { useConnectionStatus } from "./connection-state"
 
@@ -16,6 +17,7 @@ import { useConnectionStatus } from "./connection-state"
  * race the loop and just trigger an extra ping).
  */
 export const OfflineOverlay = ({ boardId }: { boardId: string | null }) => {
+  const { t } = useTranslation()
   const status = useConnectionStatus()
   // Cheap local idb read; disabled (no boardId) → `data` stays undefined.
   const { data: boardOffline } = useBoardOfflineStatus(boardId ?? "")
@@ -42,12 +44,12 @@ export const OfflineOverlay = ({ boardId }: { boardId: string | null }) => {
           />
         </div>
         <h2 className="text-base font-semibold text-foreground">
-          {boardMissing ? "This board isn't available offline" : "Can't reach the Dim0 server"}
+          {boardMissing ? t("offline.overlay.board_title") : t("offline.overlay.server_title")}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           {boardMissing
-            ? "You're offline and this board hasn't been downloaded to this device. It'll open automatically once you're back online."
-            : "Check your internet connection. We'll reconnect automatically as soon as the server is reachable again."}
+            ? t("offline.overlay.board_description")
+            : t("offline.overlay.server_description")}
         </p>
       </div>
     </div>

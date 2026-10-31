@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { Conversation } from "./chat/conversation"
 import { InputBar } from "./chat/input"
 import { useListChats } from "../api/list-chats"
@@ -20,6 +21,7 @@ import {
 import { AddIcon, ChatHistoryIcon, ChatNewIcon, ClockIcon } from "@/components/icons"
 import { useNavigate, useRouterState } from "@tanstack/react-router"
 import { useAppStore } from "@/store"
+import { getLanguage } from "@/i18n"
 
 type ChatProps = {
   chatId?: string
@@ -39,7 +41,7 @@ const formatChatDate = (value?: string) => {
   if (!value) return null
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return null
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(getLanguage() === "ru" ? "ru-RU" : "en-US", {
     month: "short",
     day: "numeric",
     hour: "numeric",
@@ -60,6 +62,7 @@ const HistoryList = ({
   onNewChat: () => void
   variant: "inline" | "dropdown"
 }) => {
+  const { t } = useTranslation()
   if (variant === "dropdown") {
     return (
       <div className="absolute top-0 w-full flex justify-start px-4 py-2 sm:px-8 z-50">
@@ -71,20 +74,20 @@ const HistoryList = ({
               className="rounded-md border border-border shadow-sm bg-accent hover:bg-background transition-colors"
             >
               <ChatHistoryIcon className="size-4" strokeWidth={2} />
-              <span className="sr-only">Open chat history</span>
+              <span className="sr-only">{t("agent.chat_history.open_aria")}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-72 max-h-80 overflow-y-auto scrollbar-thin">
             <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wide flex flex-row items-center gap-0">
               <ClockIcon className="size-4 mr-2 inline-block" strokeWidth={2} />
-              <span>Chat History</span>
+              <span>{t("agent.chat_history.title")}</span>
             </div>
             <DropdownMenuItem
               onSelect={onNewChat}
               className="text-sm font-medium text-primary cursor-pointer flex flex-row items-center gap-0"
             >
               <AddIcon className="size-4 mr-2" strokeWidth={2} />
-              <span>Create new chat</span>
+              <span>{t("agent.chat_history.create_new")}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {chats.length ? (
@@ -100,7 +103,7 @@ const HistoryList = ({
                       isActive && "bg-accent/40"
                     )}
                   >
-                    <span className="w-full truncate text-sm font-medium">{chat.label || "Untitled chat"}</span>
+                    <span className="w-full truncate text-sm font-medium">{chat.label || t("agent.chat.untitled")}</span>
                     {
                       subtitle && (
                         <span className="w-full truncate text-xs text-muted-foreground">{subtitle}</span>
@@ -111,7 +114,7 @@ const HistoryList = ({
               })
             ) : (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                No chats yet.
+                {t("agent.chat.no_chats")}
               </div>
             )}
           </DropdownMenuContent>
@@ -125,11 +128,11 @@ const HistoryList = ({
       <div className="flex items-center justify-between mb-2">
         <div className="text-sm font-medium text-muted-foreground flex flex-row items-center gap-0">
           <ClockIcon className="size-4 mr-2 inline-block" strokeWidth={2} />
-          <span>Chat History</span>
+          <span>{t("agent.chat_history.title")}</span>
         </div>
         <Button variant="ghost" size="sm" onClick={onNewChat} className="flex flex-row items-center gap-0">
           <ChatNewIcon className="size-4 mr-2" strokeWidth={2} />
-          <span>New Chat</span>
+          <span>{t("agent.chat_history.new_chat")}</span>
         </Button>
       </div>
       {chats.length ? (
@@ -147,7 +150,7 @@ const HistoryList = ({
                   isActive ? "border-border bg-accent/50" : "border-transparent bg-card/60"
                 )}
               >
-                <div className="text-sm font-medium truncate">{chat.label || "Untitled chat"}</div>
+                <div className="text-sm font-medium truncate">{chat.label || t("agent.chat.untitled")}</div>
                 {subtitle && (
                   <div className="text-xs text-muted-foreground">{subtitle}</div>
                 )}
@@ -157,7 +160,7 @@ const HistoryList = ({
         </div>
       ) : (
         <div className="text-sm text-muted-foreground/80 rounded-md border border-dashed border-border px-4 py-6 text-center">
-          No chats yet. Start a new one below.
+          {t("agent.chat.no_chats_start")}
         </div>
       )}
     </div>
@@ -172,6 +175,7 @@ const ChatBody = ({
   enableSelectionContext = false,
   autoCreateBoard = false,
 }: ChatProps) => {
+  const { t } = useTranslation()
   const { setChatId, local } = useChat()
   const userId = useAppStore(s => s.userId)
   const activeChatId = useActiveChatId()
@@ -191,7 +195,7 @@ const ChatBody = ({
   // blocked click isn't a silent no-op.
   const blockedByStream = (): boolean => {
     if (!localStreaming) return false
-    toast.info("Wait for the response to finish before switching chats.")
+    toast.info(t("agent.chat.wait_for_response"))
     return true
   }
   // Backend chat list is disabled in local mode (empty userId → no fetch).
@@ -291,8 +295,8 @@ const ChatBody = ({
           size="icon"
           className="rounded-md border border-border shadow-sm bg-accent hover:bg-background transition-colors"
           onClick={handleNewChat}
-          aria-label="Create new chat"
-          title="Create new chat"
+          aria-label={t("agent.chat_history.create_new")}
+          title={t("agent.chat_history.create_new")}
         >
           <ChatNewIcon className="size-4" strokeWidth={2} />
         </Button>

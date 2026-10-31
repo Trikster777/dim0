@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { CardsThree, GithubLogo, Headset, UsersThree } from "@phosphor-icons/react"
 import {
   AwardIcon,
@@ -11,6 +12,7 @@ import {
   type AppIconComponent,
 } from "@/components/icons"
 import { refresh } from "@/api"
+import { getLanguage } from "@/i18n"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -53,6 +55,7 @@ function FeatureRow({ icon, label }: FeatureRowProps) {
 
 
 export function BillingScreen() {
+  const { t } = useTranslation()
   const userPlan = useAppStore(s => s.userPlan)
   const setUserPlan = useAppStore(s => s.setUserPlan)
   const billingActive = useAppStore(s => s.billingActive)
@@ -79,10 +82,10 @@ export function BillingScreen() {
         const summary = await getBillingSummary()
         setBillingSummary(summary)
       } catch (error) {
-        setErrorMessage(error instanceof Error ? error.message : "Could not load billing status.")
+        setErrorMessage(error instanceof Error ? error.message : t("billing.error.load_status"))
       }
     })()
-  }, [billingActive])
+  }, [billingActive, t])
 
   // Re-pull the authoritative plan: refresh the token (its claim is updated by
   // the Stripe webhook), re-derive the plan, and re-read the summary. Returns the
@@ -112,9 +115,9 @@ export function BillingScreen() {
 
     refreshedAfterReturn.current = true
     void refreshBillingState().catch(() =>
-      setErrorMessage("Could not refresh billing plan after checkout."),
+      setErrorMessage(t("billing.error.refresh_after_checkout")),
     )
-  }, [billingActive, searchParams, refreshBillingState])
+  }, [billingActive, searchParams, refreshBillingState, t])
 
   // Desktop: Stripe opens in the OS browser, so the `?checkout=success` redirect
   // never reaches this webview. When the app window regains focus AFTER we sent
@@ -139,7 +142,7 @@ export function BillingScreen() {
           await new Promise((r) => setTimeout(r, 1500))
         }
       } catch {
-        setErrorMessage("Could not refresh billing plan after checkout.")
+        setErrorMessage(t("billing.error.refresh_after_checkout"))
       }
     }
 
@@ -158,7 +161,7 @@ export function BillingScreen() {
       cancelled = true
       unlisten?.()
     }
-  }, [billingActive, refreshBillingState])
+  }, [billingActive, refreshBillingState, t])
 
   const onUpgrade = async (plan: PaidPlan) => {
     setErrorMessage(null)
@@ -175,13 +178,13 @@ export function BillingScreen() {
             cancel_url: `${window.location.origin}/settings/billing?checkout=cancel`,
           }
       const data = await createCheckoutSession(body)
-      if (!data.checkout_url) throw new Error("No checkout url returned")
+      if (!data.checkout_url) throw new Error(t("billing.error.missing_checkout_url"))
       // Desktop: arm the focus-refresh so returning from the browser re-pulls
       // the plan (there's no redirect back into the webview).
       if (isTauri()) pendingReturnPlan.current = userPlan
       await openExternalUrl(data.checkout_url)
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Could not create checkout session.")
+      setErrorMessage(error instanceof Error ? error.message : t("billing.error.create_checkout"))
     } finally {
       setBusyAction(null)
     }
@@ -198,11 +201,11 @@ export function BillingScreen() {
       const data = isTauri()
         ? await createPortalSession({})
         : await createPortalSession({ return_url: `${window.location.origin}/settings/billing` })
-      if (!data.portal_url) throw new Error("No portal url returned")
+      if (!data.portal_url) throw new Error(t("billing.error.missing_portal_url"))
       if (isTauri()) pendingReturnPlan.current = userPlan
       await openExternalUrl(data.portal_url)
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Could not open billing portal.")
+      setErrorMessage(error instanceof Error ? error.message : t("billing.error.open_portal"))
     } finally {
       setBusyAction(null)
     }
@@ -210,17 +213,19 @@ export function BillingScreen() {
 
   const formattedPeriodEnd =
     billingSummary?.current_period_end
-      ? new Date(billingSummary.current_period_end).toLocaleDateString()
+      ? new Date(billingSummary.current_period_end).toLocaleDateString(
+          getLanguage() === "ru" ? "ru-RU" : "en-US",
+        )
       : null
 
   const subscriptionStatus = useMemo(() => {
     if (billingSummary?.cancel_at_period_end) {
       return formattedPeriodEnd
-        ? `Cancels on ${formattedPeriodEnd}`
-        : "Cancels at period end"
+        ? t("billing.cancels_on", { date: formattedPeriodEnd })
+        : t("billing.cancels_at_period_end")
     }
-    return "Active"
-  }, [billingSummary, formattedPeriodEnd])
+    return t("billing.status_active")
+  }, [billingSummary, formattedPeriodEnd, t])
 
   const formatPrice = (price: PriceInfo | undefined, fallback: string): string => {
     const rawAmount = price?.unit_amount
@@ -252,26 +257,26 @@ export function BillingScreen() {
     <div className="absolute inset-0 overflow-y-auto scrollbar-thin bg-background">
       <div className="mx-auto w-full max-w-7xl px-6 py-20 space-y-6">
         <div className="space-y-2">
-          <h1 className="text-5xl leading-none">Billing Plans</h1>
+          <h1 className="text-5xl leading-none">{t("billing.title")}</h1>
           <p className="text-sm text-muted-foreground">
-            Pick the plan that matches your workspace needs
+            {t("billing.subtitle")}
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl">Current subscription</CardTitle>
+            <CardTitle className="text-3xl">{t("billing.current_subscription.title")}</CardTitle>
             <CardDescription>
-              Choose your plan and manage your subscription
+              {t("billing.current_subscription.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground font-bold">Current Plan</span>
+              <span className="text-sm text-muted-foreground font-bold">{t("billing.current_plan")}</span>
               <TierBadge plan={userPlan} />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground font-bold">Status</span>
+              <span className="text-sm text-muted-foreground font-bold">{t("billing.status")}</span>
               <Badge
                 variant="outline"
                 className={[
@@ -292,7 +297,7 @@ export function BillingScreen() {
                 <div className="flex items-center gap-2">
                   <WarningIcon className="h-4 w-4 shrink-0" />
                   <span className="font-medium">
-                    Access remains active until {formattedPeriodEnd ?? "the end of this period"}.
+                    {t("billing.access_until", { date: formattedPeriodEnd ?? t("billing.this_period_end") })}
                   </span>
                 </div>
               </div>
@@ -302,7 +307,7 @@ export function BillingScreen() {
                 disabled={busyAction !== null}
                 className="mt-3"
               >
-                {busyAction === "manage" ? "Opening portal..." : "Resume Membership"}
+                {busyAction === "manage" ? t("billing.opening_portal") : t("billing.resume_membership")}
               </Button>
             </CardContent>
           ) : null}
@@ -312,27 +317,27 @@ export function BillingScreen() {
           <Card className="relative">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-4xl font-semibold">Free</CardTitle>
+                <CardTitle className="text-4xl font-semibold">{t("billing.plan.free")}</CardTitle>
                 {userPlan === "free" ? (
                   <Badge variant="outline" className="w-fit bg-background/40 font-mono font-medium uppercase tracking-wide">
-                    Current
+                    {t("billing.current_badge")}
                   </Badge>
                 ) : null}
               </div>
-              <CardDescription>Starter plan for personal exploration</CardDescription>
+              <CardDescription>{t("billing.plans.free.tagline")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-muted-foreground">
-              <p className="text-3xl font-semibold text-foreground">Free</p>
-              <FeatureRow icon={SparklesIcon} label="50 AI requests / day" />
-              <FeatureRow icon={SparklesIcon} label="750 AI requests / month" />
-              <FeatureRow icon={CardsThree} label="5 boards" />
-              <FeatureRow icon={UsersThree} label="Up to 5 collaborators / board" />
-              <FeatureRow icon={DocumentIcon} label="3 documents / board" />
-              <FeatureRow icon={PuzzlePieceIcon} label="10 mini-apps / board" />
-              <FeatureRow icon={ChatTranslateIcon} label="Lite models only" />
-              <FeatureRow icon={Headset} label="Community support" />
+              <p className="text-3xl font-semibold text-foreground">{t("billing.price_free")}</p>
+              <FeatureRow icon={SparklesIcon} label={t("billing.features.ai_requests_day_50")} />
+              <FeatureRow icon={SparklesIcon} label={t("billing.features.ai_requests_month_750")} />
+              <FeatureRow icon={CardsThree} label={t("billing.features.boards_5")} />
+              <FeatureRow icon={UsersThree} label={t("billing.features.collaborators_5")} />
+              <FeatureRow icon={DocumentIcon} label={t("billing.features.documents_3")} />
+              <FeatureRow icon={PuzzlePieceIcon} label={t("billing.features.mini_apps_10")} />
+              <FeatureRow icon={ChatTranslateIcon} label={t("billing.features.lite_models_only")} />
+              <FeatureRow icon={Headset} label={t("billing.features.community_support")} />
               <p className="pt-2 text-xs leading-relaxed text-muted-foreground/80">
-                Great for trying Dim0 and personal projects. Upgrade any time as your workspace grows.
+                {t("billing.plans.free.footnote")}
               </p>
             </CardContent>
           </Card>
@@ -340,14 +345,14 @@ export function BillingScreen() {
           <Card className="relative">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-4xl font-semibold">Basic</CardTitle>
+                <CardTitle className="text-4xl font-semibold">{t("billing.plan.basic")}</CardTitle>
                 {userPlan === "basic" ? (
                   <Badge variant="outline" className="w-fit bg-background/40 font-mono font-medium uppercase tracking-wide">
-                    Current
+                    {t("billing.current_badge")}
                   </Badge>
                 ) : null}
               </div>
-              <CardDescription>For steady, everyday use</CardDescription>
+              <CardDescription>{t("billing.plans.basic.tagline")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-end gap-2">
@@ -355,14 +360,14 @@ export function BillingScreen() {
                 <span className="text-sm text-muted-foreground">/ {basicIntervalLabel}</span>
               </div>
               <div className="space-y-2.5 text-sm text-muted-foreground">
-                <FeatureRow icon={SparklesIcon} label="150 AI requests / day" />
-                <FeatureRow icon={SparklesIcon} label="3,000 AI requests / month" />
-                <FeatureRow icon={CardsThree} label="Unlimited boards" />
-                <FeatureRow icon={UsersThree} label="Up to 10 collaborators / board" />
-                <FeatureRow icon={DocumentIcon} label="10 documents / board" />
-                <FeatureRow icon={PuzzlePieceIcon} label="20 mini-apps / board" />
-                <FeatureRow icon={ChatTranslateIcon} label="Lite models (no top-tier AI)" />
-                <FeatureRow icon={Headset} label="Standard support" />
+                <FeatureRow icon={SparklesIcon} label={t("billing.features.ai_requests_day_150")} />
+                <FeatureRow icon={SparklesIcon} label={t("billing.features.ai_requests_month_3000")} />
+                <FeatureRow icon={CardsThree} label={t("billing.features.boards_unlimited")} />
+                <FeatureRow icon={UsersThree} label={t("billing.features.collaborators_10")} />
+                <FeatureRow icon={DocumentIcon} label={t("billing.features.documents_10")} />
+                <FeatureRow icon={PuzzlePieceIcon} label={t("billing.features.mini_apps_20")} />
+                <FeatureRow icon={ChatTranslateIcon} label={t("billing.features.lite_models_no_top_tier")} />
+                <FeatureRow icon={Headset} label={t("billing.features.standard_support")} />
               </div>
 
               {userPlan === "basic" ? (
@@ -372,7 +377,7 @@ export function BillingScreen() {
                   disabled={busyAction !== null}
                   className="w-full"
                 >
-                  {busyAction === "manage" ? "Opening portal..." : "Manage Subscription"}
+                  {busyAction === "manage" ? t("billing.opening_portal") : t("billing.manage_subscription")}
                 </Button>
               ) : userPlan === "plus" ? (
                 // Existing subscriber → switch tier via the portal (not a new
@@ -383,7 +388,7 @@ export function BillingScreen() {
                   disabled={busyAction !== null}
                   className="w-full"
                 >
-                  {busyAction === "manage" ? "Opening portal..." : "Switch to Basic"}
+                  {busyAction === "manage" ? t("billing.opening_portal") : t("billing.switch_to_basic")}
                 </Button>
               ) : (
                 <Button
@@ -392,7 +397,7 @@ export function BillingScreen() {
                   disabled={busyAction !== null}
                   className="w-full"
                 >
-                  {busyAction === "upgrade-basic" ? "Redirecting..." : "Choose Basic"}
+                  {busyAction === "upgrade-basic" ? t("billing.redirecting") : t("billing.choose_basic")}
                 </Button>
               )}
             </CardContent>
@@ -402,14 +407,14 @@ export function BillingScreen() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <AwardIcon className="h-6 w-6 text-secondary-foreground" strokeWidth={2} />
-                <CardTitle className="text-4xl font-semibold">Plus</CardTitle>
+                <CardTitle className="text-4xl font-semibold">{t("billing.plan.plus")}</CardTitle>
                 {userPlan === "plus" ? (
                   <Badge variant="outline" className="w-fit bg-background/40 font-mono font-medium uppercase tracking-wide">
-                    Current
+                    {t("billing.current_badge")}
                   </Badge>
                 ) : null}
               </div>
-              <CardDescription>Best for active daily workflows</CardDescription>
+              <CardDescription>{t("billing.plans.plus.tagline")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-end gap-2">
@@ -417,13 +422,13 @@ export function BillingScreen() {
                 <span className="text-sm text-muted-foreground">/ {plusIntervalLabel}</span>
               </div>
               <div className="space-y-2.5 text-sm text-muted-foreground">
-                <FeatureRow icon={SparklesIcon} label="Unlimited AI requests" />
-                <FeatureRow icon={CardsThree} label="Unlimited boards" />
-                <FeatureRow icon={UsersThree} label="Up to 20 collaborators / board" />
-                <FeatureRow icon={DocumentIcon} label="25 documents / board" />
-                <FeatureRow icon={PuzzlePieceIcon} label="100 mini-apps / board" />
-                <FeatureRow icon={SparklesFeatureIcon} label="Frontier models: GPT, Claude, Gemini & more" />
-                <FeatureRow icon={Headset} label="Priority support" />
+                <FeatureRow icon={SparklesIcon} label={t("billing.features.ai_requests_unlimited")} />
+                <FeatureRow icon={CardsThree} label={t("billing.features.boards_unlimited")} />
+                <FeatureRow icon={UsersThree} label={t("billing.features.collaborators_20")} />
+                <FeatureRow icon={DocumentIcon} label={t("billing.features.documents_25")} />
+                <FeatureRow icon={PuzzlePieceIcon} label={t("billing.features.mini_apps_100")} />
+                <FeatureRow icon={SparklesFeatureIcon} label={t("billing.features.frontier_models")} />
+                <FeatureRow icon={Headset} label={t("billing.features.priority_support")} />
               </div>
 
               {userPlan === "plus" ? (
@@ -433,7 +438,7 @@ export function BillingScreen() {
                   disabled={busyAction !== null}
                   className="w-full bg-background/30 border-foreground/60"
                 >
-                  {busyAction === "manage" ? "Opening portal..." : "Manage Subscription"}
+                  {busyAction === "manage" ? t("billing.opening_portal") : t("billing.manage_subscription")}
                 </Button>
               ) : userPlan === "basic" ? (
                 // Existing subscriber → upgrade via the portal so Stripe swaps
@@ -443,7 +448,7 @@ export function BillingScreen() {
                   disabled={busyAction !== null}
                   className="w-full"
                 >
-                  {busyAction === "manage" ? "Opening portal..." : "Switch to Plus"}
+                  {busyAction === "manage" ? t("billing.opening_portal") : t("billing.switch_to_plus")}
                 </Button>
               ) : (
                 <Button
@@ -451,7 +456,7 @@ export function BillingScreen() {
                   disabled={busyAction !== null}
                   className="w-full"
                 >
-                  {busyAction === "upgrade-plus" ? "Redirecting..." : "Upgrade to Plus"}
+                  {busyAction === "upgrade-plus" ? t("billing.redirecting") : t("billing.upgrade_to_plus")}
                 </Button>
               )}
             </CardContent>
@@ -459,7 +464,7 @@ export function BillingScreen() {
         </div>
 
         <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground">
-          <span>Prefer to run it yourself? Dim0 is open source (MIT).</span>
+          <span>{t("billing.open_source_note")}</span>
           <a
             href={GITHUB_URL}
             target="_blank"
@@ -467,7 +472,7 @@ export function BillingScreen() {
             className="inline-flex items-center gap-1 font-medium text-foreground underline-offset-2 hover:underline"
           >
             <GithubLogo className="h-3.5 w-3.5" weight="fill" />
-            Get the code on GitHub →
+            {t("billing.get_the_code")}
           </a>
         </p>
 
