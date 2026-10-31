@@ -132,7 +132,8 @@
       (`backend/test/unit/api/router/test_tts_router.py`) — с моком сервиса через
       `httpx.MockTransport`; покрыты 503 / 400 (пустой и «схлопывающийся» текст) / 413 / 502 /
       200 + WAV / CDATA-экранирование / передача голоса / список голосов.
-- [ ] `make check` зелёный.
+- [ ] Полная проверка зелёная: `( cd webui && npm run check-all && npm run test:run ) && ( cd backend && uv run ruff check topix test/unit && uv run pytest test/unit )`
+      — это ровно `make check`, просто без `make` (его на машине нет).
 - [ ] В ядре агента, чата и холста **ни одной правки**; подключение роутера — одна строка
       `include_router` рядом с остальными; существующие роутеры и их формат ответов не тронуты.
 

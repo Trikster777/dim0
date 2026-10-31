@@ -252,8 +252,21 @@ FastAPI **0.128.0**, `httpx >= 0.28.1` (уже в зависимостях), pyd
 **Одна команда проверки (типы + линт + тесты вместе)** — из корня репозитория:
 
 ```bash
-make check        # = lint-ui + test-ui + lint-backend + test-backend
+( cd webui && npm run check-all && npm run test:run ) && ( cd backend && uv run ruff check topix test/unit && uv run pytest test/unit )
 ```
+
+Это ровно то, что делает `make check` (= `test-ci` = `lint-ui` + `test-ui` + `lint-backend` +
+`test-backend`), только без `make`: **на этой машине `make` не установлен**, поэтому запускай
+цепочку выше, а не `make check`.
+
+Перед первым прогоном бэкенд-тестов один раз выполни шаг, который делает сам Makefile
+(`setup-mini-app-compiler`) — иначе compile-bridge-тесты могут падать из-за отсутствия sucrase:
+
+```bash
+cd backend/scripts/mini-app-compiler && npm ci --omit=dev
+```
+
+Каталог `node_modules` там и в `webui/` — игнорируется git, репозиторий не пачкается.
 
 Точечно:
 
