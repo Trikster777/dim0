@@ -12,6 +12,14 @@ x-redis: &redis-base
   image: redis:7-alpine
   command: redis-server --appendonly yes
 
+x-silero-tts: &silero-base
+  image: navatusein/silero-tts-service:latest
+  environment:
+    LANGUAGE: ru
+    SAMPLE_RATE: "48000"
+    NUMBER_OF_THREADS: "4"
+    SILERO_SETTINGS: '{"ru":{"model_link":"${TTS_MODEL_URL:-https://models.silero.ai/models/tts/ru/v5_6_ru.pt}","speakers":["aidar","baya","kseniya","xenia","eugene"]}}'
+
 services:
   # -------- LOCAL PROFILE (DBs) --------
   qdrant-local:
@@ -209,6 +217,25 @@ services:
   #       APP SERVICES
   # ===========================
 
+  # ---- TTS service (Silero) ----
+  # Single instance shared by all stages: the backend reaches it over the compose
+  # network only, so no ports are published. Uncomment for local debugging:
+  # ports:
+  #   - "9898:9898"
+  silero-tts:
+    <<: *silero-base
+    container_name: silero-tts
+    profiles: ["local", "dev", "test", "staging", "prod"]
+    volumes:
+      - silero_models:/usr/app/models
+      - silero_audios:/usr/app/audios
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:9898/').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
   # ---- Backend (LOCAL) ----
   backend-local:
     build:
@@ -229,11 +256,21 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       REDIS_HOST: ${REDIS_HOST:-redis-local}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      TTS_ENABLED: ${TTS_ENABLED:-false}
+      TTS_SERVICE_URL: ${TTS_SERVICE_URL:-http://silero-tts:9898}
+      TTS_VOICE: ${TTS_VOICE:-xenia}
+      TTS_FORMAT: ${TTS_FORMAT:-wav}
+      TTS_STREAMING: ${TTS_STREAMING:-false}
     command: ["python","-m","topix.api.app","--stage","local"]
     depends_on:
-      - postgres-local
-      - qdrant-local
-      - redis-local
+      postgres-local:
+        condition: service_started
+      qdrant-local:
+        condition: service_started
+      redis-local:
+        condition: service_started
+      silero-tts:
+        condition: service_started
     ports:
       - "${API_PORT:-8081}:${API_PORT:-8081}"
 
@@ -279,11 +316,21 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       REDIS_HOST: ${REDIS_HOST:-redis-dev}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      TTS_ENABLED: ${TTS_ENABLED:-false}
+      TTS_SERVICE_URL: ${TTS_SERVICE_URL:-http://silero-tts:9898}
+      TTS_VOICE: ${TTS_VOICE:-xenia}
+      TTS_FORMAT: ${TTS_FORMAT:-wav}
+      TTS_STREAMING: ${TTS_STREAMING:-false}
     command: ["python","-m","topix.api.app","--stage","dev"]
     depends_on:
-      - postgres-dev
-      - qdrant-dev
-      - redis-dev
+      postgres-dev:
+        condition: service_started
+      qdrant-dev:
+        condition: service_started
+      redis-dev:
+        condition: service_started
+      silero-tts:
+        condition: service_started
     ports:
       - "${API_PORT:-8081}:${API_PORT:-8081}"
 
@@ -324,11 +371,21 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       REDIS_HOST: ${REDIS_HOST:-redis-test}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      TTS_ENABLED: ${TTS_ENABLED:-false}
+      TTS_SERVICE_URL: ${TTS_SERVICE_URL:-http://silero-tts:9898}
+      TTS_VOICE: ${TTS_VOICE:-xenia}
+      TTS_FORMAT: ${TTS_FORMAT:-wav}
+      TTS_STREAMING: ${TTS_STREAMING:-false}
     command: ["python","-m","topix.api.app","--stage","test"]
     depends_on:
-      - postgres-test
-      - qdrant-test
-      - redis-test
+      postgres-test:
+        condition: service_started
+      qdrant-test:
+        condition: service_started
+      redis-test:
+        condition: service_started
+      silero-tts:
+        condition: service_started
     ports:
       - "${API_PORT:-8082}:${API_PORT:-8082}"
 
@@ -368,11 +425,21 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       REDIS_HOST: ${REDIS_HOST:-redis-staging}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      TTS_ENABLED: ${TTS_ENABLED:-false}
+      TTS_SERVICE_URL: ${TTS_SERVICE_URL:-http://silero-tts:9898}
+      TTS_VOICE: ${TTS_VOICE:-xenia}
+      TTS_FORMAT: ${TTS_FORMAT:-wav}
+      TTS_STREAMING: ${TTS_STREAMING:-false}
     command: ["python","-m","topix.api.app","--stage","staging"]
     depends_on:
-      - postgres-staging
-      - qdrant-staging
-      - redis-staging
+      postgres-staging:
+        condition: service_started
+      qdrant-staging:
+        condition: service_started
+      redis-staging:
+        condition: service_started
+      silero-tts:
+        condition: service_started
     ports:
       - "${API_PORT:-8083}:${API_PORT:-8083}"
 
@@ -412,11 +479,21 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      TTS_ENABLED: ${TTS_ENABLED:-false}
+      TTS_SERVICE_URL: ${TTS_SERVICE_URL:-http://silero-tts:9898}
+      TTS_VOICE: ${TTS_VOICE:-xenia}
+      TTS_FORMAT: ${TTS_FORMAT:-wav}
+      TTS_STREAMING: ${TTS_STREAMING:-false}
     command: ["python","-m","topix.api.app","--stage","prod"]
     depends_on:
-      - postgres
-      - qdrant
-      - redis
+      postgres:
+        condition: service_started
+      qdrant:
+        condition: service_started
+      redis:
+        condition: service_started
+      silero-tts:
+        condition: service_started
     ports:
       - "${API_PORT:-8084}:${API_PORT:-8084}"
 
@@ -458,3 +535,5 @@ volumes:
   backend_data_test:
   backend_data_staging:
   backend_data_prod:
+  silero_models:
+  silero_audios:

@@ -25,6 +25,7 @@ from topix.api.router import (
     sharing,
     subscriptions,
     tools,
+    tts,
     users,
     utils,
 )
@@ -157,6 +158,7 @@ def create_app(stage: StageEnum):
     app.include_router(finance.router)
     app.include_router(files.router)
     app.include_router(documents.router)
+    app.include_router(tts.router)
 
     return app
 

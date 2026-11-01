@@ -20,6 +20,14 @@ const STATUS_KEYS: Partial<Record<number, string>> = {
 const ENDPOINT_STATUS_KEYS: Record<string, Partial<Record<number, string>>> = {
   // A 401 here is a wrong username/password pair, not an expired session.
   "/users/signin": { 401: "errors.bad_credentials" },
+  // The TTS module answers with its own reasons: nothing to speak, text too
+  // long, the synthesis service is down, the module is switched off.
+  "/tts": {
+    400: "tts.empty",
+    413: "tts.too_long",
+    502: "tts.unavailable",
+    503: "tts.disabled",
+  },
 }
 
 /** Fields a thrown API error may carry alongside its message. */
