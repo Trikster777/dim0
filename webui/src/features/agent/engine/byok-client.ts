@@ -1,8 +1,9 @@
 /**
  * BYOK LLM client (A4) — a thin OpenAI-compatible adapter implementing
- * `LlmClient`. One client covers both BYOK providers via a swappable baseURL:
- * OpenAI direct, or OpenRouter (which reaches Claude/Gemini/etc.). The key is
- * the user's; it goes straight to the provider, never to our servers.
+ * `LlmClient`. One client covers every BYOK provider via a swappable baseURL:
+ * OpenAI direct, OpenRouter (which reaches Claude/Gemini/etc.), or the user's
+ * own OpenAI-compatible endpoint (their own base URL + key). The key is the
+ * user's; it goes straight to the provider, never to our servers.
  *
  * Non-streaming per turn (matches the `LlmClient` contract). The mapping helpers
  * are exported + unit-tested; the network path is exercised via an injected
@@ -24,7 +25,15 @@ import { assembleStreamedTurn } from "./stream-assemble"
 import { agentLog } from "./debug"
 
 
-export type ByokProvider = "openai" | "openrouter"
+/** Providers we ship with — fixed base URLs, no setup needed. */
+export const BUILTIN_BYOK_PROVIDERS = ["openrouter", "openai"] as const
+
+
+export type BuiltinByokProvider = (typeof BUILTIN_BYOK_PROVIDERS)[number]
+
+
+/** A model provider id: a builtin one, or a user's own (their slug). */
+export type ByokProvider = string
 
 
 export type ByokConfig = {
@@ -48,10 +57,23 @@ export type ChatCompleter = {
 }
 
 
-const BASE_URLS: Record<ByokProvider, string> = {
+const BASE_URLS: Record<BuiltinByokProvider, string> = {
   openai: "https://api.openai.com/v1",
   openrouter: "https://openrouter.ai/api/v1",
 }
+
+
+/** Whether a provider id is one of the built-in ones we ship a URL for. */
+export const isBuiltinByokProvider = (provider: string): provider is BuiltinByokProvider =>
+  (BUILTIN_BYOK_PROVIDERS as readonly string[]).includes(provider)
+
+
+/**
+ * The base URL of a built-in provider. `undefined` for a user's own provider —
+ * that one carries its own base URL in the BYOK config.
+ */
+export const builtinBaseUrl = (provider: string): string | undefined =>
+  isBuiltinByokProvider(provider) ? BASE_URLS[provider] : undefined
 
 
 /** Our messages → OpenAI chat message params. */
@@ -108,9 +130,13 @@ export const fromOpenAiMessage = (message?: ChatCompletionMessage): LlmTurn => {
 
 /** Build the injectable completer from BYOK config (creates the OpenAI client). */
 export const makeCompleter = (config: ByokConfig): ChatCompleter => {
+  const baseURL = config.baseURL ?? builtinBaseUrl(config.provider)
+  if (!baseURL) {
+    throw new Error(`Unknown BYOK provider: ${config.provider}`)
+  }
   const client = new OpenAI({
     apiKey: config.apiKey,
-    baseURL: config.baseURL ?? BASE_URLS[config.provider],
+    baseURL,
     dangerouslyAllowBrowser: true,
     ...(config.fetch ? { fetch: config.fetch } : {}),
   })
