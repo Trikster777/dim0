@@ -23,6 +23,11 @@ providers:
   gemini:     { key: GEMINI_API_KEY,     prefix: gemini }
   mistral:    { key: MISTRAL_API_KEY,    prefix: mistral }
   deepseek:   { key: DEEPSEEK_API_KEY,   prefix: deepseek }
+  # Custom OpenAI-compatible provider: key and endpoint both come from the
+  # environment, so no address is hardcoded here. A provider that declares its
+  # own base URL is called through the native client (agents/base.py), because
+  # LiteLLM does not know custom providers.
+  anymodel:   { key: ANYMODEL_API_KEY,   prefix: anymodel, base_url_env: ANYMODEL_BASE_URL }
 
   # Search / fetch providers. No `prefix` (never used as an LLM route); listed
   # here so the single resolver can also gate search/navigate availability.
@@ -34,9 +39,56 @@ providers:
 llm:
   # `vision: true` marks models that accept image input (multimodal). Every
   # USER-FACING model here is image-capable (verified against OpenRouter's
-  # input_modalities). The lone exception is `gpt-oss-120b` — text-only and
-  # `internal: true` (the auto complexity classifier only; excluded from
-  # public_llm_catalog so it never shows in the picker, but still resolvable).
+  # input_modalities), except the `anymodel` family — that provider has not
+  # confirmed image input, so its models stay text-only. The other exception
+  # is `gpt-oss-120b` — text-only and `internal: true` (the auto complexity
+  # classifier only; excluded from public_llm_catalog so it never shows in the
+  # picker, but still resolvable).
+
+  # --- AnyModel (custom OpenAI-compatible provider) ---
+  # Endpoint and key live in the environment (ANYMODEL_BASE_URL /
+  # ANYMODEL_API_KEY). The provider serves the `cx/` model strings; image input
+  # is not confirmed, so these entries stay text-only (`vision: false`).
+  #
+  # This block comes FIRST on purpose: `available_llms()` returns models in
+  # catalog order and the first reachable one is the default model, so with
+  # AnyModel configured the app answers with `cx/gpt-6-luna` — even when an
+  # OpenRouter key is present.
+  - id: gpt-6-luna
+    label: GPT-6 Luna
+    family: anymodel
+    tier: lite
+    vision: false
+    routes:
+      - { via: anymodel, model: cx/gpt-6-luna }
+  - id: gpt-6-astra
+    label: GPT-6 Astra
+    family: anymodel
+    tier: lite
+    vision: false
+    routes:
+      - { via: anymodel, model: cx/gpt-6-astra }
+  - id: gpt-6-1-sol
+    label: GPT-6.1 Sol
+    family: anymodel
+    tier: lite
+    vision: false
+    routes:
+      - { via: anymodel, model: cx/gpt-6-1-sol }
+  - id: gpt-6-1-terra
+    label: GPT-6.1 Terra
+    family: anymodel
+    tier: lite
+    vision: false
+    routes:
+      - { via: anymodel, model: cx/gpt-6.1-terra }
+  - id: gpt-5-6-luna
+    label: GPT-5.6 Luna
+    family: anymodel
+    tier: lite
+    vision: false
+    routes:
+      - { via: anymodel, model: cx/gpt-5.6-luna }
 
   # --- OpenAI (native preferred, OpenRouter fallback without :nitro) ---
   - id: gpt-5.5
@@ -195,9 +247,22 @@ llm:
     routes:
       - { via: openrouter, model: moonshotai/kimi-k3:nitro }
 
+
 embedding:
   # Routes under one id MUST share `dim` (vectors are not cross-compatible).
   # openai-native and openrouter both serve text-embedding-3-small at dim 512.
+  #
+  # ORDER MATTERS: `available_embedding()` returns the FIRST reachable entry,
+  # so the entry below is the active embedder whenever OpenRouter is
+  # configured. It comes first because the Nemotron route honours the
+  # `dimensions` parameter the embedder sends on every request (a 512-wide
+  # vector, same width as the collection below — existing vectors stay valid).
+  - id: nemotron-3.5-embed-1b
+    label: NVIDIA Nemotron 3.5 Embed 1B (OpenRouter)
+    family: openrouter
+    dim: 512
+    routes:
+      - { via: openrouter, model: nvidia/nemotron-3.5-embed-1b:free }
   - id: text-embedding-3-small
     label: OpenAI text-embedding-3-small
     family: openai

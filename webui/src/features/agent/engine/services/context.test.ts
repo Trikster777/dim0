@@ -33,6 +33,19 @@ describe("agentResolveContext", () => {
     expect(agentResolveContext({ signedIn: true }).byok).toEqual({})
     expect(agentResolveContext({ signedIn: false, llm: null }).byok).toEqual({})
   })
+
+  it("a user's own provider keeps its address on the way to the client", () => {
+    const ctx = agentResolveContext({
+      signedIn: false,
+      llm: { provider: "myprovider", apiKey: "sk-x", model: "my-model", baseURL: "https://example.test/v1" },
+    })
+    expect(ctx.byok.llm).toEqual({
+      provider: "myprovider",
+      apiKey: "sk-x",
+      model: "my-model",
+      baseURL: "https://example.test/v1",
+    })
+  })
 })
 
 

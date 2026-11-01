@@ -28,11 +28,19 @@ NO_LLM_ERROR = (
 
 
 class Provider(BaseModel):
-    """A model provider: its API-key env var and (for LLMs) its call prefix."""
+    """A model provider: its API-key env var and (for LLMs) its call prefix.
+
+    A provider may also declare an OpenAI-compatible base URL: `base_url_env`
+    names the environment variable that holds the live address (each
+    installation may point at its own endpoint) and `base_url` is the literal
+    fallback kept in the catalog. Neither address is a secret.
+    """
 
     name: str
     key: str | None = None    # env var name; None => keyless (always available)
     prefix: str | None = None  # prepended to the route model string for the call code
+    base_url: str | None = None     # literal OpenAI-compatible base URL of the provider
+    base_url_env: str | None = None  # env var name holding the base URL (wins over the literal)
 
 
 class Route(BaseModel):
@@ -91,7 +99,15 @@ def _load() -> tuple[dict[str, Provider], list[CatalogModel], list[CatalogModel]
 
 
 def _provider_available(p: Provider) -> bool:
-    """Return True if the provider is keyless or its API-key env var is set."""
+    """Return True if the provider is fully configured for use.
+
+    A provider that declares `base_url_env` must have that variable set — the
+    endpoint is half of its configuration, so a missing address means the
+    provider cannot be called at all. Otherwise availability stays key-based:
+    keyless providers are always available, keyed ones need their key.
+    """
+    if p.base_url_env is not None and not os.getenv(p.base_url_env):
+        return False
     return p.key is None or bool(os.getenv(p.key))
 
 
@@ -99,6 +115,48 @@ def available_providers() -> list[str]:
     """Names of providers whose key is present (or that need no key)."""
     providers, _, _ = _load()
     return [name for name, p in providers.items() if _provider_available(p)]
+
+
+def provider_spec(name: str) -> Provider | None:
+    """Return the declared provider spec by name, or None when unknown."""
+    providers, _, _ = _load()
+    return providers.get(name)
+
+
+def provider_env_vars() -> set[str]:
+    """Names of the environment variables that configure the providers.
+
+    Both halves of a provider's configuration: the credential variable
+    (`key`) and the endpoint variable (`base_url_env`). A provider counts as
+    available only when ALL of them are set, so anything that needs a clean
+    provider environment (tests) must clear all of these.
+    """
+    providers, _, _ = _load()
+    names: set[str] = set()
+    for p in providers.values():
+        if p.key:
+            names.add(p.key)
+        if p.base_url_env:
+            names.add(p.base_url_env)
+    return names
+
+
+def provider_base_url(name: str) -> str | None:
+    """Resolve the OpenAI-compatible base URL of a provider (None if it has none).
+
+    The environment variable named by `base_url_env` wins — every installation
+    may point at its own endpoint — and the literal `base_url` from the catalog
+    is the fallback. The environment is read live, so a changed address takes
+    effect without a restart.
+    """
+    spec = provider_spec(name)
+    if spec is None:
+        return None
+    if spec.base_url_env:
+        env_url = os.getenv(spec.base_url_env)
+        if env_url:
+            return env_url
+    return spec.base_url or None
 
 
 def _resolve(model: CatalogModel, providers: dict[str, Provider], present: frozenset[str]) -> Resolved | None:
@@ -270,6 +328,20 @@ def resolved_by_id(model_id: str) -> Resolved | None:
     return next((r for r in llms if r.id == model_id), None)
 
 
+def resolved_by_call(code: str) -> Resolved | None:
+    """Return the reachable model behind a call code, or None (unknown / no key).
+
+    The call code is the fully qualified route (e.g. "anymodel/cx/gpt-6-luna");
+    the resolved entry tells which provider serves it and under which
+    provider-specific model string. Searches the full resolved set, INCLUDING
+    `internal` models, so a call code always maps back to its provider.
+    """
+    if not isinstance(code, str):
+        return None
+    llms, _ = _resolved_for(frozenset(available_providers()))
+    return next((r for r in llms if r.call == code), None)
+
+
 def default_resolved(tier: str | None = None) -> Resolved | None:
     """Best available model, optionally constrained to a tier (falls back to any)."""
     models = available_llms()
@@ -300,8 +372,11 @@ def require_model_code(tier: str | None = None) -> str:
 def openai_compatible_client(resolved: Resolved):
     """Build an OpenAI-compatible AsyncOpenAI client for a resolved route.
 
-    Supports the OpenAI and OpenRouter providers (both speak the OpenAI API);
-    returns None for providers that are not OpenAI-API-compatible.
+    OpenAI and OpenRouter are handled explicitly; any other provider that
+    resolves its own base URL is served through that OpenAI-compatible endpoint
+    (the key comes from the provider's env var, the address from
+    `provider_base_url`). Returns None for providers that are not
+    OpenAI-API-compatible.
     """
     from openai import AsyncOpenAI
 
@@ -309,4 +384,11 @@ def openai_compatible_client(resolved: Resolved):
         return AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     if resolved.provider == "openrouter":
         return AsyncOpenAI(api_key=os.getenv("OPENROUTER_API_KEY"), base_url=OPENROUTER_BASE_URL)
+
+    base = provider_base_url(resolved.provider)
+    if base:
+        spec = provider_spec(resolved.provider)
+        key_env = spec.key if spec else None
+        api_key = os.getenv(key_env) if key_env else None
+        return AsyncOpenAI(api_key=api_key or "not-needed", base_url=base)
     return None

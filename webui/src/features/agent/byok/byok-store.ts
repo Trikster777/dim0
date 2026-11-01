@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import type { ByokConfig, ByokProvider } from "@/features/agent/engine/byok-client"
+import { isBuiltinByokProvider } from "@/features/agent/engine/byok-client"
 import { isKeylessSearchEngine } from "@/features/agent/engine/services/kinds"
 
 
@@ -11,6 +12,21 @@ export type SearchEngine = "perplexity" | "tavily" | "linkup" | "exa" | "paralle
 
 
 const DEFAULT_SEARCH_ENGINE: SearchEngine = "perplexity"
+
+
+/** The provider picked when nothing else is chosen (and after a removal). */
+const DEFAULT_BYOK_PROVIDER = "openrouter"
+
+
+/**
+ * A user's own OpenAI-compatible provider: what it is called, where it lives.
+ * The key is NOT here — it lives in the per-provider `llm` map like any other.
+ */
+export type CustomProvider = {
+  id: string
+  label: string
+  baseURL: string
+}
 
 
 /** A model provider's own BYOK credential. */
@@ -27,6 +43,28 @@ type Stored = {
   codeKey: string
   /** Document parsing (Mistral OCR) — relayed through our proxy. */
   parseKey: string
+  /** The user's own providers (description only — the key stays in `llm`). */
+  customProviders: CustomProvider[]
+}
+
+
+/**
+ * Read the stored custom providers, dropping anything malformed. Old blobs
+ * (written before custom providers existed) simply have no such field → [].
+ */
+const parseCustomProviders = (raw: unknown): CustomProvider[] => {
+  if (!Array.isArray(raw)) return []
+  const out: CustomProvider[] = []
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue
+    const rec = item as Record<string, unknown>
+    const id = typeof rec.id === "string" ? rec.id.trim() : ""
+    const label = typeof rec.label === "string" ? rec.label.trim() : ""
+    const baseURL = typeof rec.baseURL === "string" ? rec.baseURL.trim() : ""
+    if (!id || !label || !baseURL) continue
+    out.push({ id, label, baseURL })
+  }
+  return out
 }
 
 
@@ -41,7 +79,7 @@ const load = (): Stored | null => {
       model?: string
       searchKey?: string
     }
-    const provider = p.provider ?? "openrouter"
+    const provider = p.provider ?? DEFAULT_BYOK_PROVIDER
     const searchEngine = p.searchEngine ?? DEFAULT_SEARCH_ENGINE
     return {
       provider,
@@ -50,6 +88,7 @@ const load = (): Stored | null => {
       search: p.search ?? (p.searchKey ? { [searchEngine]: p.searchKey } : {}),
       codeKey: p.codeKey ?? "",
       parseKey: p.parseKey ?? "",
+      customProviders: parseCustomProviders(p.customProviders),
     }
   } catch {
     return null
@@ -57,9 +96,39 @@ const load = (): Stored | null => {
 }
 
 
-/** Fallback model id per provider when the user leaves the field blank. */
-const defaultModel = (provider: ByokProvider): string =>
-  provider === "openai" ? "gpt-5.4" : "openai/gpt-5.4"
+/**
+ * Fallback model id per provider when the user leaves the field blank.
+ * Built-ins have a sensible default; a user's own provider has none — the
+ * model there is mandatory (the provider's own names).
+ */
+export const defaultModel = (provider: ByokProvider): string => {
+  if (provider === "openai") return "gpt-5.4"
+  if (provider === "openrouter") return "openai/gpt-5.4"
+  return ""
+}
+
+
+/** Latin kebab-case slug of a provider name ("My Provider" → "my-provider"). */
+export const providerSlug = (label: string): string =>
+  label
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+
+
+/**
+ * A provider id that clashes with nothing: not a built-in, not another custom
+ * provider. Falls back to "custom-provider" when the name has no latin chars.
+ */
+export const uniqueProviderId = (label: string, taken: readonly string[]): string => {
+  const used = new Set(taken)
+  const base = providerSlug(label) || "custom-provider"
+  if (!used.has(base)) return base
+  let n = 2
+  while (used.has(`${base}-${n}`)) n += 1
+  return `${base}-${n}`
+}
 
 
 type ByokState = {
@@ -67,6 +136,8 @@ type ByokState = {
   provider: ByokProvider
   llm: Partial<Record<ByokProvider, LlmCred>>
   configured: boolean
+  /** The user's own OpenAI-compatible providers (label + base URL). */
+  customProviders: CustomProvider[]
   // Web search — relayed through our proxy. Per-engine keys.
   searchEngine: SearchEngine
   search: Partial<Record<SearchEngine, string>>
@@ -78,6 +149,10 @@ type ByokState = {
   setLlm: (cfg: { provider: ByokProvider; apiKey: string; model: string }) => void
   /** Switch the active model provider (keys are preserved per provider). */
   setProvider: (provider: ByokProvider) => void
+  /** Register a user's own provider (its key is saved separately). */
+  addCustomProvider: (provider: CustomProvider) => void
+  /** Forget a user's own provider — both its description and its key. */
+  removeCustomProvider: (id: string) => void
   /** Switch the active search engine (keys are preserved per engine). */
   setSearchEngine: (engine: SearchEngine) => void
   /** Save one engine's key without touching the others. */
@@ -111,9 +186,10 @@ const configuredFor = (provider: ByokProvider, llm: Partial<Record<ByokProvider,
  * our servers.
  */
 export const useByokStore = create<ByokState>((set, get) => ({
-  provider: initial?.provider ?? "openrouter",
+  provider: initial?.provider ?? DEFAULT_BYOK_PROVIDER,
   llm: initial?.llm ?? {},
-  configured: configuredFor(initial?.provider ?? "openrouter", initial?.llm ?? {}),
+  configured: configuredFor(initial?.provider ?? DEFAULT_BYOK_PROVIDER, initial?.llm ?? {}),
+  customProviders: initial?.customProviders ?? [],
   searchEngine: initial?.searchEngine ?? DEFAULT_SEARCH_ENGINE,
   search: initial?.search ?? {},
   codeKey: initial?.codeKey ?? "",
@@ -127,6 +203,35 @@ export const useByokStore = create<ByokState>((set, get) => ({
 
   setProvider: (provider) => {
     set({ provider, configured: configuredFor(provider, get().llm) })
+    persist(get)
+  },
+
+  addCustomProvider: (provider) => {
+    const customProviders = [
+      ...get().customProviders.filter((p) => p.id !== provider.id),
+      provider,
+    ]
+    set({ customProviders })
+    persist(get)
+  },
+
+  removeCustomProvider: (id) => {
+    const { llm, customProviders, provider } = get()
+    const nextLlm = { ...llm }
+    delete nextLlm[id]
+    const nextProviders = customProviders.filter((p) => p.id !== id)
+    // The active provider must stay a real one: fall back to the default
+    // builtin when the removed provider was the active one.
+    const active =
+      isBuiltinByokProvider(provider) || nextProviders.some((p) => p.id === provider)
+        ? provider
+        : DEFAULT_BYOK_PROVIDER
+    set({
+      llm: nextLlm,
+      customProviders: nextProviders,
+      provider: active,
+      configured: configuredFor(active, nextLlm),
+    })
     persist(get)
   },
 
@@ -154,19 +259,24 @@ export const useByokStore = create<ByokState>((set, get) => ({
     // `searchEngine` goes back to the default too: leaving a keyless selection
     // in memory would keep this session on it, then silently drop to the
     // default after a reload once localStorage is gone.
+    // The user's own provider DESCRIPTIONS stay: a name and a base URL are
+    // not secrets — only the keys are.
     set({ llm: {}, configured: false, searchEngine: DEFAULT_SEARCH_ENGINE, search: {}, codeKey: "", parseKey: "" })
-    try {
-      localStorage.removeItem(STORAGE_KEY)
-    } catch {
-      // ignore
-    }
+    persist(get)
   },
 
   asConfig: () => {
-    const { provider, llm } = get()
+    const { provider, llm, customProviders } = get()
     const cred = llm[provider]
     if (!cred?.apiKey) return null
-    return { provider, apiKey: cred.apiKey, model: cred.model.trim() || defaultModel(provider) }
+    // A user's own provider needs its base URL; the built-ins carry theirs.
+    const custom = customProviders.find((p) => p.id === provider)
+    return {
+      provider,
+      apiKey: cred.apiKey,
+      model: cred.model.trim() || defaultModel(provider),
+      ...(custom ? { baseURL: custom.baseURL } : {}),
+    }
   },
 
   searchByok: () => {
@@ -191,10 +301,13 @@ const hasAnyKey = (s: ByokState): boolean =>
 
 /** Persist the config to localStorage on this device (until `clear()`). */
 function persist(get: () => ByokState): void {
-  const { provider, llm, searchEngine, search, codeKey, parseKey } = get()
+  const { provider, llm, searchEngine, search, codeKey, parseKey, customProviders } = get()
   try {
-    if (hasAnyKey(get()) || isKeylessSearchEngine(searchEngine)) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ provider, llm, searchEngine, search, codeKey, parseKey }))
+    if (hasAnyKey(get()) || customProviders.length > 0 || isKeylessSearchEngine(searchEngine)) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ provider, llm, searchEngine, search, codeKey, parseKey, customProviders }),
+      )
     } else {
       localStorage.removeItem(STORAGE_KEY)
     }

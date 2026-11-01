@@ -38,4 +38,27 @@ describe("llmClientFromResolution", () => {
     const r: ServiceResolution = { kind: "search", mode: "byok", credential: { provider: "tavily", apiKey: "t" } }
     expect(llmClientFromResolution(r)).toBeNull()
   })
+
+  it("a user's own provider is built from the address its credential carries", () => {
+    const r: ServiceResolution = {
+      kind: "llm",
+      mode: "byok",
+      credential: {
+        provider: "myprovider",
+        apiKey: "sk",
+        model: "my-model",
+        baseURL: "https://example.test/v1",
+      },
+    }
+    expect(llmClientFromResolution(r)).toBeInstanceOf(ByokLlmClient)
+  })
+
+  it("an unknown provider without an address → null (no silent OpenAI call)", () => {
+    const r: ServiceResolution = {
+      kind: "llm",
+      mode: "byok",
+      credential: { provider: "myprovider", apiKey: "sk", model: "my-model" },
+    }
+    expect(llmClientFromResolution(r)).toBeNull()
+  })
 })

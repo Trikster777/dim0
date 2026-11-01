@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from yaml import safe_load
 
 from topix.agents.config import BaseAgentConfig, WebSearchConfig
+from topix.config.services import service_config
 
 NEWSFEED_DEFAULT_CONFIG_FILE = Path(__file__).parent / "config.yml"
 
@@ -14,13 +15,13 @@ NEWSFEED_DEFAULT_CONFIG_FILE = Path(__file__).parent / "config.yml"
 class TopicSetupConfig(BaseAgentConfig):
     """Configuration for the Topic Setup agent."""
 
-    web_search: WebSearchConfig
+    web_search: WebSearchConfig | None = None
 
 
 class NewsfeedCollectorConfig(BaseAgentConfig):
     """Configuration for the Newsfeed collector."""
 
-    web_search: WebSearchConfig
+    web_search: WebSearchConfig | None = None
 
 
 class NewsfeedSynthesizerConfig(BaseAgentConfig):
@@ -43,5 +44,10 @@ class NewsfeedPipelineConfig(BaseModel):
             config_file = str(NEWSFEED_DEFAULT_CONFIG_FILE)
         with open(config_file) as f:
             cf = safe_load(f)
+
+        if len(service_config.search) == 0:
+            for section in ("topic_setup", "collector"):
+                if section in cf:
+                    cf[section]["web_search"] = None
 
         return cls.model_validate(cf)

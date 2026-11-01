@@ -31,6 +31,8 @@ from topix.utils.graph.layout import LayoutDirection, displace_nodes, layout_dir
 
 logger = logging.getLogger(__name__)
 
+PARSER_UNAVAILABLE_MESSAGE = "Document parsing is unavailable: no parsing provider configured"
+
 
 def color_notes_random_200(notes: list[Note]) -> None:
     """Assign each note a random paper-adapted Tailwind-200 background color.
@@ -47,12 +49,26 @@ class ParsingPipeline:
     """Parsing pipeline."""
 
     def __init__(self) -> None:
-        """Initialize the parsing pipeline."""
-        self.parser = MistralParser.from_config()
+        """Initialize the parsing pipeline.
+
+        The document parser is optional: when it cannot be configured (no
+        parsing provider available) the pipeline still builds and the methods
+        that need a parser fail with a clear error instead.
+        """
+        self.parser = self._build_parser()
         self.chunker = Chunker()
         self.vector_store = ContentStore.from_config()
         self.mapifier = DocumentMindmapAgent()
         self.runner = AgentRunner()
+
+    @staticmethod
+    def _build_parser() -> MistralParser | None:
+        """Build the document parser, or None when no parsing provider is configured."""
+        try:
+            return MistralParser.from_config()
+        except Exception as error:  # noqa: BLE001 - any config problem must not break startup
+            logger.warning("Document parsing is unavailable: %s", error)
+            return None
 
     async def summarize_document(
         self,
@@ -121,7 +137,13 @@ class ParsingPipeline:
         Returns:
             tuple[Document, list[Chunk], list[Note], list[Link]]: The processed document and its chunks.
 
+        Raises:
+            RuntimeError: If no parsing provider is configured.
+
         """
+        if self.parser is None:
+            raise RuntimeError(PARSER_UNAVAILABLE_MESSAGE)
+
         pages = await self.parser.parse(filepath)
 
         document_name = os.path.basename(filepath)

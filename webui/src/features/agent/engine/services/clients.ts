@@ -8,7 +8,7 @@
  * behavior-neutral until then.
  */
 import type { LlmClient } from "../types"
-import { ByokLlmClient, type ByokProvider } from "../byok-client"
+import { ByokLlmClient, builtinBaseUrl } from "../byok-client"
 import type { ServiceResolution } from "./kinds"
 import { isTauri } from "@/platform"
 import { tauriFetch } from "./desktop-http"
@@ -53,11 +53,14 @@ export const llmClientFromResolution = (
 ): LlmClient | null => {
   if (resolution.kind !== "llm") return null
   if (resolution.mode === "byok") {
-    const { provider, apiKey, model } = resolution.credential
+    const { provider, apiKey, model, baseURL } = resolution.credential
+    const address = baseURL ?? builtinBaseUrl(provider)
+    if (!address) return null
     return ByokLlmClient.fromConfig({
-      provider: provider as ByokProvider,
+      provider,
       apiKey,
       model: model ?? "",
+      baseURL: address,
       // On desktop the webview enforces CORS; route the provider call through the
       // Tauri fetch so BYOK LLM (incl. streaming) works. No-op in the browser.
       ...(isTauri() ? { fetch: tauriFetch } : {}),

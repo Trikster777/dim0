@@ -24,7 +24,7 @@ from qdrant_client.models import (
 
 from topix.config.config import Config, QdrantConfig
 from topix.datatypes.resource import Resource, dict_to_embeddable
-from topix.nlp.embed import OpenAIEmbedder
+from topix.nlp.embed import DIMENSIONS, EmbeddingUnavailableError, OpenAIEmbedder
 from topix.store.qdrant.utils import (
     RetrieveOutput,
     convert_point,
@@ -63,7 +63,7 @@ class ContentStore:
     def __init__(
         self,
         qdrant_client: AsyncQdrantClient,
-        embedder: OpenAIEmbedder,
+        embedder: OpenAIEmbedder | None,
         collection: str = DEFAULT_COLLECTION,
     ):
         """Init method."""
@@ -71,9 +71,19 @@ class ContentStore:
         self.embedder = embedder
         self.collection = collection
 
+    @property
+    def vector_size(self) -> int:
+        """Vector width used for the collection and for zero-vector fallbacks."""
+        return self.embedder.dimensions if self.embedder is not None else DIMENSIONS
+
     @classmethod
     def from_config(cls):
-        """Create an instance of QdrantStore from configuration."""
+        """Create an instance of QdrantStore from configuration.
+
+        The embedding provider is optional: without one the store still serves
+        reads and writes (zero vectors), while vector search raises
+        `EmbeddingUnavailableError`.
+        """
         config: Config = Config.instance()
         qdrant_config: QdrantConfig = config.run.databases.qdrant
         collection = qdrant_config.collection
@@ -99,11 +109,12 @@ class ContentStore:
     ) -> None:
         """Create a Qdrant collection with the specified parameters.
 
-        Vector size defaults to the active embedder's dimension so the collection
-        always matches the embeddings it will store.
+        Vector size defaults to the active embedder's dimension (or the
+        default width when no embedder is configured) so the collection always
+        matches the embeddings it will store.
         """
         if vector_size is None:
-            vector_size = self.embedder.dimensions
+            vector_size = self.vector_size
 
         exists = await self.client.collection_exists(self.collection)
 
@@ -199,6 +210,11 @@ class ContentStore:
     async def _embed(  # noqa: C901
         self, entries: list[Resource | dict]
     ) -> list[list[list[float]] | None]:
+        """Embed entries, falling back to zero vectors when no embedder is set.
+
+        Without an embedding provider the store keeps accepting writes: every
+        entry gets a single zero vector of the collection's vector width.
+        """
         searchable_texts = []
         indices = []
         for i, entry in enumerate(entries):
@@ -210,6 +226,10 @@ class ContentStore:
             for text in to_embed:
                 indices.append(i)
                 searchable_texts.append(text)
+
+        if self.embedder is None:
+            # No embedding provider: store zero vectors so writes keep working.
+            return [[[0.0] * self.vector_size] for _ in entries]
 
         embeds = await self.embedder.embed(searchable_texts)
 
@@ -223,7 +243,7 @@ class ContentStore:
         # Fill in None embeddings with zero vectors
         for i, emb in enumerate(embeddings):
             if emb is None:
-                embeddings[i] = [[0.0] * self.embedder.dimensions]
+                embeddings[i] = [[0.0] * self.vector_size]
 
         return embeddings
 
@@ -372,7 +392,15 @@ class ContentStore:
         with_vector: bool = False,
         offset: int | None = None,
     ) -> list[RetrieveOutput]:
-        """Semantic Search for text query."""
+        """Semantic Search for text query.
+
+        Raises:
+            EmbeddingUnavailableError: If no embedding provider is configured.
+
+        """
+        if self.embedder is None:
+            raise EmbeddingUnavailableError()
+
         query_vector = (await self.embedder.embed([query]))[0]
         if isinstance(include, dict):
             include = payload_dict_to_field_list(include)
@@ -399,7 +427,15 @@ class ContentStore:
         offset: int | None = None,
         batch_size: int = 1000,
     ) -> list[list[RetrieveOutput]]:
-        """Semantic search for a batch of queries."""
+        """Semantic search for a batch of queries.
+
+        Raises:
+            EmbeddingUnavailableError: If no embedding provider is configured.
+
+        """
+        if self.embedder is None:
+            raise EmbeddingUnavailableError()
+
         query_embs = await self.embedder.embed(queries)
         if isinstance(include, dict):
             include = payload_dict_to_field_list(include)

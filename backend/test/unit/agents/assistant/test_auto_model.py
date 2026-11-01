@@ -3,21 +3,13 @@
 import pytest
 
 from topix.agents.assistant import auto_model
-
-PROVIDER_KEYS = [
-    "OPENAI_API_KEY",
-    "OPENROUTER_API_KEY",
-    "ANTHROPIC_API_KEY",
-    "GEMINI_API_KEY",
-    "MISTRAL_API_KEY",
-    "DEEPSEEK_API_KEY",
-]
+from topix.config import catalog
 
 
 @pytest.fixture
 def clean_keys(monkeypatch):
     """Start from no provider keys so each test sets only what it needs."""
-    for key in PROVIDER_KEYS:
+    for key in catalog.provider_env_vars():
         monkeypatch.delenv(key, raising=False)
     return monkeypatch
 
