@@ -8,24 +8,17 @@ import pytest
 
 from topix.config import catalog
 
-PROVIDER_KEYS = [
-    "OPENAI_API_KEY",
-    "OPENROUTER_API_KEY",
-    "ANTHROPIC_API_KEY",
-    "GEMINI_API_KEY",
-    "MISTRAL_API_KEY",
-    "DEEPSEEK_API_KEY",
-    "LINKUP_API_KEY",
-    "TAVILY_API_KEY",
-    "PERPLEXITY_API_KEY",
-    "EXA_API_KEY",
-]
+# Stub values for the custom OpenAI-compatible provider (no real key or address).
+CUSTOM_KEY_ENV = "ANYMODEL_API_KEY"
+CUSTOM_URL_ENV = "ANYMODEL_BASE_URL"
+CUSTOM_BASE_URL = "https://example.test/v1"
+CUSTOM_CALL_CODE = "anymodel/cx/gpt-6-luna"
 
 
 @pytest.fixture
 def clean_keys(monkeypatch):
     """Remove all provider keys so each test starts from a known-empty state."""
-    for key in PROVIDER_KEYS:
+    for key in catalog.provider_env_vars():
         monkeypatch.delenv(key, raising=False)
     return monkeypatch
 
@@ -84,12 +77,52 @@ def test_openrouter_only_routes_via_openrouter(clean_keys):
     assert catalog.resolve_code("glm-5.3-flashx") == "openrouter/z-ai/glm-5.3-flashx:nitro"
     assert catalog.resolve_code("kimi-k3") == "openrouter/moonshotai/kimi-k3:nitro"
 
-    # Embeddings work through OpenRouter (no OpenAI key required).
+    # Embeddings work through OpenRouter (no OpenAI key required). The Nemotron
+    # entry comes first in the catalog, so it is the active embedder here.
     emb = catalog.available_embedding()
     assert emb is not None
     assert emb.provider == "openrouter"
-    assert emb.model == "openai/text-embedding-3-small"
+    assert emb.model == "nvidia/nemotron-3.5-embed-1b:free"
     assert emb.dim == 512
+
+
+def test_embedding_order_picks_the_first_reachable_entry(clean_keys):
+    """The active embedder is the first reachable catalog entry, not the "best".
+
+    Order in the `embedding:` section decides: with both keys present the
+    Nemotron entry (first) stays active over text-embedding-3-small.
+    """
+    clean_keys.setenv("OPENAI_API_KEY", "sk-x")
+    clean_keys.setenv("OPENROUTER_API_KEY", "or-x")
+
+    emb = catalog.available_embedding()
+    assert emb is not None
+    assert emb.model == "nvidia/nemotron-3.5-embed-1b:free"
+    assert emb.dim == 512
+
+
+def test_embedding_entry_id_names_the_model_its_route_calls():
+    """A catalog id must not drift away from the model the route actually calls.
+
+    The two Nemotron slugs are different models: "nvidia/nemotron-3-embed-1b:free"
+    rejects the `dimensions` parameter the embedder sends on every request
+    (HTTP 400), while "nvidia/nemotron-3.5-embed-1b:free" honours it.
+    """
+    _, _, embeddings = catalog._load()
+    entry = next(m for m in embeddings if m.id.startswith("nemotron"))
+
+    assert entry.id == "nemotron-3.5-embed-1b"
+    assert [r.model for r in entry.routes] == ["nvidia/nemotron-3.5-embed-1b:free"]
+    assert entry.dim == 512
+
+
+def test_provider_env_vars_cover_credentials_and_endpoints():
+    """The helper lists both halves of a provider's configuration."""
+    names = catalog.provider_env_vars()
+
+    assert "OPENAI_API_KEY" in names
+    assert "ANYMODEL_API_KEY" in names
+    assert "ANYMODEL_BASE_URL" in names
 
 
 def test_nitro_only_on_non_openai_anthropic_routes(clean_keys):
@@ -214,13 +247,19 @@ def test_public_catalog_is_all_vision_and_hides_internal():
 
     After the refresh the text-only classifier (`gpt-oss-120b`, internal) is
     excluded from the picker, and every remaining model accepts image input.
+    The `anymodel` family is the one exception: that provider has not confirmed
+    image input, so its models are published as text-only.
     """
     by_id = {m["id"]: m for m in catalog.public_llm_catalog()}
     assert by_id  # catalog is non-empty
     # gpt-oss-120b is internal (classifier only) → never in the public picker.
     assert "gpt-oss-120b" not in by_id
-    # Every user-facing model accepts image input.
-    assert all(m["vision"] is True for m in by_id.values())
+    # Every user-facing model accepts image input, except the anymodel family.
+    for mid, model in by_id.items():
+        if model["family"] == "anymodel":
+            assert model["vision"] is False, mid
+        else:
+            assert model["vision"] is True, mid
     # (gpt-oss-120b stays resolvable by id for the classifier — see
     # test_resolved_by_id — it's just hidden from this public list.)
 
@@ -243,3 +282,152 @@ def test_internal_model_hidden_from_selection_but_resolvable(clean_keys):
     # But the classifier resolves it directly.
     r = catalog.resolved_by_id("gpt-oss-120b")
     assert r is not None and r.internal is True
+
+
+@pytest.fixture
+def stub_provider(monkeypatch):
+    """Register a synthetic provider declaring both a literal and an env base URL."""
+    stub = catalog.Provider(
+        name="stub",
+        key="STUB_API_KEY",
+        base_url=CUSTOM_BASE_URL,
+        base_url_env="STUB_BASE_URL",
+    )
+    monkeypatch.setattr(catalog, "_load", lambda: ({"stub": stub}, [], []))
+    catalog._resolved_for.cache_clear()
+    yield stub
+    catalog._resolved_for.cache_clear()
+
+
+def test_custom_provider_needs_key_and_base_url(clean_keys):
+    """A provider with an env base URL is half-configured without the address."""
+    clean_keys.setenv(CUSTOM_KEY_ENV, "test-key")
+    # The key alone is not enough — the endpoint is missing.
+    assert "anymodel" not in catalog.available_providers()
+    assert catalog.resolve_code("gpt-6-luna") is None
+
+    # With both, the provider becomes available and its models resolve.
+    clean_keys.setenv(CUSTOM_URL_ENV, CUSTOM_BASE_URL)
+    assert "anymodel" in catalog.available_providers()
+    assert catalog.resolve_code("gpt-6-luna") == CUSTOM_CALL_CODE
+
+
+def test_custom_provider_without_key_is_unavailable(clean_keys):
+    """The address alone does not enable a provider that also needs a key."""
+    clean_keys.setenv(CUSTOM_URL_ENV, CUSTOM_BASE_URL)
+    assert "anymodel" not in catalog.available_providers()
+    assert catalog.resolve_code("gpt-6-luna") is None
+
+
+def test_custom_provider_is_the_default_when_alone(clean_keys):
+    """With only the custom provider configured, its first model is the default."""
+    clean_keys.setenv(CUSTOM_KEY_ENV, "test-key")
+    clean_keys.setenv(CUSTOM_URL_ENV, CUSTOM_BASE_URL)
+
+    default = catalog.default_resolved()
+    assert default is not None
+    assert default.id == "gpt-6-luna"
+    assert default.call == CUSTOM_CALL_CODE
+    assert catalog.default_model_code() == CUSTOM_CALL_CODE
+
+
+def test_provider_base_url_prefers_env_over_literal(clean_keys, stub_provider):
+    """The env address wins; without it the literal from the catalog is used."""
+    clean_keys.delenv("STUB_BASE_URL", raising=False)
+    assert catalog.provider_base_url("stub") == CUSTOM_BASE_URL
+
+    clean_keys.setenv("STUB_BASE_URL", "https://example.test/other")
+    assert catalog.provider_base_url("stub") == "https://example.test/other"
+
+
+def test_provider_base_url_is_none_without_declaration(clean_keys):
+    """A provider that declares no base URL resolves to None."""
+    clean_keys.setenv("OPENAI_API_KEY", "test-key")
+    assert catalog.provider_base_url("openai") is None
+    assert catalog.provider_base_url("openrouter") is None
+    assert catalog.provider_base_url("no-such-provider") is None
+
+
+def test_openai_compatible_client_for_custom_provider(clean_keys):
+    """A custom provider gets a client pointed at its own OpenAI-compatible URL."""
+    clean_keys.setenv(CUSTOM_KEY_ENV, "test-key")
+    clean_keys.setenv(CUSTOM_URL_ENV, CUSTOM_BASE_URL)
+
+    resolved = catalog.resolved_by_call(CUSTOM_CALL_CODE)
+    assert resolved is not None
+
+    client = catalog.openai_compatible_client(resolved)
+    assert client is not None
+    assert str(client.base_url).rstrip("/") == CUSTOM_BASE_URL
+    assert client.api_key == "test-key"
+
+
+def test_openai_compatible_client_none_for_incompatible_provider(clean_keys):
+    """A provider without an OpenAI-compatible endpoint gets no client."""
+    resolved = catalog.Resolved(
+        id="claude-opus-4.8",
+        label="Claude Opus 4.8",
+        family="anthropic",
+        provider="anthropic",
+        model="claude-opus-4-8",
+        call="anthropic/claude-opus-4-8",
+    )
+    assert catalog.openai_compatible_client(resolved) is None
+
+
+def test_openai_compatible_client_unchanged_for_openai(clean_keys):
+    """The native OpenAI provider keeps its default endpoint and key."""
+    clean_keys.setenv("OPENAI_API_KEY", "test-key")
+
+    resolved = catalog.resolved_by_call("openai/gpt-5.4")
+    assert resolved is not None and resolved.provider == "openai"
+
+    client = catalog.openai_compatible_client(resolved)
+    assert client is not None
+    assert str(client.base_url).rstrip("/").endswith("api.openai.com/v1")
+    assert client.api_key == "test-key"
+
+
+def test_openai_compatible_client_unchanged_for_openrouter(clean_keys):
+    """The OpenRouter provider keeps its own endpoint and key."""
+    clean_keys.setenv("OPENROUTER_API_KEY", "test-key")
+
+    resolved = catalog.resolved_by_call("openrouter/openai/gpt-5.4")
+    assert resolved is not None and resolved.provider == "openrouter"
+
+    client = catalog.openai_compatible_client(resolved)
+    assert client is not None
+    assert str(client.base_url).rstrip("/").endswith("openrouter.ai/api/v1")
+    assert client.api_key == "test-key"
+
+
+def test_resolved_by_call_finds_the_serving_route(clean_keys):
+    """resolved_by_call maps a call code back to its provider and model string."""
+    clean_keys.setenv(CUSTOM_KEY_ENV, "test-key")
+    clean_keys.setenv(CUSTOM_URL_ENV, CUSTOM_BASE_URL)
+
+    resolved = catalog.resolved_by_call(CUSTOM_CALL_CODE)
+    assert resolved is not None
+    assert resolved.provider == "anymodel"
+    assert resolved.model == "cx/gpt-6-luna"
+    assert resolved.id == "gpt-6-luna"
+    assert resolved.family == "anymodel"
+    assert resolved.tier == "lite"
+
+    # An unknown call code resolves to nothing.
+    assert catalog.resolved_by_call("anymodel/cx/no-such-model") is None
+
+
+def test_resolved_by_call_is_none_when_provider_is_unconfigured(clean_keys):
+    """A call code of an unavailable provider resolves to nothing."""
+    assert catalog.resolved_by_call(CUSTOM_CALL_CODE) is None
+
+
+def test_provider_spec_exposes_the_declared_provider(clean_keys):
+    """provider_spec returns the declaration of a provider (or None)."""
+    spec = catalog.provider_spec("anymodel")
+    assert spec is not None
+    assert spec.key == CUSTOM_KEY_ENV
+    assert spec.base_url_env == CUSTOM_URL_ENV
+    assert spec.base_url is None
+    assert catalog.provider_spec("no-such-provider") is None

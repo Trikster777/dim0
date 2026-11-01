@@ -22,6 +22,7 @@ from topix.agents.datatypes.stream import (
 )
 from topix.agents.datatypes.tool_call import ToolCall, ToolCallState
 from topix.agents.datatypes.tools import AgentToolName
+from topix.config import catalog
 from topix.datatypes.chat.chat import Message
 
 
@@ -205,20 +206,10 @@ async def test_run_streamed_flushes_reasoning_step_before_tool_call(monkeypatch:
 # Provider keys that catalog resolution reads from the environment. Auto-model
 # selection needs at least one reachable model, so the routing tests pin a known
 # key — otherwise they pass locally (real .env leaks in) but fail on CI (no keys).
-_PROVIDER_KEYS = (
-    "OPENAI_API_KEY",
-    "OPENROUTER_API_KEY",
-    "ANTHROPIC_API_KEY",
-    "GEMINI_API_KEY",
-    "MISTRAL_API_KEY",
-    "DEEPSEEK_API_KEY",
-)
-
-
 @pytest.fixture
 def openai_only(monkeypatch: pytest.MonkeyPatch) -> pytest.MonkeyPatch:
     """Resolve the catalog against OpenAI alone, deterministic across CI and local."""
-    for key in _PROVIDER_KEYS:
+    for key in catalog.provider_env_vars():
         monkeypatch.delenv(key, raising=False)
     monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
     return monkeypatch
