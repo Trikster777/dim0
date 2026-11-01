@@ -40,22 +40,19 @@ class NewsfeedCollector(BaseAgent):
             time=iso_to_clear_date(datetime.now().isoformat()),
         )
 
-        if not web_search:
-            web_search = WebSearchHandler.get_openai_web_tool()
-
         super().__init__(
             name=name,
             model=model,
             model_settings=model_settings,
             instructions=instructions,
-            tools=[web_search],
+            tools=[web_search] if web_search else [],
         )
         super().__post_init__()
 
     @classmethod
     def from_config(cls, config: NewsfeedCollectorConfig) -> NewsfeedCollector:
         """Create an instance of NewsfeedCollector from configuration."""
-        web_search = WebSearchHandler.from_config(config.web_search)
+        web_search = WebSearchHandler.from_config(config.web_search) if config.web_search else None
 
         return cls(
             model=config.model,

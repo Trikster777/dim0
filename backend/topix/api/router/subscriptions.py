@@ -11,6 +11,7 @@ from topix.api.datatypes.requests import AddSubscriptionRequest, NewsfeedUpdateR
 from topix.api.utils.decorators import with_standard_response
 from topix.api.utils.rate_limit.dependency import rate_limiter
 from topix.api.utils.security import get_current_user_uid
+from topix.config.services import service_config
 from topix.store.subscription import SubscriptionStore
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,15 @@ router = APIRouter(
     tags=["subscriptions"],
     responses={404: {"description": "Not found"}},
 )
+
+
+def _require_search() -> None:
+    """Subscriptions are a search-driven feature: refuse clearly when no search API is configured."""
+    if not service_config.search:
+        raise HTTPException(
+            status_code=503,
+            detail="Subscriptions are unavailable: no search API is configured.",
+        )
 
 
 @router.put("/", include_in_schema=False)
@@ -33,6 +43,7 @@ async def create_subscription(
     _: Annotated[None, Depends(rate_limiter)],
 ):
     """Create a new subscription for the user."""
+    _require_search()
     store: SubscriptionStore = request.app.subscription_store
     sub = await store.create_subscription(user_id, body.topic, body.raw_description or "", uid=body.uid)
     return {"subscription": sub.model_dump(exclude_none=True)}
@@ -113,6 +124,7 @@ async def create_newsfeed(
     uid: Annotated[str | None, Query(description="Optional Newsfeed Unique ID")] = None,
 ):
     """Create a new newsfeed for a subscription."""
+    _require_search()
     store: SubscriptionStore = request.app.subscription_store
     subs = await store.get_subscriptions([subscription_id])
     if not subs:
