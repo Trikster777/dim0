@@ -16,6 +16,7 @@ from agents import (
     Tool,
 )
 from agents.extensions.models.litellm_model import LitellmModel
+from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
 from jinja2 import Template
 from openai.types.responses import (
     ResponseReasoningSummaryTextDeltaEvent,
@@ -57,7 +58,7 @@ class BaseAgent(Agent[Context]):
     """Base class for agents. Inherit from Openai Agent."""
 
     def __post_init__(self):
-        """Resolve the model against available keys, then load LiteLLM if not OpenAI."""
+        """Resolve the model against available keys, then wrap it in the right client."""
         if isinstance(self.model, str):
             # Normalize any id / legacy code to a concrete route for the current
             # keys; fall back to the best available model, or raise a clear error
@@ -65,7 +66,7 @@ class BaseAgent(Agent[Context]):
             self.model = catalog.normalize_code(self.model) or catalog.require_model_code()
             model_type = self.model.split("/")[0]
             if model_type != "openai":
-                self.model = LitellmModel(self.model)
+                self.model = self._wrap_model(self.model)
 
         # if the model does not support temperature, set it to None
         self.model_settings = self._adjust_model_settings(
@@ -81,9 +82,30 @@ class BaseAgent(Agent[Context]):
             # It provides type annotation for the input parameter of the agent and also the converted tool function
             self._input_type = None
 
+    def _wrap_model(self, call_code: str) -> OpenAIChatCompletionsModel | LitellmModel:
+        """Wrap a resolved call code in the client that can serve its provider.
+
+        A provider that declares its own OpenAI-compatible base URL is called
+        directly through the native SDK client (chat completions) — LiteLLM does
+        not know custom providers. Every other provider keeps the LiteLLM path.
+        The string sent to the provider is the provider-specific model name
+        (`cx/gpt-6-luna`), not the canonical catalog id.
+        """
+        resolved = catalog.resolved_by_call(call_code)
+        if resolved is not None and resolved.provider not in ("openai", "openrouter"):
+            base = catalog.provider_base_url(resolved.provider)
+            if base:
+                client = catalog.openai_compatible_client(resolved)
+                if client is not None:
+                    return OpenAIChatCompletionsModel(
+                        model=resolved.model,
+                        openai_client=client,
+                    )
+        return LitellmModel(call_code)
+
     def _adjust_model_settings(  # noqa: C901
         self,
-        model: str | LitellmModel,
+        model: str | LitellmModel | OpenAIChatCompletionsModel,
         model_settings: ModelSettings | None
     ) -> ModelSettings:
         """Normalize model settings for the selected provider family."""

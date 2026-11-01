@@ -28,7 +28,12 @@ export const agentResolveContext = (opts: {
 }): ResolveContext => {
   const byok: PerKindByok = {}
   if (opts.llm) {
-    byok.llm = { provider: opts.llm.provider, apiKey: opts.llm.apiKey, model: opts.llm.model }
+    byok.llm = {
+      provider: opts.llm.provider,
+      apiKey: opts.llm.apiKey,
+      model: opts.llm.model,
+      ...(opts.llm.baseURL ? { baseURL: opts.llm.baseURL } : {}),
+    }
   }
   if (opts.search?.apiKey) {
     byok.search = { provider: opts.search.engine, apiKey: opts.search.apiKey } satisfies ByokCredential

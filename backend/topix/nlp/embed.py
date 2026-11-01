@@ -20,6 +20,26 @@ DIMENSIONS = 512
 # allowed to 400 the whole embed request.
 MAX_EMBED_TOKENS = 8000
 
+DEFAULT_UNAVAILABLE_MESSAGE = (
+    "Vector search is unavailable: no embedding provider configured"
+)
+
+
+class EmbeddingUnavailableError(RuntimeError):
+    """Raised when a vector operation is attempted without an embedding provider.
+
+    The error carries the HTTP status and the neutral message the API layer
+    answers with, so the capability gap reaches the client as a 503 instead of
+    a generic 500.
+    """
+
+    status_code = 503
+    detail = DEFAULT_UNAVAILABLE_MESSAGE
+
+    def __init__(self, message: str | None = None):
+        """Initialize the error with a neutral message describing the missing capability."""
+        super().__init__(message or self.detail)
+
 
 class OpenAIEmbedder:
     """Embeds text via an OpenAI-compatible endpoint (OpenAI or OpenRouter).
@@ -40,17 +60,26 @@ class OpenAIEmbedder:
         self.dimensions = dimensions
 
     @classmethod
-    def from_config(cls):
-        """Create an embedder routed to the first available embedding provider."""
+    def from_config(cls) -> "OpenAIEmbedder | None":
+        """Create an embedder routed to the first available embedding provider.
+
+        The embedding provider is optional: when none is configured (or the
+        resolved one cannot be reached) this returns None after logging a
+        warning, so the backend still boots. Vector operations then fail
+        explicitly with :class:`EmbeddingUnavailableError`.
+        """
         resolved = catalog.available_embedding()
         if resolved is None:
-            raise RuntimeError(
-                "No embedding model available. Set OPENAI_API_KEY or OPENROUTER_API_KEY."
-            )
+            logger.warning(DEFAULT_UNAVAILABLE_MESSAGE)
+            return None
 
         client = catalog.openai_compatible_client(resolved)
         if client is None:
-            raise RuntimeError(f"Unsupported embedding provider: {resolved.provider}")
+            logger.warning(
+                "Embedding provider '%s' is not compatible with the OpenAI API; vector search is unavailable.",
+                resolved.provider,
+            )
+            return None
 
         return cls(
             client=client,

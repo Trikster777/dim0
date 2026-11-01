@@ -44,15 +44,12 @@ class WebCollector(BaseAgent):
         if model_settings is None:
             model_settings = ModelSettings(max_tokens=8000)
 
-        if not web_search_tool:
-            web_search_tool = WebSearchHandler.get_openai_web_tool()
-
         super().__init__(
             name=name,
             model=model,
             model_settings=model_settings,
             instructions=instructions,
-            tools=[web_search_tool],
+            tools=[web_search_tool] if web_search_tool else [],
         )
         super().__post_init__()
 
@@ -62,7 +59,7 @@ class WebCollector(BaseAgent):
         config: DeepResearchConfig.WebCollectorConfig,
     ):
         """Init from config."""
-        web_tool = WebSearchHandler.from_config(config.web_search)
+        web_tool = WebSearchHandler.from_config(config.web_search) if config.web_search else None
 
         return cls(
             model=config.model,

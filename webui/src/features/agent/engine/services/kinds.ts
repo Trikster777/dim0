@@ -46,6 +46,8 @@ export type ByokCredential = {
   provider: string
   apiKey: string
   model?: string
+  /** Address of a user's own OpenAI-compatible endpoint (built-ins don't need it). */
+  baseURL?: string
 }
 
 

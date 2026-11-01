@@ -69,7 +69,10 @@ class WebSearchConfig(BaseAgentConfig):
         """Check if the model is valid."""
         valid_engines = [service.name for service in service_config.search]
         if len(valid_engines) == 0:
-            raise ValueError("No Search API available. Please add at least one Search API.")
+            # Web search is an optional capability: without a search provider the
+            # app still starts, the tool is simply not offered to the agent.
+            logger.warning("No Search API configured. Web search will be unavailable.")
+            return v
         if v in valid_engines:
             return v
         logger.info(f"Search choice '{v}' is not available, replaced with {valid_engines[0]}")
@@ -124,7 +127,7 @@ class ImageGenerationConfig(BaseConfig):
 class PlanConfig(BaseAgentConfig):
     """Plan Config class."""
 
-    web_search: WebSearchConfig
+    web_search: WebSearchConfig | None = None
     memory_search: BaseAgentConfig
     code_interpreter: CodeInterpreterConfig | None = None
     navigate: WebNavigatorConfig | None = None
@@ -145,6 +148,9 @@ class AssistantManagerConfig(BaseModel):
             cf = yaml.safe_load(f)
 
         if 'plan' in cf:
+            if len(service_config.search) == 0:
+                cf['plan']['web_search'] = None
+
             if len(service_config.navigate) == 0:
                 cf['plan']['navigate'] = None
 
@@ -158,6 +164,10 @@ class AssistantManagerConfig(BaseModel):
 
     def set_web_engine(self, engine: WebSearchOption, enable_summarization: bool = False):
         """Switch the web search engine."""
+        if self.plan.web_search is None:
+            logger.info(f"Web search is not configured, engine '{engine}' is ignored.")
+            return
+
         self.plan.web_search.search_engine = engine
 
         if engine in [WebSearchOption.OPENAI]:
@@ -184,7 +194,7 @@ class DeepResearchConfig(BaseModel):
     class WebCollectorConfig(BaseAgentConfig):
         """Web Collector Config class."""
 
-        web_search: WebSearchConfig
+        web_search: WebSearchConfig | None = None
 
     outline_generator: WebCollectorConfig
     web_collector: WebCollectorConfig
@@ -197,6 +207,12 @@ class DeepResearchConfig(BaseModel):
             filepath = CONFIG_DIR / "deep_research.yml"
         with open(filepath) as f:
             cf = yaml.safe_load(f)
+
+        if len(service_config.search) == 0:
+            for section in ("outline_generator", "web_collector"):
+                if section in cf:
+                    cf[section]["web_search"] = None
+
         return DeepResearchConfig.model_validate(cf)
 
     def set_model(self, model: str):

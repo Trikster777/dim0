@@ -11,7 +11,9 @@ import type { AgentEvent } from "./types"
 import { localTools } from "./tools"
 import {
   ByokLlmClient,
+  builtinBaseUrl,
   fromOpenAiMessage,
+  makeCompleter,
   toOpenAiMessages,
   toOpenAiTools,
   type ChatCompleter,
@@ -103,6 +105,30 @@ describe("byok mapping", () => {
 
   it("reads a text turn", () => {
     expect(fromOpenAiMessage({ role: "assistant", content: "hi" } as ChatCompletionMessage)).toEqual({ kind: "text", text: "hi" })
+  })
+})
+
+
+describe("provider base URLs", () => {
+  it("uses the built-in providers' own URLs", () => {
+    expect(builtinBaseUrl("openai")).toBe("https://api.openai.com/v1")
+    expect(builtinBaseUrl("openrouter")).toBe("https://openrouter.ai/api/v1")
+    expect(builtinBaseUrl("my-provider")).toBeUndefined()
+  })
+
+  it("refuses to build a client for an unknown provider without an address", () => {
+    expect(() => makeCompleter({ provider: "my-provider", apiKey: "sk-x", model: "m" })).toThrow()
+  })
+
+  it("accepts a user's own provider with its own address", () => {
+    expect(() =>
+      makeCompleter({
+        provider: "my-provider",
+        apiKey: "sk-x",
+        model: "m",
+        baseURL: "https://example.test/v1",
+      }),
+    ).not.toThrow()
   })
 })
 

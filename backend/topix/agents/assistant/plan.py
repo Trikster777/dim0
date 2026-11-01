@@ -51,9 +51,11 @@ class Plan(BaseAgent):
     ):
         """Init method."""
         name = "Plan"
+        tools = tools or []
         instructions = self._render_prompt(
             instructions_template,
             time=iso_to_clear_date(datetime.now().isoformat()),
+            web_search=self._has_web_search(tools),
         )
 
         model_settings = model_settings or ModelSettings(max_tokens=8000)
@@ -63,9 +65,18 @@ class Plan(BaseAgent):
             model=model,
             model_settings=model_settings,
             instructions=instructions,
-            tools=tools or [],
+            tools=tools,
         )
         super().__post_init__()
+
+    @staticmethod
+    def _has_web_search(tools: list[FunctionTool]) -> bool:
+        """Whether the web search tool is registered for this agent.
+
+        The prompt advertises only the tools the agent actually has: telling a
+        model about a missing tool makes it call a name the API does not know.
+        """
+        return any(tool.name == AgentToolName.WEB_SEARCH for tool in tools)
 
     @classmethod
     def from_config(
@@ -86,9 +97,11 @@ class Plan(BaseAgent):
             learn_generate_html_widget_tool,
             learn_generate_mini_app_tool,
             learn_generate_diagram_tool,
-            WebSearchHandler.from_config(config.web_search),
             create_memory_search_tool(memory_filters, content_store),  # memory search tool
         ]
+
+        if config.web_search:
+            tools.append(WebSearchHandler.from_config(config.web_search))
 
         if config.code_interpreter:
             tools.append(run_code_tool)
@@ -135,6 +148,7 @@ class Plan(BaseAgent):
             messages=messages,
             user_query=user_query,
             time=iso_to_clear_date(datetime.now().isoformat()),
+            web_search=self._has_web_search(self.tools),
         )
 
         return user_prompt

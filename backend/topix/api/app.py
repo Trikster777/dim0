@@ -12,6 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from topix.agents.websearch.parallel import close_client as close_parallel_client
+from topix.api.errors import register_exception_handlers
 from topix.api.router import (
     ai,
     billing,
@@ -135,6 +136,10 @@ def create_app(stage: StageEnum):
     )
 
     origins = ["*"]
+
+    # Domain errors (e.g. vector search without an embedding provider) map to
+    # explicit HTTP statuses instead of a generic 500.
+    register_exception_handlers(app)
 
     app.add_middleware(
         CORSMiddleware,
