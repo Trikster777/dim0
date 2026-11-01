@@ -1,9 +1,11 @@
 """Unit tests for the embedder's per-input token clamping."""
 
 import asyncio
+import logging
 
 import tiktoken
 
+from topix.config import catalog
 from topix.nlp import embed as embed_mod
 from topix.nlp.embed import MAX_EMBED_TOKENS, OpenAIEmbedder
 from topix.nlp.tokens import EMBED_ENCODING
@@ -92,3 +94,56 @@ class TestEmbedderClamping:
         monkeypatch.setattr(embed_mod.asyncio, "to_thread", _spy)
         await embedder.embed(["short text", "another short one"])
         assert calls["n"] == 0
+
+
+def _resolved_embedding() -> catalog.Resolved:
+    """Build a resolved embedding route as the catalog would return it."""
+    return catalog.Resolved(
+        id="text-embedding-3-small",
+        label="Embedding",
+        family="embedding",
+        dim=512,
+        provider="openai",
+        model="text-embedding-3-small",
+        call="openai/text-embedding-3-small",
+    )
+
+
+class TestEmbedderFromConfig:
+    """The embedder is optional: `from_config` must never raise on a missing provider."""
+
+    def test_returns_none_when_no_embedding_provider(self, monkeypatch, caplog):
+        """No embedding provider → None plus a warning, so the backend still boots."""
+        monkeypatch.setattr(embed_mod.catalog, "available_embedding", lambda: None)
+
+        with caplog.at_level(logging.WARNING, logger="topix.nlp.embed"):
+            embedder = OpenAIEmbedder.from_config()
+
+        assert embedder is None
+        warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
+        assert warnings
+        assert "vector search is unavailable" in caplog.text.lower()
+
+    def test_returns_none_when_client_cannot_be_built(self, monkeypatch, caplog):
+        """A provider without an OpenAI-compatible client → None plus a warning."""
+        monkeypatch.setattr(embed_mod.catalog, "available_embedding", _resolved_embedding)
+        monkeypatch.setattr(embed_mod.catalog, "openai_compatible_client", lambda _resolved: None)
+
+        with caplog.at_level(logging.WARNING, logger="topix.nlp.embed"):
+            embedder = OpenAIEmbedder.from_config()
+
+        assert embedder is None
+        assert any(r.levelno == logging.WARNING for r in caplog.records)
+
+    def test_returns_embedder_when_provider_is_available(self, monkeypatch):
+        """A reachable provider yields a usable embedder."""
+        client = _FakeClient()
+        monkeypatch.setattr(embed_mod.catalog, "available_embedding", _resolved_embedding)
+        monkeypatch.setattr(embed_mod.catalog, "openai_compatible_client", lambda _resolved: client)
+
+        embedder = OpenAIEmbedder.from_config()
+
+        assert embedder is not None
+        assert embedder.model == "text-embedding-3-small"
+        assert embedder.dimensions == 512
+
