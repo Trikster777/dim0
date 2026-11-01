@@ -1,5 +1,6 @@
 export {
   AddIcon,
+  AgentVoiceIcon,
   AlertIcon,
   AppletIcon,
   ArticleSummaryIcon,

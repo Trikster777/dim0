@@ -1,8 +1,11 @@
 // Tests for the speak button of an agent answer: a click speaks the very text
 // the copy button copies, the stop click cancels the request and releases the
 // object URL, a 503 (the module is off) shows one toast and freezes the
-// button, the voice list is loaded lazily on the first opening and served from
-// the cache afterwards, and the auto-speak checkbox remembers its state.
+// button, a new message of the user interrupts the speech, and the auto-speak
+// reads the newest answer on its own.
+//
+// The voice list, the auto-speak switch, the speed and the timbre live in the
+// settings dialog — they are covered by the voice section test.
 
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
@@ -165,107 +168,6 @@ describe("SpeakAnswer", () => {
     expect(state.apiFetch).toHaveBeenCalledTimes(1)
   })
 
-  it("asks for the voice list only when the list is opened", async () => {
-    state.apiFetch.mockResolvedValue({ voices: ["xenia", "kseniya"] })
-    render(<SpeakAnswer answer="Привет" />)
-
-    expect(state.apiFetch).not.toHaveBeenCalled()
-
-    await act(async () => {
-      fireEvent.mouseDown(screen.getByRole("combobox"))
-    })
-
-    expect(state.apiFetch).toHaveBeenCalledTimes(1)
-    const [options] = state.apiFetch.mock.calls[0] as [{ path: string, method: string, responseType: string }]
-    expect(options.path).toBe("/tts/voices")
-    expect(options.method).toBe("GET")
-    expect(options.responseType).toBe("json")
-
-    const values = Array.from(screen.getByRole<HTMLSelectElement>("combobox").options).map((o) => o.value)
-    expect(values).toContain("xenia")
-
-    // The list is served from the cache: opening it again asks nothing.
-    await act(async () => {
-      fireEvent.mouseDown(screen.getByRole("combobox"))
-    })
-    expect(state.apiFetch).toHaveBeenCalledTimes(1)
-  })
-
-  it("hides the voice list and shows one toast when the voices are unavailable", async () => {
-    // Not a 503: the module is on, the list itself did not come.
-    state.apiFetch.mockRejectedValue(new ApiRequestError(502, "/tts/voices"))
-    render(<SpeakAnswer answer="Привет" />)
-
-    await act(async () => {
-      fireEvent.mouseDown(screen.getByRole("combobox"))
-    })
-
-    expect(toast).toHaveBeenCalledTimes(1)
-    expect(toast).toHaveBeenCalledWith("The voice list is unavailable")
-    const options = Array.from(screen.getByRole<HTMLSelectElement>("combobox").options)
-    expect(options).toHaveLength(1)
-  })
-
-  it("latches the module off when the voice list answers 503", async () => {
-    state.apiFetch.mockRejectedValue(new ApiRequestError(503, "/tts/voices"))
-    render(<SpeakAnswer answer="Привет" />)
-
-    await act(async () => {
-      fireEvent.mouseDown(screen.getByRole("combobox"))
-    })
-
-    // One clear toast — the module is off, not the list.
-    expect(toast).toHaveBeenCalledTimes(1)
-    expect(toast).toHaveBeenCalledWith("Speech is disabled")
-
-    // The voice list is gone and the button is frozen until a reload.
-    expect(screen.queryByRole("combobox")).toBe(null)
-    const frozen = screen.getByRole("button", { name: "Speech is disabled" })
-    expect(frozen.hasAttribute("disabled")).toBe(true)
-
-    await act(async () => {
-      fireEvent.click(frozen)
-    })
-    expect(state.apiFetch).toHaveBeenCalledTimes(1)
-  })
-
-  it("remembers the picked voice and sends it to the backend", async () => {
-    state.apiFetch.mockImplementation((options: { path: string }) =>
-      options.path === "/tts/voices"
-        ? Promise.resolve({ voices: ["xenia", "kseniya"] })
-        : Promise.resolve(new Blob([new Uint8Array([1, 2, 3])], { type: "audio/wav" })),
-    )
-    render(<SpeakAnswer answer="Привет" />)
-
-    await act(async () => {
-      fireEvent.mouseDown(screen.getByRole("combobox"))
-    })
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "kseniya" } })
-
-    expect(localStorage.getItem("dim0.tts.voice")).toBe("kseniya")
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Speak" }))
-    })
-
-    const [options] = state.apiFetch.mock.calls[1] as [{ path: string, body: unknown }]
-    expect(options.path).toBe("/tts")
-    expect(options.body).toEqual({ text: "Привет", voice: "kseniya" })
-  })
-
-  it("keeps auto-speak off by default and remembers the choice", () => {
-    render(<SpeakAnswer answer="Привет" />)
-
-    const checkbox = screen.getByRole<HTMLInputElement>("checkbox", { name: "Speak agent answers automatically" })
-    expect(checkbox.checked).toBe(false)
-    expect(localStorage.getItem("dim0.tts.autoSpeak")).toBe(null)
-
-    fireEvent.click(checkbox)
-
-    expect(checkbox.checked).toBe(true)
-    expect(localStorage.getItem("dim0.tts.autoSpeak")).toBe("1")
-  })
-
   it("speaks the newest answer on its own when auto-speak is on", async () => {
     localStorage.setItem("dim0.tts.autoSpeak", "1")
     state.messages = [assistantMessage("a1", "Привет")]
@@ -323,45 +225,6 @@ describe("SpeakAnswer", () => {
       fireEvent.click(button)
     })
     expect(state.apiFetch).not.toHaveBeenCalled()
-  })
-
-  it("restores the picked voice from the browser storage and sends it along", async () => {
-    // The state of a previous visit: the browser remembers the voice, the page
-    // does not.
-    localStorage.setItem("dim0.tts.voice", "kseniya")
-    state.apiFetch.mockImplementation((options: { path: string }) =>
-      options.path === "/tts/voices"
-        ? Promise.resolve({ voices: ["xenia", "kseniya"] })
-        : Promise.resolve(new Blob([new Uint8Array([1, 2, 3])], { type: "audio/wav" })),
-    )
-    render(<SpeakAnswer answer="Привет" />)
-
-    await act(async () => {
-      fireEvent.mouseDown(screen.getByRole("combobox"))
-    })
-
-    expect(screen.getByRole<HTMLSelectElement>("combobox").value).toBe("kseniya")
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Speak" }))
-    })
-
-    const [options] = state.apiFetch.mock.calls[1] as [{ path: string, body: unknown }]
-    expect(options.body).toEqual({ text: "Привет", voice: "kseniya" })
-  })
-
-  it("does not start speaking when a voice is picked", async () => {
-    state.apiFetch.mockResolvedValue({ voices: ["xenia", "kseniya"] })
-    render(<SpeakAnswer answer="Привет" />)
-
-    await act(async () => {
-      fireEvent.mouseDown(screen.getByRole("combobox"))
-    })
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "kseniya" } })
-
-    // Only the voice list was asked for — the speech waits for a click.
-    expect(state.apiFetch).toHaveBeenCalledTimes(1)
-    expect(FakeAudio.instances).toHaveLength(0)
   })
 
   it("aborts the pending request when the speech is stopped", async () => {

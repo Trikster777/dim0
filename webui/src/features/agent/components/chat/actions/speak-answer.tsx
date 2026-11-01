@@ -2,27 +2,27 @@ import { apiFetch } from "@/api"
 import { useChatMessages } from "@/features/agent/hooks/use-chat-messages"
 import type { ChatMessage } from "@/features/agent/types/chat"
 import { isReasoningTextStep } from "@/features/agent/types/stream"
+import { applyVoiceSettings, prepareAudioPlayback } from "@/features/agent/tts/audio-playback"
+import {
+  getVoiceSettings,
+  hydrateVoiceSettings,
+  isModuleDisabled,
+  markModuleDisabled,
+  resetVoiceSettings,
+  useModuleDisabled,
+} from "@/features/agent/tts/voice-settings"
 import { CancelStatusIcon, CircleNotchIcon, SpeakerHighIcon, StopIcon } from "@/components/icons"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { i18n } from "@/i18n"
 import { localizeApiError } from "@/lib/i18n/errors"
+import { statusOf } from "@/lib/api-error"
+import { createExternalStore } from "@/lib/store"
 import clsx from "clsx"
-import { useEffect, useId, useMemo, useRef, useSyncExternalStore, type ChangeEvent } from "react"
+import { useEffect, useId, useMemo, useRef, useSyncExternalStore } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 
-
-/** localStorage key holding the voice the user picked. */
-const VOICE_STORAGE_KEY = "dim0.tts.voice"
-
-/** localStorage key holding the auto-speak flag. */
-const AUTO_SPEAK_STORAGE_KEY = "dim0.tts.autoSpeak"
 
 /** Endpoint that synthesizes the speech. */
 const TTS_ENDPOINT = "/tts"
-
-/** Endpoint that lists the voices of the service. */
-const TTS_VOICES_ENDPOINT = "/tts/voices"
 
 
 /** Phase of the speech button. */
@@ -39,63 +39,7 @@ type SpeechState = {
 }
 
 
-/** Voice list of the service — loaded lazily and cached in the module. */
-type VoicesState = {
-  /** Whether the list was already asked for (a second opening asks nothing). */
-  requested: boolean
-  /** Voices the service reported. */
-  voices: string[]
-  /** True when the service refused to answer. */
-  failed: boolean
-}
-
-
-/** Settings shared by every answer of the chat. */
-type SpeakSettings = {
-  /** Voice the user picked — empty means "let the backend decide". */
-  voice: string
-  /** Whether new answers of the agent are spoken on their own. */
-  autoSpeak: boolean
-}
-
-
-/** Minimal external store — the speech state lives outside React. */
-type Store<T> = {
-  get: () => T
-  set: (value: T) => void
-  subscribe: (listener: () => void) => () => void
-}
-
-
-const createStore = <T,>(initial: T): Store<T> => {
-  let value = initial
-  const listeners = new Set<() => void>()
-  return {
-    get: () => value,
-    set: (next: T) => {
-      value = next
-      listeners.forEach((listener) => listener())
-    },
-    subscribe: (listener: () => void) => {
-      listeners.add(listener)
-      return () => {
-        listeners.delete(listener)
-      }
-    },
-  }
-}
-
-
-const speechStore = createStore<SpeechState>({ owner: null, phase: "idle", error: null })
-
-/** True once the backend answered 503 — the module is off until a reload. */
-const disabledStore = createStore<boolean>(false)
-
-/** The voice list of the service — the module-level cache of `GET /tts/voices`. */
-const voicesStore = createStore<VoicesState>({ requested: false, voices: [], failed: false })
-
-/** The settings of the module — shared by every answer of the chat. */
-const settingsStore = createStore<SpeakSettings>({ voice: "", autoSpeak: false })
+const speechStore = createExternalStore<SpeechState>({ owner: null, phase: "idle", error: null })
 
 
 /** Abort controller of the request that is in flight, if any. */
@@ -109,68 +53,6 @@ let activeObjectUrl: string | null = null
 
 /** Id of the last answer the auto-speak has spoken — it speaks each one once. */
 let lastAutoSpokenMessageId: string | null = null
-
-
-/**
- * Read the HTTP status off a thrown value, if it carries one.
- */
-const statusOf = (error: unknown): number | undefined => {
-  if (typeof error !== "object" || error === null) return undefined
-  const status = (error as { status?: unknown }).status
-  return typeof status === "number" ? status : undefined
-}
-
-
-/**
- * Read the picked voice from the browser storage (empty when nothing is picked).
- */
-const readStoredVoice = (): string => {
-  try {
-    return globalThis.localStorage?.getItem(VOICE_STORAGE_KEY) ?? ""
-  } catch {
-    return ""
-  }
-}
-
-
-/**
- * Remember the picked voice in the browser storage — the choice outlives a reload.
- */
-const writeStoredVoice = (voice: string) => {
-  try {
-    if (voice) globalThis.localStorage?.setItem(VOICE_STORAGE_KEY, voice)
-    else globalThis.localStorage?.removeItem(VOICE_STORAGE_KEY)
-  } catch {
-    // Storage can be unavailable (private mode) — the choice still applies to
-    // the current session.
-  }
-}
-
-
-/**
- * Read the auto-speak flag from the browser storage (off unless it was turned on).
- */
-const readAutoSpeak = (): boolean => {
-  try {
-    return globalThis.localStorage?.getItem(AUTO_SPEAK_STORAGE_KEY) === "1"
-  } catch {
-    return false
-  }
-}
-
-
-/**
- * Remember the auto-speak flag in the browser storage.
- */
-const writeAutoSpeak = (autoSpeak: boolean) => {
-  try {
-    if (autoSpeak) globalThis.localStorage?.setItem(AUTO_SPEAK_STORAGE_KEY, "1")
-    else globalThis.localStorage?.removeItem(AUTO_SPEAK_STORAGE_KEY)
-  } catch {
-    // Storage can be unavailable (private mode) — the choice still applies to
-    // the current session.
-  }
-}
 
 
 /**
@@ -202,18 +84,6 @@ const stopSpeech = () => {
 
 
 /**
- * Latch the switched-off module: the user gets one clear toast and the
- * button stays visible but inactive — nothing is asked of the backend until
- * the page is reloaded.
- */
-const markModuleDisabled = () => {
-  if (disabledStore.get()) return
-  disabledStore.set(true)
-  toast(i18n.t("tts.disabled"))
-}
-
-
-/**
  * The text of an agent answer — the very text the copy button copies.
  */
 const answerTextOf = (message: ChatMessage): string => {
@@ -229,20 +99,24 @@ const answerTextOf = (message: ChatMessage): string => {
  * picks the default one".
  */
 const speakText = async (owner: string, text: string) => {
-  if (disabledStore.get()) return
+  if (isModuleDisabled()) return
   if (!text.trim()) return
   stopSpeech()
   speechStore.set({ owner, phase: "loading", error: null })
 
   const controller = new AbortController()
   activeController = controller
-  const voice = settingsStore.get().voice
+  const settings = getVoiceSettings()
+
+  // The Web Audio context has to start inside the gesture of the user — the
+  // first await of this function still happens inside that gesture.
+  prepareAudioPlayback(settings.tone)
 
   try {
     const blob = await apiFetch<Blob>({
       path: TTS_ENDPOINT,
       method: "POST",
-      body: voice ? { text, voice } : { text },
+      body: settings.voice ? { text, voice: settings.voice } : { text },
       responseType: "blob",
       signal: controller.signal,
     })
@@ -250,6 +124,7 @@ const speakText = async (owner: string, text: string) => {
 
     const objectUrl = URL.createObjectURL(blob)
     const audio = new Audio(objectUrl)
+    applyVoiceSettings(audio, settings)
     activeAudio = audio
     activeObjectUrl = objectUrl
     audio.onended = () => {
@@ -274,45 +149,6 @@ const speakText = async (owner: string, text: string) => {
 
 
 /**
- * Load the voice list of the service — once per page. The request goes on the
- * first opening of the list, not on the mount of the answer; the list is
- * served from the module cache afterwards.
- */
-const loadVoices = async () => {
-  if (voicesStore.get().requested) return
-  voicesStore.set({ requested: true, voices: [], failed: false })
-
-  try {
-    const payload = await apiFetch<{ voices?: string[] }>({
-      path: TTS_VOICES_ENDPOINT,
-      method: "GET",
-      responseType: "json",
-    })
-    const voices = payload?.voices ?? []
-    voicesStore.set({ requested: true, voices, failed: false })
-
-    // A voice the service does not know anymore is dropped: the backend then
-    // falls back to the voice of its own configuration.
-    const picked = settingsStore.get().voice
-    if (picked && !voices.includes(picked)) {
-      writeStoredVoice("")
-      settingsStore.set({ ...settingsStore.get(), voice: "" })
-    }
-  } catch (error) {
-    if (statusOf(error) === 503) {
-      // The module is off, exactly as with POST /tts: one clear toast, the
-      // voice list is hidden and the button stays frozen until a reload.
-      markModuleDisabled()
-      voicesStore.set({ requested: true, voices: [], failed: false })
-      return
-    }
-    voicesStore.set({ requested: true, voices: [], failed: true })
-    toast(i18n.t("tts.voicesUnavailable"))
-  }
-}
-
-
-/**
  * Speak button of an agent answer. The spoken text is the very text the copy
  * button copies — the component only receives it.
  */
@@ -321,9 +157,7 @@ export const SpeakAnswer = ({ answer, compact = false }: { answer: string, compa
   const instanceId = useId()
 
   const speech = useSyncExternalStore(speechStore.subscribe, speechStore.get)
-  const moduleDisabled = useSyncExternalStore(disabledStore.subscribe, disabledStore.get)
-  const voices = useSyncExternalStore(voicesStore.subscribe, voicesStore.get)
-  const settings = useSyncExternalStore(settingsStore.subscribe, settingsStore.get)
+  const moduleDisabled = useModuleDisabled()
 
   const messages = useChatMessages()
 
@@ -354,11 +188,7 @@ export const SpeakAnswer = ({ answer, compact = false }: { answer: string, compa
   // truth after a reload, the module store is the source of truth while the
   // page lives.
   useEffect(() => {
-    const stored: SpeakSettings = { voice: readStoredVoice(), autoSpeak: readAutoSpeak() }
-    const current = settingsStore.get()
-    if (current.voice !== stored.voice || current.autoSpeak !== stored.autoSpeak) {
-      settingsStore.set(stored)
-    }
+    hydrateVoiceSettings()
   }, [])
 
   // A new message of the user interrupts the speech: the user took the turn.
@@ -379,8 +209,8 @@ export const SpeakAnswer = ({ answer, compact = false }: { answer: string, compa
   useEffect(() => {
     if (!latestAssistantId) return
     if (lastAutoSpokenMessageId === latestAssistantId) return
-    if (disabledStore.get()) return
-    if (!settingsStore.get().autoSpeak) return
+    if (isModuleDisabled()) return
+    if (!getVoiceSettings().autoSpeak) return
     lastAutoSpokenMessageId = latestAssistantId
     if (!latestAssistantText.trim()) return
     void speakText(instanceId, latestAssistantText)
@@ -416,18 +246,6 @@ export const SpeakAnswer = ({ answer, compact = false }: { answer: string, compa
     void speakText(instanceId, answer)
   }
 
-  const handleVoiceChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const voice = event.target.value
-    writeStoredVoice(voice)
-    settingsStore.set({ ...settingsStore.get(), voice })
-  }
-
-  const handleAutoSpeakChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const autoSpeak = event.target.checked
-    writeAutoSpeak(autoSpeak)
-    settingsStore.set({ ...settingsStore.get(), autoSpeak })
-  }
-
   const button = (
     <button
       className={clsx(
@@ -452,54 +270,19 @@ export const SpeakAnswer = ({ answer, compact = false }: { answer: string, compa
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent side={compact ? "left" : "top"}>{label}</TooltipContent>
       </Tooltip>
-      {!compact && (
-        <>
-          {!moduleDisabled && (
-            <select
-              className="text-xs text-muted-foreground bg-transparent border border-border rounded-md px-1 py-0.5 max-w-28"
-              aria-label={t("tts.voice")}
-              title={voices.failed ? t("tts.voicesUnavailable") : t("tts.voice")}
-              value={settings.voice}
-              onMouseDown={() => void loadVoices()}
-              onFocus={() => void loadVoices()}
-              onChange={handleVoiceChange}
-            >
-              <option value="">{t("tts.voice")}</option>
-              {voices.voices.map((voice) => (
-                <option key={voice} value={voice}>{voice}</option>
-              ))}
-            </select>
-          )}
-          <label className="flex flex-row items-center gap-1 text-xs text-muted-foreground cursor-pointer">
-            <input
-              type="checkbox"
-              className="size-3 accent-primary"
-              aria-label={t("tts.autoSpeak")}
-              checked={settings.autoSpeak}
-              onChange={handleAutoSpeakChange}
-            />
-            <span>{t("tts.autoSpeak")}</span>
-          </label>
-        </>
-      )}
     </div>
   )
 }
 
 
 /**
- * Reset the module state — the speech, the cached voices and the settings.
+ * Reset the module state — the speech and the settings of the voice.
  * Used by the tests to start from a clean slate.
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export const resetSpeakAnswerState = () => {
   stopSpeech()
   speechStore.set({ owner: null, phase: "idle", error: null })
-  disabledStore.set(false)
-  voicesStore.set({ requested: false, voices: [], failed: false })
   lastAutoSpokenMessageId = null
-  localStorage.removeItem(VOICE_STORAGE_KEY)
-  localStorage.removeItem(AUTO_SPEAK_STORAGE_KEY)
-  settingsStore.set({ voice: "", autoSpeak: false })
-  toast.dismiss?.()
+  resetVoiceSettings()
 }
