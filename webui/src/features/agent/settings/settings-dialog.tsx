@@ -1,7 +1,8 @@
-import { useState, type ComponentType } from "react"
+import { useState, useEffect, type ComponentType } from "react"
 import { useTranslation } from "react-i18next"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
+  AgentVoiceIcon,
   CodeInterpreterIcon,
   DocumentFileIcon,
   GlobeIcon,
@@ -22,9 +23,25 @@ import { useModelCatalog } from "@/features/agent/api/use-model-catalog"
 import { agentResolveContext, isOnline } from "@/features/agent/engine/services/context"
 import { resolveAllServices, resolveService } from "@/features/agent/engine/services/resolve"
 import { isKeylessSearchEngine, type ServiceKind } from "@/features/agent/engine/services/kinds"
+import {
+  MAX_SPEED,
+  MIN_SPEED,
+  SPEED_STEP,
+  VOICE_TONES,
+  hydrateVoiceSettings,
+  loadVoices,
+  setAutoSpeak,
+  setSpeed,
+  setTone,
+  setVoice,
+  useModuleDisabled,
+  useVoiceList,
+  useVoiceSettings,
+  type VoiceTone,
+} from "@/features/agent/tts/voice-settings"
 
 
-type SectionId = "general" | "models" | "search" | "code" | "documents"
+type SectionId = "general" | "models" | "search" | "code" | "documents" | "voice"
 
 const NAV: { id: SectionId; label: string; icon: ComponentType<{ className?: string }> }[] = [
   { id: "general", label: "agent.settings.nav_general", icon: ToolsMenuIcon },
@@ -32,6 +49,7 @@ const NAV: { id: SectionId; label: string; icon: ComponentType<{ className?: str
   { id: "search", label: "agent.settings.nav_search", icon: GlobeIcon },
   { id: "code", label: "agent.settings.nav_code", icon: CodeInterpreterIcon },
   { id: "documents", label: "agent.settings.nav_documents", icon: DocumentFileIcon },
+  { id: "voice", label: "agent.settings.nav_voice", icon: AgentVoiceIcon },
 ]
 
 const SEARCH_ENGINES: { id: SearchEngine; label: string; placeholder: string }[] = [
@@ -129,6 +147,7 @@ export function SettingsDialog({ trigger }: { trigger: React.ReactNode }) {
             {section === "search" && <SearchPane />}
             {section === "code" && <CodePane />}
             {section === "documents" && <DocumentsPane />}
+            {section === "voice" && <VoicePane />}
           </div>
         </div>
       </DialogContent>
@@ -475,6 +494,131 @@ function DocumentsPane() {
           className={fieldClass}
         />
         <SaveButton disabled={key === savedKey} onClick={() => setParse({ apiKey: key.trim() })} />
+      </div>
+    </div>
+  )
+}
+
+
+/** Label of every timbre preset. */
+const TONE_LABEL: Record<VoiceTone, string> = {
+  neutral: "tts.tone_neutral",
+  warm: "tts.tone_warm",
+  bright: "tts.tone_bright",
+}
+
+
+/**
+ * Voice of the agent: the voice of the service, the auto-speak switch, the
+ * speed of the playback and its timbre. The list of voices comes from the
+ * service and is asked for when the section opens.
+ */
+export function VoicePane() {
+  const { t } = useTranslation()
+  const settings = useVoiceSettings()
+  const voices = useVoiceList()
+  const disabled = useModuleDisabled()
+
+  // The stored settings are picked up on mount, and the list of voices is
+  // asked for when the section opens — not on the start of the app; the
+  // module cache answers the next opening.
+  useEffect(() => {
+    hydrateVoiceSettings()
+    void loadVoices()
+  }, [])
+
+  return (
+    <div>
+      <PaneTitle title={t("tts.nav_voice")} hint={t("tts.section_hint")} />
+
+      {disabled && (
+        <div className="mb-4 rounded-lg border border-border bg-muted/50 px-3 py-2.5 text-sm text-muted-foreground">
+          {t("tts.disabled")}
+        </div>
+      )}
+
+      <div className="mb-4">
+        <label htmlFor="agent-voice" className="mb-1 block text-xs font-medium text-muted-foreground">
+          {t("tts.voice")}
+        </label>
+        <select
+          id="agent-voice"
+          className={cn(fieldClass, "w-full")}
+          aria-label={t("tts.voice")}
+          value={settings.voice}
+          disabled={disabled}
+          onChange={(ev) => setVoice(ev.target.value)}
+        >
+          <option value="">{t("tts.voice_default")}</option>
+          {voices.voices.map((voice) => (
+            <option key={voice} value={voice}>{voice}</option>
+          ))}
+        </select>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          {voices.failed ? t("tts.voicesUnavailable") : t("tts.voice_hint")}
+        </p>
+      </div>
+
+      <label className="mb-4 flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          className="size-3.5 accent-primary"
+          aria-label={t("tts.autoSpeak")}
+          checked={settings.autoSpeak}
+          disabled={disabled}
+          onChange={(ev) => setAutoSpeak(ev.target.checked)}
+        />
+        <span>{t("tts.autoSpeak")}</span>
+      </label>
+
+      <div className="mb-4">
+        <div className="mb-1 flex items-center justify-between">
+          <label htmlFor="agent-voice-speed" className="text-xs font-medium text-muted-foreground">
+            {t("tts.speed")}
+          </label>
+          <span className="text-xs tabular-nums text-muted-foreground">{settings.speed.toFixed(2)}×</span>
+        </div>
+        <input
+          id="agent-voice-speed"
+          type="range"
+          min={MIN_SPEED}
+          max={MAX_SPEED}
+          step={SPEED_STEP}
+          value={settings.speed}
+          disabled={disabled}
+          aria-label={t("tts.speed")}
+          onChange={(ev) => setSpeed(Number(ev.target.value))}
+          className="w-full accent-secondary-foreground"
+        />
+        <p className="mt-1 text-[11px] text-muted-foreground">{t("tts.speed_hint")}</p>
+      </div>
+
+      <div className="mb-4">
+        <div className="mb-1 text-xs font-medium text-muted-foreground">{t("tts.tone")}</div>
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t("tts.tone")}>
+          {VOICE_TONES.map((tone) => (
+            <label
+              key={tone}
+              className={cn(
+                "flex items-center gap-2 rounded-lg border border-border px-2.5 py-1.5 text-sm transition-colors",
+                settings.tone === tone ? "bg-secondary text-secondary-foreground" : "hover:bg-accent",
+                disabled && "opacity-50",
+              )}
+            >
+              <input
+                type="radio"
+                name="agent-voice-tone"
+                className="size-3 accent-primary"
+                aria-label={t(TONE_LABEL[tone])}
+                checked={settings.tone === tone}
+                disabled={disabled}
+                onChange={() => setTone(tone)}
+              />
+              <span>{t(TONE_LABEL[tone])}</span>
+            </label>
+          ))}
+        </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">{t("tts.tone_hint")}</p>
       </div>
     </div>
   )

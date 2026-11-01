@@ -116,6 +116,7 @@ import {
   UserIcon as UserGlyphIcon,
   UserSquareIcon as UserSquareGlyphIcon,
   WarningCircleIcon,
+  WaveformIcon,
   WifiSlashIcon as PhosphorWifiSlashIcon,
   XCircleIcon,
   XIcon,
@@ -124,6 +125,7 @@ import { createPhosphorIcon, createReactIcon } from "./icon-base"
 import type { AppIconComponent, AppIconName } from "./types"
 
 export const AddIcon = createPhosphorIcon(PlusGlyphIcon)
+export const AgentVoiceIcon = createPhosphorIcon(WaveformIcon)
 export const AlertIcon = createPhosphorIcon(WarningCircleIcon)
 export const AppletIcon = createPhosphorIcon(ChartLineIcon)
 export const ArticleSummaryIcon = createPhosphorIcon(ArticleIcon)
